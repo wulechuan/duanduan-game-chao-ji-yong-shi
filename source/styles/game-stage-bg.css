@@ -1,0 +1,15 @@
+.stage-background {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.stage-1.stage-background {
+    background-image: url('../images/game-stages/stage-1.jpg'); 
+}
+
+.stage-2.stage-background {
+    background-image: url('../images/game-stages/stage-2.jpg'); 
+}

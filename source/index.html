@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>超级勇士</title>
+    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="styles/game-layers.css">
+    <link rel="stylesheet" href="styles/game-role-status-blocks.css">
+    <link rel="stylesheet" href="styles/game-stage-bg.css">
+    <link rel="stylesheet" href="styles/game-roles.css">
+</head>
+<body>
+    <div id="app">
+        <div class="stage-background stage-0"></div>
+        <div class="stage">
+            <div class="role role-1 role-candidate-001"></div>
+            <div class="role role-2 role-candidate-002"></div>
+        </div>
+        <div class="role-status-blocks">
+            <div class="role-status-block role-1">
+                <div class="avatar"></div>
+                <div class="role-status-bar">
+                    <div class="role-value-bar-container">
+                        <div class="role-value-bar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="icon-vs"></div>
+            <div class="role-status-block role-2">
+                <div class="avatar"></div>
+                <div class="role-status-bar">
+                    <div class="role-value-bar-container">
+                        <div class="role-value-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/stage-candidates.js"></script>
+    <script src="js/role-candidates.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>

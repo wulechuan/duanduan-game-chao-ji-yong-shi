@@ -1,0 +1,105 @@
+.role-status-blocks {
+    width: 100%;
+    display: flex;
+    padding-bottom: 2rem;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+}
+
+.role-status-block {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    margin: 1rem;
+    padding: 0 1rem;
+    align-items: center;
+}
+
+.role-status-block.role-2 {
+    transform: scaleX(-1);
+}
+
+
+.role-status-blocks .icon-vs {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 5rem;
+    height: 5rem;
+    margin: 1rem;
+    border-radius: 0%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../images/game-ui/vs.png');
+}
+
+.role-status-bar {
+    flex-grow: 1;
+    flex-shrink: 1;
+    box-sizing: border-box;
+    border: 1px solid white;
+    border-radius: 0.5rem;
+    height: 3rem;
+    position: relative;
+    /* background-color: white; */
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.16);
+}
+
+
+
+
+.role-value-bar-container {
+    margin: 0.2rem;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0.3rem;
+}
+
+.role-value-bar {
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+    transition-property: background-color, width, opacity;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out;
+    background-image: linear-gradient(30deg, rgba(255, 255, 255, 0.8), transparent);
+}
+
+.role-value-bar.role-is-healthy {
+    background-color: greenyellow;
+}
+
+.role-value-bar.role-is-wounded {
+    background-color: rgb(255, 211, 91);
+}
+
+.role-value-bar.role-is-dying {
+    background-color: red;
+}
+
+
+
+
+.role-status-block .avatar {
+    width: 4rem;
+    height: 4rem;
+    margin: 0.5rem;
+    z-index: 10;
+    background-color: #ccc;
+    border-radius: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.role-status-block .role-candidate-001.avatar {
+    background-image: url('../images/game-roles/role-001/avatar.png');
+}
+
+.role-status-block .role-candidate-002.avatar {
+    background-image: url('../images/game-roles/role-002/avatar.png');
+}

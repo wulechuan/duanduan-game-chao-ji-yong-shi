@@ -1,0 +1,40 @@
+.role {
+    width: 30rem;
+    height: 30rem;
+    position: absolute;
+    top: 6rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    z-index: 5;
+}
+
+.role.is-attacking {
+    z-index: 6;
+}
+
+.role.role-1 {
+    left: 2rem;
+}
+
+.role.role-2 {
+    transform: scaleX(-1);
+    right: 2rem;
+}
+
+.role.role-candidate-001 {
+    background-image: url('../images/game-roles/role-001/role-001-pose-0.png');
+}
+
+.role.role-candidate-001.is-attacking {
+    background-image: url('../images/game-roles/role-001/role-001-pose-1.png');
+}
+
+.role.role-candidate-002 {
+    background-image: url('../images/game-roles/role-002/role-002-pose-0.png');
+}
+
+.role.role-candidate-002.is-attacking {
+    background-image: url('../images/game-roles/role-002/role-002-pose-1.png');
+}
