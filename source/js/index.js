@@ -86,6 +86,7 @@
     function initGameApp() {
         initStage()
         initBothRoles()
+        initSundries()
     }
 
     function initStage() {
@@ -93,6 +94,17 @@
 
         console.warn('fake behaviour enabled')
         document.body.addEventListener('click', oneGameRound)
+    }
+
+    function initSundries() {
+        const vsIcon = document.querySelector('.icon-vs')
+        vsIcon.addEventListener('click', function (event) {
+            event.stopPropagation()
+
+            if (!game.isRunning) {
+                setupOneGameAndStartIt()
+            }
+        })
     }
 
     function initBothRoles() {
