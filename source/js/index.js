@@ -357,19 +357,17 @@
     function decideHealthPointDecreaseForOneRole(roleAIsDefencer, roleA, roleB) {
         const oldPoint = roleA.gamingSetup.healthPoint
 
-        const attackFullPowerB = roleB.gamingSetup.attackingPower
-
         let roleADefensiveRatio
         let roleBAttackingRatio
         if (roleAIsDefencer) {
-            roleADefensiveRatio = Math.random() * 0.7 + 0.3
+            roleADefensiveRatio = Math.random() * 0.3 + 0.7
             roleBAttackingRatio = Math.random() * 0.3 + 0.7
         } else {
             roleADefensiveRatio = Math.random() * 0.15
-            roleBAttackingRatio = Math.random() * 0.25 + 0.05
+            roleBAttackingRatio = Math.random() * 0.25 + 0.1
         }
 
-        const attackFromB = attackFullPowerB * roleBAttackingRatio
+        const attackFromB = roleB.gamingSetup.attackingPower * roleBAttackingRatio
         const defenceOfA  = roleA.gamingSetup.defencingPower * roleADefensiveRatio
 
         const decreaseLimit = Math.max(0, attackFromB - defenceOfA)
