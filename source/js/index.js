@@ -26,7 +26,7 @@
         el: {
             root: null,
         },
-        gamingSetup: {
+        gamingSettings: {
             candidateId: '',
         },
     }
@@ -38,9 +38,9 @@
                 // avatar: null,
                 // healthPointValueBar: null
             },
-            gamingSetup: {
+            gamingSettings: {
                 // imageFilesContainerFolderPath: '',
-                // cssClassNamesToFileName: null,
+                // fileNamesIndexingByCSSClassName: null,
                 // healthPointLimit: 0,
                 // healthPoint: 0,
                 // candidateId: '',
@@ -49,7 +49,7 @@
         },
         {
             el: {},
-            gamingSetup: {},
+            gamingSettings: {},
         }
     ]
 
@@ -79,6 +79,11 @@
     // -------------------------------------------------
     function randomPositiveIntegerLessThan(limit) {
         return Math.floor(Math.random() * limit)
+    }
+    function nextItemInArray(array, currentIndex) {
+        const totalCount = array.length
+        const nextIndex = (currentIndex + 1) % totalCount
+        return array[nextIndex]
     }
 
 
@@ -146,11 +151,12 @@
 
     // -------------------------------------------------
     function setupOneGameAndStartIt() {
-        setupOneGame()
-        startOneGame()
+        setupOneGameBegin()
+        setupOneGameEnd()
     }
+    
 
-    function setupOneGame() {
+    function setupOneGameBegin() {
         const gameRoundState = game.round
 
         gameRoundState.attackerIdOfNextRound = 0
@@ -165,13 +171,16 @@
         resetOneRoleForOneGame(bothGamingRoles[0], role1CandidateIndexInArray)
         resetOneRoleForOneGame(bothGamingRoles[1], role2CandidateIndexInArray)
     }
+    function setupOneGameEnd() {
+        startOneGame()
+    }
 
     function resetStageForOneGame(stageCandidateIndexInArray) {
         const usedStageCandidate = stageCandidates[stageCandidateIndexInArray]
         const stageIdInCSSClassName = usedStageCandidate.id
 
-        const stageGamingSetup = stage.gamingSetup
-        stageGamingSetup.candidateId = stageIdInCSSClassName
+        const stageGamingSettings = stage.gamingSettings
+        stageGamingSettings.candidateId = stageIdInCSSClassName
 
         const stageRootDOM = stage.el.root
         let fileName = usedStageCandidate.fileName || `stage-${stageIdInCSSClassName}.jpg`
@@ -182,26 +191,26 @@
         const { playerId, el } = role
 
 
-        const roleGamingSetup = role.gamingSetup
+        const roleGamingSettings = role.gamingSettings
         const usedRoleCandidate = roleCandidates[roleCandidateIndexInArray]
 
         const roleCandidateId = usedRoleCandidate.idInFilePathAndCSSClassName
-        roleGamingSetup.candidateId = roleCandidateId
-        roleGamingSetup.candidateName = usedRoleCandidate.name
+        roleGamingSettings.candidateId = roleCandidateId
+        roleGamingSettings.candidateName = usedRoleCandidate.name
 
         const {
             fullHealthPoint,
             attackingPower,
             defencingPower,
-            cssClassNamesToFileName
+            fileNamesIndexingByCSSClassName
         } = usedRoleCandidate
         const imageFilesContainerFolderPath = `images/game-roles/role-${roleCandidateId}`
 
-        roleGamingSetup.imageFilesContainerFolderPath = imageFilesContainerFolderPath
-        roleGamingSetup.healthPointLimit = fullHealthPoint
-        roleGamingSetup.attackingPower = attackingPower
-        roleGamingSetup.defencingPower = defencingPower
-        roleGamingSetup.cssClassNamesToFileName = cssClassNamesToFileName
+        roleGamingSettings.imageFilesContainerFolderPath = imageFilesContainerFolderPath
+        roleGamingSettings.healthPointLimit = fullHealthPoint
+        roleGamingSettings.attackingPower = attackingPower
+        roleGamingSettings.defencingPower = defencingPower
+        roleGamingSettings.fileNamesIndexingByCSSClassName = fileNamesIndexingByCSSClassName
 
         const cssClassNameForRoleCandidate = `role-candidate-${roleCandidateId}`
         el.root.  className = `role role-${playerId} ${cssClassNameForRoleCandidate}`
@@ -215,7 +224,7 @@
 
         bothGamingRoles.forEach(role => {
             setRolePose(role, '')
-            setHealthPointForOneRole(role, role.gamingSetup.healthPointLimit)
+            setHealthPointForOneRole(role, role.gamingSettings.healthPointLimit)
         })
         console.log('游戏现在开始!')
     }
@@ -224,11 +233,11 @@
         console.log('')
 
         if (loser) {
-            console.log(`[${loser.id}]${loser.gamingSetup.candidateName} 输了！`)
+            console.log(`[${loser.id}]${loser.gamingSettings.candidateName} 输了！`)
     
             const winnerId = 1 - loser.id
             const winner = bothGamingRoles[winnerId]
-            console.log(`[${winnerId}]${winner.gamingSetup.candidateName} 赢了！`)
+            console.log(`[${winnerId}]${winner.gamingSettings.candidateName} 赢了！`)
             setRolePose(winner, 'has-won')
         } else {
             console.log('双方平局。')
@@ -252,15 +261,15 @@
             classList.add(poseCSSClassNameToApply)
         }
 
-        const roleGamingSetup = role.gamingSetup
+        const roleGamingSettings = role.gamingSettings
         const {
             imageFilesContainerFolderPath,
-            cssClassNamesToFileName,
-        } = roleGamingSetup
+            fileNamesIndexingByCSSClassName,
+        } = roleGamingSettings
 
-        let poseImageFileName = cssClassNamesToFileName['default']
+        let poseImageFileName = fileNamesIndexingByCSSClassName['default']
         if (poseCSSClassNameToApply && poseCSSClassNameToApply !== 'default') {
-            let foundPoseImageFileName = cssClassNamesToFileName[poseCSSClassNameToApply]
+            let foundPoseImageFileName = fileNamesIndexingByCSSClassName[poseCSSClassNameToApply]
 
             if (foundPoseImageFileName) {
                 poseImageFileName = foundPoseImageFileName
@@ -280,7 +289,7 @@
 
         const roleHealthPointValueDOM = role.el.healthPointValueBar
 
-        const maxAllowedHP = role.gamingSetup.healthPointLimit
+        const maxAllowedHP = role.gamingSettings.healthPointLimit
         hp = Math.max(0, Math.min(maxAllowedHP, hp))
         if (hp !== rawHP) {
             console.warn(`role[${role.id}]: rawHP 超出取值范围 [`, 0, ',', maxAllowedHP, ']，为', rawHP)
@@ -309,7 +318,7 @@
             roleHealthPointValueDOM.className += 'role-is-dying'
         }
 
-        role.gamingSetup.healthPoint = hp
+        role.gamingSettings.healthPoint = hp
 
         if (hp === 0) {
             setRolePose(role, 'has-lost')
@@ -328,9 +337,9 @@
         const defencer = bothGamingRoles[attackerIdOfNextRound]
 
         console.log(`[P${
-            attacker.playerId}]${attacker.gamingSetup.candidateName
+            attacker.playerId}]${attacker.gamingSettings.candidateName
         } 正在攻击 [P${
-            defencer.playerId}]${defencer.gamingSetup.candidateName
+            defencer.playerId}]${defencer.gamingSettings.candidateName
         }...`)
 
         setRolePose(attacker, 'is-attacking')
@@ -355,7 +364,7 @@
     }
 
     function decideHealthPointDecreaseForOneRole(roleAIsDefencer, roleA, roleB) {
-        const oldPoint = roleA.gamingSetup.healthPoint
+        const oldPoint = roleA.gamingSettings.healthPoint
 
         let roleADefensiveRatio
         let roleBAttackingRatio
@@ -367,8 +376,8 @@
             roleBAttackingRatio = Math.random() * 0.25 + 0.1
         }
 
-        const attackFromB = roleB.gamingSetup.attackingPower * roleBAttackingRatio
-        const defenceOfA  = roleA.gamingSetup.defencingPower * roleADefensiveRatio
+        const attackFromB = roleB.gamingSettings.attackingPower * roleBAttackingRatio
+        const defenceOfA  = roleA.gamingSettings.defencingPower * roleADefensiveRatio
 
         const decreaseLimit = Math.max(0, attackFromB - defenceOfA)
         
@@ -381,9 +390,9 @@
             return
         }
 
-        console.log(`\t[P${role.playerId}]${role.gamingSetup.candidateName} 受伤了`, -healthPointDecrease)
+        console.log(`\t[P${role.playerId}]${role.gamingSettings.candidateName} 受伤了`, -healthPointDecrease)
 
-        const oldPoint = role.gamingSetup.healthPoint
+        const oldPoint = role.gamingSettings.healthPoint
         setHealthPointForOneRole(role, oldPoint - healthPointDecrease)
     }
 })();

@@ -6,7 +6,7 @@ window.duanduanGameRoleCandidates = [
         attackingPower: 13000,
         defencingPower: 14000,
         avatarFileName: 'avatar.png',
-        cssClassNamesToFileName: {
+        fileNamesIndexingByCSSClassName: {
             'default':      'pose-0.png',
             'is-attacking': 'pose-1.png',
             'is-suffering': '',
@@ -21,7 +21,7 @@ window.duanduanGameRoleCandidates = [
         attackingPower: 15000,
         defencingPower: 12000,
         avatarFileName: 'avatar.png',
-        cssClassNamesToFileName: {
+        fileNamesIndexingByCSSClassName: {
             'default':      'pose-0.png',
             'is-attacking': 'pose-1.png',
             'is-suffering': '',
@@ -36,7 +36,7 @@ window.duanduanGameRoleCandidates = [
         attackingPower: 17000,
         defencingPower: 16000,
         avatarFileName: 'avatar.png',
-        cssClassNamesToFileName: {
+        fileNamesIndexingByCSSClassName: {
             'default':      'pose-0.png',
             'is-attacking': 'pose-1.png',
             'is-suffering': '',
@@ -51,7 +51,22 @@ window.duanduanGameRoleCandidates = [
         attackingPower: 19000,
         defencingPower: 13000,
         avatarFileName: 'avatar.png',
-        cssClassNamesToFileName: {
+        fileNamesIndexingByCSSClassName: {
+            'default':      'pose-0.png',
+            'is-attacking': 'pose-1.png',
+            'is-suffering': '',
+            'has-won':      '',
+            'has-lost':     '',
+        }
+    },
+    {
+        name: '巨力工头',
+        idInFilePathAndCSSClassName: '005',
+        fullHealthPoint: 10,
+        attackingPower: 13000,
+        defencingPower: 14000,
+        avatarFileName: 'avatar.png',
+        fileNamesIndexingByCSSClassName: {
             'default':      'pose-0.png',
             'is-attacking': 'pose-1.png',
             'is-suffering': '',
