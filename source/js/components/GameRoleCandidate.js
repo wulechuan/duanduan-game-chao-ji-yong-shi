@@ -1,8 +1,10 @@
 window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
-    return function GameRoleCandidate(options) {
+    return function GameRoleCandidate(playerId, options) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRoleCandidate 构造函数。')
         }
+
+        this.playerId = playerId
 
         const {
             name,
@@ -27,18 +29,31 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             poses: fileNamesIndexingByCSSClassName
         }
 
-        console.log(`【游戏角色候选人】“${name}”创建完毕。`)
+        _init(this)
 
-        this.render = render.bind(this)
+        console.log(`【游戏角色候选人】“${name}”创建完毕。`)
     }
 
 
+    function _init(gameRoleCandidate) {
+        createDOMs(gameRoleCandidate)
+    }
 
-    function render(playerId) {
-        role.el.root = document.querySelector(`.role.role-${playerId}`)
+    function createDOMs(gameRoleCandidate) {
+        const {
+            playerId,
+            typeIdInFilePathAndCSSClassName,
+        } = gameRoleCandidate
 
-        const statusBlockDOM = document.querySelector(`.role-status-block.role-${playerId}`)
-        role.el.avatar = statusBlockDOM.querySelector(`.avatar`)
-        role.el.healthPointValueBar = statusBlockDOM.querySelector(`.${roleValueBarCSSClassName}`)
+        const rootElement = document.createElement('div')
+        rootElement.className = [
+            `player-${playerId}`,
+            'role-candidate',
+            `role-candidate-${typeIdInFilePathAndCSSClassName}`,
+        ].join(' ')
+        
+        gameRoleCandidate.el = {
+            root: rootElement,
+        }
     }
 })();

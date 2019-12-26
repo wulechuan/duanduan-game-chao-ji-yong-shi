@@ -8,12 +8,38 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         }
 
         const {
-            allGameFighterCandidates,
+            allGameFighterCandidatesForBothPlayers,
             allGameFightingStageCandidates,
+            maxRoundsToRun,
         } = initOptions
 
+        let _maxRoundsToRun
+        
+        if (maxRoundsToRun === undefined) {
+            _maxRoundsToRun = 3
+        } else {
+            _maxRoundsToRun = Math.floor(maxRoundsToRun)
+            if (_maxRoundsToRun !== maxRoundsToRun || _maxRoundsToRun % 2 === 0) {
+                throw new Error('maxRoundsToRun 必须为正奇数。')
+            }
+        }
+
+        const minWinningRoundsPerPlayer = Math.ceil(_maxRoundsToRun / 2)
+
+        const [
+            player1RoleCandidates,
+            player2RoleCandidates,
+        ] = allGameFighterCandidatesForBothPlayers
+
         this.fighters = {
-            allCandidates: allGameFighterCandidates,
+            candidatesForPlayer1: {
+                currentChoice: player1RoleCandidates[0],
+                allCandidates: player1RoleCandidates,
+            },
+            candidatesForPlayer2: {
+                currentChoice: player2RoleCandidates[0],
+                allCandidates: player2RoleCandidates,
+            },
             bothAttenders: [],
             finalWinner: null,
             finalLoser: null,
@@ -22,43 +48,92 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.allGameFightingStageCandidates = allGameFightingStageCandidates
 
         this.gameRounds = {
-            maxRoundsToRun: 3,
+            minWinningRoundsPerPlayer,
+            maxRoundsToRun: _maxRoundsToRun,
             history: [],
             current: null,
         }
+
+        this.el = {}
 
         this.status = {
             isRunning: false,
         }
 
-        this.setFighter1      = setFighter1     .bind(this)
-        this.setFighter2      = setFighter2     .bind(this)
 
-        this.prepare          = prepare         .bind(this)
-        this.start            = start           .bind(this)
-        this.startNewRound    = startNewRound   .bind(this)
-        this.endCurrentRound  = endCurrentRound .bind(this)
-        this.end              = end             .bind(this)
+        this.prepare                 = prepare                .bind(this)
+        this.confirmFighterForPlayer = confirmFighterForPlayer.bind(this)
+        this.onOneFighterConfirmed   = onOneFighterConfirmed  .bind(this)
+
+        this.start                   = start                  .bind(this)
+        this.end                     = end                    .bind(this)
+
+        this.startNewRound           = startNewRound          .bind(this)
+        this.endCurrentRound         = endCurrentRound        .bind(this)
+
+        _init(this)
 
         console.log('【游戏】创建完毕。')
     }
 
-    function setFighter(fighterCandidate, playerId) {
-        const game = this
-        const index = playerId
-        game.fighters.bothAttenders[index] = new GameRole(game, playerId, fighterCandidate)
+    function _init(game) {
+        const { el, fighters } = game
+        const {
+            candidatesForPlayer1: gameRoleCandidatesForPlayer1,
+            candidatesForPlayer2: gameRoleCandidatesForPlayer2,
+        } = fighters
+
+        const roleCandidatesSlot1Element = document.querySelector('.role-candidates-slot-1')
+        const roleCandidatesSlot2Element = document.querySelector('.role-candidates-slot-2')
+
+        el.roleCandidatesSlot1Element = roleCandidatesSlot1Element
+        el.roleCandidatesSlot2Element = roleCandidatesSlot2Element
+
+        
+
+        insertGameRoleCandidatesToDocument(gameRoleCandidatesForPlayer1.allCandidates, roleCandidatesSlot1Element)
+        insertGameRoleCandidatesToDocument(gameRoleCandidatesForPlayer2.allCandidates, roleCandidatesSlot2Element)
+
+    
+
+        function insertGameRoleCandidatesToDocument(roleCandidates, slotElement) {
+            roleCandidates.forEach((grc, i) => {
+                const roleCandidateRootElement = grc.el.root
+                slotElement.appendChild(roleCandidateRootElement)
+                roleCandidateRootElement.style.top = `${100 * i}%`
+            })
+        }
     }
 
-    function setFighter1(fighterCandidate) {
-        setFighter.call(this, fighterCandidate, 0)
-    }
-
-    function setFighter2(fighterCandidate) {
-        setFighter.call(this, fighterCandidate, 1)
-    }
 
     function prepare() {
+        _beginChoosingFighters.call(this)
     }
+
+    function _beginChoosingFighters() {
+
+    }
+
+    function confirmFighterForPlayer(playerId) {
+        const gameRoleCandidates = this.fighters[`candidatesForPlayer${playerId}`]
+        _setFighter.call(this, playerId, gameRoleCandidates.currentChoice)
+
+        this.onOneFighterConfirmed()
+    }
+
+    function _setFighter(playerId, fighterCandidate) {
+        const game = this
+        const arrayIndex = playerId - 1
+        game.fighters.bothAttenders[arrayIndex] = new GameRole(game, playerId, fighterCandidate)
+    }
+
+    function onOneFighterConfirmed() {
+        const bothFightersAreConfirmed = true
+        if (bothFightersAreConfirmed) {
+            this.start()
+        }
+    }
+
 
     function start() {
         this.status.isRunning = true
@@ -77,13 +152,17 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     function endCurrentRound() {
         const { gameRounds, fighters } = this
-        const { history: historicalGameRounds } = gameRounds
+        const {
+            minWinningRoundsPerPlayer,
+            history: historicalGameRounds,
+            current: currentGameRound,
+        } = gameRounds
 
-        if (!gameRounds.current) {
+        if (!currentGameRound) {
             throw new ReferenceError('还没有开始过任何游戏局！')
         }
 
-        historicalGameRounds.push(gameRounds.current)
+        historicalGameRounds.push(currentGameRound)
         gameRounds.current = null
 
         const [ fighter1, fighter2 ] = fighters.both
@@ -96,10 +175,8 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             gameRound => gameRound.fighters.winner === fighter2
         )
 
-        const minWinningRounds = Math.ceil(gameRounds.maxRoundsToRun / 2)
-
-        const shouldEndGame = fighter1WonRounds.length > minWinningRounds ||
-            fighter2WonRounds.length > minWinningRounds ||
+        const shouldEndGame = fighter1WonRounds.length > minWinningRoundsPerPlayer ||
+            fighter2WonRounds.length > minWinningRoundsPerPlayer ||
             historicalGameRounds.length >= gameRounds.maxRoundsToRun
 
         if (shouldEndGame) {

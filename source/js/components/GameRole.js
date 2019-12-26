@@ -1,4 +1,12 @@
 window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
+    const gameRoleAllPossiblePoseCSSClassNames = [
+        'is-attacking',
+        'is-suffering',
+        'has-won',
+        'has-lost',
+    ]
+
+
     const app = window.duanduanGameChaoJiYongShi
     const { Game, GameRoleCandidate } = app.classes
 
@@ -43,14 +51,39 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
         this.setState     = setState    .bind(this)
+        this.setPose      = setPose     .bind(this)
         this.toAttack     = toAttack    .bind(this)
         this.toBeAttacked = toBeAttacked.bind(this)
         this.die          = die         .bind(this)
-        this.render       = render      .bind(this)
+
+        _init(this)
 
         console.log(`【游戏角色】“${name}”创建完毕。`)
     }
 
+
+
+    function _init(gameRole) {
+
+    }
+    
+    function createDOMs(gameRole) {
+        const {
+            playerId,
+            typeIdInFilePathAndCSSClassName,
+        } = gameRole
+
+        const rootElement = document.createElement('div')
+        rootElement.className = [
+            `player-${playerId}`,
+            'role-candidate',
+            `role-candidate-${typeIdInFilePathAndCSSClassName}`,
+        ].join(' ')
+        
+        gameRole.el = {
+            root: rootElement,
+        }
+    }
 
     function setState(newState) {
 
@@ -89,12 +122,38 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         game.end({ loser: this })
     }
 
-    function render() {
-        const playerId = role.playerId
-        role.el.root = document.querySelector(`.role.role-${playerId}`)
+    
+    function setPose(poseCSSClassNameToApply) {
+        const gameRole = this
 
-        const statusBlockDOM = document.querySelector(`.role-status-block.role-${playerId}`)
-        role.el.avatar = statusBlockDOM.querySelector(`.avatar`)
-        role.el.healthPointValueBar = statusBlockDOM.querySelector(`.${roleValueBarCSSClassName}`)
+        const roleRootDOM = gameRole.el.root
+        const classList = roleRootDOM.classList
+
+        gameRoleAllPossiblePoseCSSClassNames.forEach(poseCSSClassName => {
+            if (poseCSSClassName !== poseCSSClassNameToApply && classList.contains(poseCSSClassName)) {
+                classList.remove(poseCSSClassName)
+            }
+        })
+
+        if (poseCSSClassNameToApply && !classList.contains(poseCSSClassNameToApply)) {
+            classList.add(poseCSSClassNameToApply)
+        }
+
+        const roleGamingSettings = gameRole.gamingSettings
+        const {
+            imageFilesContainerFolderPath,
+            fileNamesIndexingByCSSClassName,
+        } = roleGamingSettings
+
+        let poseImageFileName = fileNamesIndexingByCSSClassName['default']
+        if (poseCSSClassNameToApply && poseCSSClassNameToApply !== 'default') {
+            let foundPoseImageFileName = fileNamesIndexingByCSSClassName[poseCSSClassNameToApply]
+
+            if (foundPoseImageFileName) {
+                poseImageFileName = foundPoseImageFileName
+            }
+        }
+
+        gameRole.el.root.style.backgroundImage = `url(${imageFilesContainerFolderPath}/${poseImageFileName})`
     }
 })();

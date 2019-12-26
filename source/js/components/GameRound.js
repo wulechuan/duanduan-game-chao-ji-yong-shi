@@ -1,6 +1,8 @@
 window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     const app = window.duanduanGameChaoJiYongShi
     const { utils, classes, data: appData } = app
+
+    const { randomPositiveIntegerLessThan } = utils
     const { Game } = classes
     const { allGameFightingStageCandidates } = appData
 
@@ -36,16 +38,25 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.end              = end             .bind(this)
         this.annouceResult    = annouceResult   .bind(this)
 
-
-
-        init.call(this)
+        _init(this)
 
         console.log('【游戏局】创建完毕。')
     }
 
 
 
-    function init() {
+    function _init(gameRound) {
+        _chooseGameFightingStage(gameRound)
+        _createDOMs(gameRound)
+    }
+
+    function _chooseGameFightingStage(gameRound) {
+        const stageIndex = randomPositiveIntegerLessThan(allGameFightingStageCandidates.length)
+        const chosenStage = allGameFightingStageCandidates[stageIndex]
+        console.log('chosenStage', chosenStage)
+    }
+
+    function _createDOMs(gameRound) {
 
     }
 
