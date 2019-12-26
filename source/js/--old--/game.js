@@ -76,18 +76,6 @@
 
 
 
-    // -------------------------------------------------
-    function randomPositiveIntegerLessThan(limit) {
-        return Math.floor(Math.random() * limit)
-    }
-    function nextItemInArray(array, currentIndex) {
-        const totalCount = array.length
-        const nextIndex = (currentIndex + 1) % totalCount
-        return array[nextIndex]
-    }
-
-
-
 
 
     // -------------------------------------------------
