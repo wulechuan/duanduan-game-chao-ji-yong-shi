@@ -30,6 +30,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.toAttack     = toAttack    .bind(this)
         this.toBeAttacked = toBeAttacked.bind(this)
         this.die          = die         .bind(this)
+
+        console.log(`【游戏角色】“${name}”创建完毕。`)
     }
 
 

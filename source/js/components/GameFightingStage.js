@@ -24,5 +24,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
         this.images = {
             fileName: `stage-${typeIdInFilePathAndCSSClassName}`,
         }
+
+        console.log(`【游戏对战舞台】“${name}”创建完毕。`)
     }
 })();

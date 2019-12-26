@@ -1,23 +1,25 @@
 window.duanduanGameChaoJiYongShi.classes.Game = (function () {
-    const globalDataRoot = window.duanduanGameChaoJiYongShi
-    const { GameRound } = globalDataRoot.classes
-    const {
-        allFighterCandidates,
-        allFightingStageCandidates,
-    } = globalDataRoot.data
+    const app = window.duanduanGameChaoJiYongShi
+    const { GameRound } = app.classes
 
-
-    return function Game() {
+    return function Game(initOptions) {
         if (!new.target) {
             throw new Error('必须使用 new 运算来调用 Game 构造函数。')
         }
 
+        const {
+            allGameFighterCandidates,
+            allGameFightingStageCandidates,
+        } = initOptions
+
         this.fighters = {
-            allCandidates: [],
+            allCandidates: allGameFighterCandidates,
             bothAttenders: [],
             finalWinner: null,
             finalLoser: null,
         }
+
+        this.allGameFightingStageCandidates = allGameFightingStageCandidates
 
         this.gameRounds = {
             maxRoundsToRun: 3,
@@ -37,6 +39,8 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.startNewRound    = startNewRound   .bind(this)
         this.endCurrentRound  = endCurrentRound .bind(this)
         this.end              = end             .bind(this)
+
+        console.log('【游戏】创建完毕。')
     }
 
     function setFighter1(fighter) {

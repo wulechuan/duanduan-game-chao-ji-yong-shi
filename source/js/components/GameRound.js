@@ -31,6 +31,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.start            = start           .bind(this)
         this.end              = end             .bind(this)
         this.annouceResult    = annouceResult   .bind(this)
+        console.log('【游戏局】创建完毕。')
     }
 
     function start() {

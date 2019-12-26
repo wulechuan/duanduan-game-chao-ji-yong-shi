@@ -1,12 +1,11 @@
 ;(function () {
     const app = window.duanduanGameChaoJiYongShi
+    const { data } = app
 
-    app.prepareAllGameRoleCandidates(app.data.allGameRoleConfigurations)
-    app.prepareAllGameFightingStageCandidates(app.data.allGameFightingStageConfigurations)
-
-    const { Game } = app.classes
-
-    const game = new Game()
-
-    game.prepare()
+    Promise.all([
+        app.prepareAllGameRoleCandidates(data.allGameRoleConfigurations),
+        app.prepareAllGameFightingStageCandidates(data.allGameFightingStageConfigurations),
+    ]).then(() => {
+        app.createNewGameAndRunIt()
+    })
 })();
