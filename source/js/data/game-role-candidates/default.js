@@ -1,7 +1,7 @@
-window.duanduanGameRoleCandidates = [
+window.duanduanGameChaoJiYongShi.data.allGameRoleConfigurations = [
     {
         name: '破坏者',
-        idInFilePathAndCSSClassName: '001',
+        typeIdInFilePathAndCSSClassName: '001',
         fullHealthPoint: 35000,
         attackingPower: 13000,
         defencingPower: 14000,
@@ -16,7 +16,7 @@ window.duanduanGameRoleCandidates = [
     },
     {
         name: '锯霸哥布林',
-        idInFilePathAndCSSClassName: '002',
+        typeIdInFilePathAndCSSClassName: '002',
         fullHealthPoint: 32000,
         attackingPower: 15000,
         defencingPower: 12000,
@@ -31,7 +31,7 @@ window.duanduanGameRoleCandidates = [
     },
     {
         name: '雷神索尔',
-        idInFilePathAndCSSClassName: '003',
+        typeIdInFilePathAndCSSClassName: '003',
         fullHealthPoint: 38000,
         attackingPower: 17000,
         defencingPower: 16000,
@@ -46,7 +46,7 @@ window.duanduanGameRoleCandidates = [
     },
     {
         name: '火神',
-        idInFilePathAndCSSClassName: '004',
+        typeIdInFilePathAndCSSClassName: '004',
         fullHealthPoint: 35000,
         attackingPower: 19000,
         defencingPower: 13000,
@@ -61,7 +61,7 @@ window.duanduanGameRoleCandidates = [
     },
     {
         name: '巨力工头',
-        idInFilePathAndCSSClassName: '005',
+        typeIdInFilePathAndCSSClassName: '005',
         fullHealthPoint: 10,
         attackingPower: 13000,
         defencingPower: 14000,

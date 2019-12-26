@@ -1,6 +1,6 @@
-(function () {
-    const stageCandidates = window.duanduanGameStageCandidates
-    const roleCandidates  = window.duanduanGameRoleCandidates
+;(function () {
+    const stageCandidates = window.duanduanGameRoleChaoJiYongShi.data.stageCandidates
+    const roleCandidates  = window.duanduanGameRoleChaoJiYongShi.data.roleCandidates
     const stageCandidatesCount = stageCandidates.length
     const roleCandidatesCount  = roleCandidates .length
 
