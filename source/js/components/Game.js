@@ -4,7 +4,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     return function Game(initOptions) {
         if (!new.target) {
-            throw new Error('必须使用 new 运算来调用 Game 构造函数。')
+            throw new Error('必须使用 new 运算符来调用 Game 构造函数。')
         }
 
         const {
@@ -43,12 +43,18 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         console.log('【游戏】创建完毕。')
     }
 
-    function setFighter1(fighter) {
-        this.fighters.bothAttenders[0] = fighter
+    function setFighter(fighterCandidate, playerId) {
+        const game = this
+        const index = playerId
+        game.fighters.bothAttenders[index] = new GameRole(game, playerId, fighterCandidate)
     }
 
-    function setFighter2(fighter) {
-        this.fighters.bothAttenders[1] = fighter
+    function setFighter1(fighterCandidate) {
+        setFighter.call(this, fighterCandidate, 0)
+    }
+
+    function setFighter2(fighterCandidate) {
+        setFighter.call(this, fighterCandidate, 1)
     }
 
     function prepare() {

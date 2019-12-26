@@ -3,7 +3,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
 
     return function GameFightingStage(options) {
         if (!new.target) {
-            throw new Error('必须使用 new 运算来调用 GameFightingStage 构造函数。')
+            throw new Error('必须使用 new 运算符来调用 GameFightingStage 构造函数。')
         }
 
         // if (!(gameRound instanceof GameRound)) {

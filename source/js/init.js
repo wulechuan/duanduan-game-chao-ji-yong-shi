@@ -8,10 +8,10 @@ window.duanduanGameChaoJiYongShi = {
         // game: null,
     },
     async prepareAllGameRoleCandidates(roleConfigurations) {
-        const { GameRole } = this.classes
+        const { GameRoleCandidate } = this.classes
 
         this.data.allGameFighterCandidates = roleConfigurations.map(roleConfig => {
-            return new GameRole(roleConfig)
+            return new GameRoleCandidate(roleConfig)
         })
     },
     async prepareAllGameFightingStageCandidates(stageConfigurations) {

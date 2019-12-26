@@ -1,9 +1,12 @@
 window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
-    const { Game } = window.duanduanGameChaoJiYongShi.classes
+    const app = window.duanduanGameChaoJiYongShi
+    const { utils, classes, data: appData } = app
+    const { Game } = classes
+    const { allGameFightingStageCandidates } = appData
 
     return function GameRound(game) {
         if (!new.target) {
-            throw new Error('必须使用 new 运算来调用 GameRound 构造函数。')
+            throw new Error('必须使用 new 运算符来调用 GameRound 构造函数。')
         }
 
         if (!(game instanceof Game)) {
@@ -19,7 +22,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.isRunning = false
 
         this.fighters = {
-            both: game.fighters.both,
+            both: game.fighters.bothAttenders,
+
             winner: null,
             loser: null,
             winnerArrayIndex: NaN,
@@ -31,7 +35,18 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.start            = start           .bind(this)
         this.end              = end             .bind(this)
         this.annouceResult    = annouceResult   .bind(this)
+
+
+
+        init.call(this)
+
         console.log('【游戏局】创建完毕。')
+    }
+
+
+
+    function init() {
+
     }
 
     function start() {
