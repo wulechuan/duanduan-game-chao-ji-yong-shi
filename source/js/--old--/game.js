@@ -1,90 +1,4 @@
 ;(function () {
-    const stageCandidates = window.duanduanGameRoleChaoJiYongShi.data.stageCandidates
-    const roleCandidates  = window.duanduanGameRoleChaoJiYongShi.data.roleCandidates
-    const stageCandidatesCount = stageCandidates.length
-    const roleCandidatesCount  = roleCandidates .length
-
-    const healthyRanges = {
-        'role-is-healthy': 75,
-        'role-is-wounded': 30,
-        'role-is-dying': NaN,
-    }
-
-    const rolePoseCSSClassNames = [
-        'is-attacking',
-        'is-suffering',
-        'has-won',
-        'has-lost',
-    ]
-
-    const roleValueBarCSSClassName = 'role-value-bar'
-
-
-
-    // -----------------------------------------------------
-    const stage = {
-        el: {
-            root: null,
-        },
-        gamingSettings: {
-            candidateId: '',
-        },
-    }
-
-    const bothGamingRoles = [
-        {
-            el: {
-                // root: null,
-                // avatar: null,
-                // healthPointValueBar: null
-            },
-            gamingSettings: {
-                // imageFilesContainerFolderPath: '',
-                // fileNamesIndexingByCSSClassName: null,
-                // healthPointLimit: 0,
-                // healthPoint: 0,
-                // candidateId: '',
-                // candidateName: '',
-            },
-        },
-        {
-            el: {},
-            gamingSettings: {},
-        }
-    ]
-
-    const game = {
-        isRunningOneRound: false,
-        stage,
-        bothRoles: bothGamingRoles,
-        round: {
-            // attackerIdOfNextRound: 0,
-            // loserId: NaN,
-            // winnerId: NaN,
-        }
-    }
-
-
-    initGameApp()
-    setupOneGameAndStartIt()
-
-
-
-
-
-
-
-
-
-
-
-    // -------------------------------------------------
-    function initGameApp() {
-        initStage()
-        initBothRoles()
-        initSundries()
-    }
-
     function initStage() {
         stage.el.root = document.querySelector('.stage-background')
 
@@ -116,23 +30,6 @@
         })
     }
 
-    function initBothRoles() {
-        bothGamingRoles.forEach((role, i) => {
-            role.id = i
-            role.playerId = i + 1
-            initOneRole(role)
-        })
-    }
-
-    function initOneRole(role) {
-        const playerId = role.playerId
-        role.el.root = document.querySelector(`.role.role-${playerId}`)
-
-        const statusBlockDOM = document.querySelector(`.role-status-block.role-${playerId}`)
-        role.el.avatar = statusBlockDOM.querySelector(`.avatar`)
-        role.el.healthPointValueBar = statusBlockDOM.querySelector(`.${roleValueBarCSSClassName}`)
-    }
-
 
 
 
@@ -150,14 +47,6 @@
         gameRoundState.attackerIdOfNextRound = 0
         gameRoundState.loserId = NaN
         gameRoundState.winnerId = NaN
-
-        const stageCandidateIndexInArray = randomPositiveIntegerLessThan(stageCandidatesCount)
-        const role1CandidateIndexInArray = randomPositiveIntegerLessThan(roleCandidatesCount)
-        const role2CandidateIndexInArray = randomPositiveIntegerLessThan(roleCandidatesCount)
-
-        resetStageForOneGame(stageCandidateIndexInArray)
-        resetOneRoleForOneGame(bothGamingRoles[0], role1CandidateIndexInArray)
-        resetOneRoleForOneGame(bothGamingRoles[1], role2CandidateIndexInArray)
     }
     function setupOneGameEnd() {
         startOneGame()
