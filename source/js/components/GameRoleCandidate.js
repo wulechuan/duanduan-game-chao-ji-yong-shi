@@ -12,8 +12,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             fullHealthPoint,
             attackingPower,
             defencingPower,
-            avatarFileName,
-            fileNamesIndexingByCSSClassName,
+            images,
         } = options
 
         this.name = name
@@ -22,12 +21,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
         this.healthPoint = fullHealthPoint
         this.attackingPower = attackingPower
         this.defencingPower = defencingPower
-        this.images = {
-            avatar: {
-                fileName: avatarFileName,
-            },
-            poses: fileNamesIndexingByCSSClassName
-        }
+        this.images = images
 
         _init(this)
 
@@ -41,16 +35,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
 
     function createDOMs(gameRoleCandidate) {
         const {
-            playerId,
-            typeIdInFilePathAndCSSClassName,
+            // playerId,
+            // typeIdInFilePathAndCSSClassName,
+            images,
         } = gameRoleCandidate
 
         const rootElement = document.createElement('div')
         rootElement.className = [
-            `player-${playerId}`,
+            // `player-${playerId}`,
             'role-candidate',
-            `role-candidate-${typeIdInFilePathAndCSSClassName}`,
+            // `role-candidate-${typeIdInFilePathAndCSSClassName}`,
         ].join(' ')
+
+        rootElement.style.backgroundImage = `url(${images.poses['default'].filePath})`
         
         gameRoleCandidate.el = {
             root: rootElement,

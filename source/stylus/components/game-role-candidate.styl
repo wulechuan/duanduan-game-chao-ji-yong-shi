@@ -1,0 +1,30 @@
+.role-candidates-slot {
+    width: 400px
+    height @width
+    position absolute
+    top 50%
+    margin-top: -0.5 * @height
+    margin-left: 100px
+    margin-right: @margin-left
+    overflow: hidden
+
+    &.player-1 {
+        left 50px    
+    }
+
+    &.player-2 {
+        right 50px
+    }
+}
+
+.role-candidate {
+    position absolute
+    left 0
+    width: 100%
+    height 100%
+    background-size: contain
+}
+
+.player-2 .role-candidate {
+    transform: scaleX(-1)
+}

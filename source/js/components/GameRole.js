@@ -1,4 +1,6 @@
 window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
+    const createElement = document.createElement.bind(document)
+
     const gameRoleAllPossiblePoseCSSClassNames = [
         'is-attacking',
         'is-suffering',
@@ -8,19 +10,24 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
     const app = window.duanduanGameChaoJiYongShi
-    const { Game, GameRoleCandidate } = app.classes
 
     return function GameRole(game, playerId, gameRoleCandidate) {
+        const { Game, GameRoleCandidate } = app.classes
+
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRole 构造函数。')
         }
 
         if (!(game instanceof Game)) {
-            throw new TypeError('创建【游戏局】时，必须指明其应隶属于哪个【游戏】。')
+            throw new TypeError('创建【游戏角色】时，必须指明其应隶属于哪个【游戏】。')
         }
 
-        if (!game.isRunning) {
-            throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏局】。')
+        if (game.status.isRunningOneRound) {
+            throw new Error('【游戏】已经开始。不能为已经开始的【游戏】创建【游戏角色】。')
+        }
+
+        if (game.status.isOver) {
+            throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏角色】。')
         }
 
         if (!(gameRoleCandidate instanceof GameRoleCandidate)) {
@@ -64,22 +71,22 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
     function _init(gameRole) {
-
+        _createDOMs(gameRole)
     }
-    
-    function createDOMs(gameRole) {
+
+    function _createDOMs(gameRole) {
         const {
             playerId,
             typeIdInFilePathAndCSSClassName,
         } = gameRole
 
-        const rootElement = document.createElement('div')
+        const rootElement = createElement('div')
         rootElement.className = [
             `player-${playerId}`,
-            'role-candidate',
+            'role',
             `role-candidate-${typeIdInFilePathAndCSSClassName}`,
         ].join(' ')
-        
+
         gameRole.el = {
             root: rootElement,
         }
@@ -122,7 +129,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         game.end({ loser: this })
     }
 
-    
+
     function setPose(poseCSSClassNameToApply) {
         const gameRole = this
 

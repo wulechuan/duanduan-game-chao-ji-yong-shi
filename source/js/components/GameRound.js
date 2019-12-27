@@ -1,12 +1,14 @@
 window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
+    const createElement = document.createElement.bind(document)
+
     const app = window.duanduanGameChaoJiYongShi
     const { utils, classes, data: appData } = app
 
     const { randomPositiveIntegerLessThan } = utils
-    const { Game } = classes
-    const { allGameFightingStageCandidates } = appData
+    
+    return function GameRound(game, gameRoundIndex) {
+        const { Game } = classes
 
-    return function GameRound(game) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRound 构造函数。')
         }
@@ -15,28 +17,35 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             throw new TypeError('创建【游戏局】时，必须指明其应隶属于哪个【游戏】。')
         }
 
-        if (!game.isRunning) {
+        if (game.status.isRunningOneRound) {
+            throw new Error('【游戏】已经开始。不能为已经开始的【游戏】创建【游戏局】。')
+        }
+
+        if (game.status.isOver) {
             throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏局】。')
         }
 
         this.game = game
+        this.gameRoundIndex = gameRoundIndex
 
-        this.isRunning = false
 
         this.fighters = {
             both: game.fighters.bothAttenders,
-
             winner: null,
             loser: null,
             winnerArrayIndex: NaN,
             loserArrayIndex: NaN,
         }
 
-        this.fightingStage = game.fightingStage
+        this.status = {
+            isRunning: false,
+            isOver: false,
+        }
 
         this.start            = start           .bind(this)
         this.end              = end             .bind(this)
         this.annouceResult    = annouceResult   .bind(this)
+        
 
         _init(this)
 
@@ -46,27 +55,80 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
     function _init(gameRound) {
-        _chooseGameFightingStage(gameRound)
-        _createDOMs(gameRound)
+        _createStage(gameRound)
+        _createRoundStatusBar(gameRound)
+        _createMoreDOMs(gameRound)
     }
 
-    function _chooseGameFightingStage(gameRound) {
-        const stageIndex = randomPositiveIntegerLessThan(allGameFightingStageCandidates.length)
-        const chosenStage = allGameFightingStageCandidates[stageIndex]
-        console.log('chosenStage', chosenStage)
+    function _createStage(gameRound) {
+        const { GameFightingStage } = classes
+        const stageConfigs = gameRound.game.allGameFightingStageConfigurations
+        const chosenStageConfig = stageConfigs[randomPositiveIntegerLessThan(stageConfigs.length)]
+        gameRound.stage = new GameFightingStage(chosenStageConfig)
     }
 
-    function _createDOMs(gameRound) {
-
+    function _createRoundStatusBar(gameRound) {
+        const { GameRoundStatusBlock } = classes
+        gameRound.statusBlock = new GameRoundStatusBlock(gameRound)
     }
 
-    function start() {
+    function _createMoreDOMs(gameRound) {
+        const { gameRoundIndex } = gameRound
+
+        const [ fighter1, fighter2 ] = gameRound.fighters.both
+
+        const fighter1RootElement = fighter1.el.root
+        const fighter2RootElement = fighter2.el.root
+        const stageRootElement = gameRound.stage.el.root
+        const gameRoundStatusBlockRootElement = gameRound.statusBlock.el.root
+
+
+        const rootElement = createElement('div')
+        rootElement.className = [
+            'game-round',
+            `game-round-${gameRoundIndex}`,
+        ].join(' ')
+
+        const fightersElement = createElement('div')
+        fightersElement.className = [
+            'fighters',
+        ].join(' ')
+
+        fightersElement.appendChild(fighter1RootElement)
+        fightersElement.appendChild(fighter2RootElement)
+
+        rootElement.appendChild(stageRootElement)
+        rootElement.appendChild(fightersElement)
+        rootElement.appendChild(gameRoundStatusBlockRootElement)
+        
+        gameRound.el = {
+            root: rootElement,
+            stage: stageRootElement,
+            fighter1: fighter1RootElement,
+            fighter2: fighter2RootElement,
+        }
+    }
+
+    async function start() {
         console.log('【游戏局】开始。')
-        this.isRunning = true
+        this.status.isRunning = true
+
+        console.warn('虚假逻辑开始。')
+        await new Promise(resolve => {
+            const ms = Math.floor(Math.random() * 4567)
+            setTimeout(() => {
+                console.log(`游戏耗时：${ms}ms`)
+                resolve()
+            }, ms)
+        })
+        console.warn('虚假逻辑结束。')
+
+        this.end({ loser: this.fighters.both[0] })
     }
 
     function end(options) {
-        this.isRunning = false
+        this.status.isRunning = false
+        this.status.isOver = true
         console.log('【游戏局】结束。')
 
         const { loser } = options

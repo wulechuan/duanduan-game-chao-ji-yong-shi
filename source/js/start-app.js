@@ -3,8 +3,7 @@
     const { data } = app
 
     Promise.all([
-        app.prepareAllGameRoleCandidatesForPlayer(1, data.allGameRoleConfigurations),
-        app.prepareAllGameRoleCandidatesForPlayer(2, data.allGameRoleConfigurations),
+        app.prepareAllGameRoleCandidatesForBothPlayers(data.allGameRoleRawConfigurations),
         app.prepareAllGameFightingStageCandidates(data.allGameFightingStageConfigurations),
     ]).then(() => {
         app.createNewGameAndRunIt()

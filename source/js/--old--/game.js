@@ -54,7 +54,7 @@
     ]
 
     const game = {
-        isRunning: false,
+        isRunningOneRound: false,
         stage,
         bothRoles: bothGamingRoles,
         round: {
@@ -110,7 +110,7 @@
         vsIcon.addEventListener('click', function (event) {
             event.stopPropagation()
 
-            if (!game.isRunning) {
+            if (!game.isRunningOneRound) {
                 setupOneGameAndStartIt()
             }
         })
@@ -208,7 +208,7 @@
     }
 
     function startOneGame() {
-        game.isRunning = true
+        game.isRunningOneRound = true
 
         bothGamingRoles.forEach(role => {
             setRolePose(role, '')
@@ -231,7 +231,7 @@
             console.log('双方平局。')
         }
 
-        game.isRunning = false
+        game.isRunningOneRound = false
         console.log('游戏结束。\n\n\n')
     }
 
@@ -315,7 +315,7 @@
     }
 
     function oneGameRound() {
-        if (!game.isRunning) {
+        if (!game.isRunningOneRound) {
             return
         }
 
@@ -337,7 +337,7 @@
         updateHealthPointForRole(defencer, decreases[0])
         updateHealthPointForRole(attacker, decreases[1])
 
-        if (!game.isRunning) {
+        if (!game.isRunningOneRound) {
             return
         }
 
@@ -374,7 +374,7 @@
     }
 
     function updateHealthPointForRole(role, healthPointDecrease) {
-        if (!game.isRunning) {
+        if (!game.isRunningOneRound) {
             return
         }
 
