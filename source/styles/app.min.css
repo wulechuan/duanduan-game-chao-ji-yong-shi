@@ -1,0 +1,1 @@
+.role{width:30rem;height:30rem;position:absolute;top:6rem;background-repeat:no-repeat;background-size:contain;background-position:50%;z-index:5}.role.is-attacking{z-index:6}.role.has-lost{opacity:.6;filter:grayscale(.8)}.role.role-1{left:2rem}.role.role-2{transform:scaleX(-1);right:2rem}

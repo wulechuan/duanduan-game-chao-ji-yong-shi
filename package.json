@@ -1,0 +1,20 @@
+{
+  "name": "@wulechuan/game-duanduan-chao-ji-yong-shi",
+  "version": "0.1.0",
+  "author": "wulechuan@live.com",
+  "license": "ISC",
+  "description": "我给端儿做的小游戏",
+  "main": "gulpfile.esm.js",
+  "scripts": {
+    "start": "gulp"
+  },
+  "private": true,
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "@wulechuan/gulp-classical-task-cycle": "^0.2.2",
+    "cssnano": "^4.1.10",
+    "esm": "^3.2.25",
+    "gulp-postcss": "^8.0.0",
+    "gulp-stylus": "^2.7.0"
+  }
+}
