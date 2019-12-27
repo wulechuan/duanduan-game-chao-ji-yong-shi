@@ -39,14 +39,17 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
     function _createDOMs(stage) {
         const {
             typeIdInFilePathAndCSSClassName,
+            imageFilePath,
         } = stage
 
         const rootElement = document.createElement('div')
         rootElement.className = [
-            'stage',
-            `stage-${typeIdInFilePathAndCSSClassName}`,
+            'fighting-stage',
+            `fighting-stage-${typeIdInFilePathAndCSSClassName}`,
         ].join(' ')
-        
+
+        rootElement.style.backgroundImage = `url(${imageFilePath})`
+
         stage.el = {
             root: rootElement,
         }

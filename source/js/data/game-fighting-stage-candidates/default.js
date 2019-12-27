@@ -3,7 +3,7 @@ window.duanduanGameChaoJiYongShi.data.allGameFightingStageRawConfigurations = {
         filePathsPrefix: './images/game-stages',
     },
     items: [
-        { typeIdInFilePathAndCSSClassName: '1',  name: '日本街头' },
+        { typeIdInFilePathAndCSSClassName: '1',  name: '日本街头', fileExt: 'jpg' },
         { typeIdInFilePathAndCSSClassName: '2',  name: '故宫' },
         { typeIdInFilePathAndCSSClassName: '3',  name: '海滨' },
         { typeIdInFilePathAndCSSClassName: '4',  name: '高山' },

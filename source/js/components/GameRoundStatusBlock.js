@@ -52,7 +52,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundStatusBlock = (function () {
 
         const versusIconElement = createElement('div')
         versusIconElement.className = [
-            'icon-vs',
+            'icon-versus',
         ].join(' ')
 
 

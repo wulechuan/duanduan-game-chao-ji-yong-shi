@@ -78,6 +78,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const {
             playerId,
             typeIdInFilePathAndCSSClassName,
+            images: {
+                poses,
+            },
         } = gameRole
 
         const rootElement = createElement('div')
@@ -86,6 +89,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             'role',
             `role-candidate-${typeIdInFilePathAndCSSClassName}`,
         ].join(' ')
+
+        rootElement.style.backgroundImage = `url(${poses['default'].filePath})`
+
 
         gameRole.el = {
             root: rootElement,

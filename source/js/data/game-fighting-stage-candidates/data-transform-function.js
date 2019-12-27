@@ -1,6 +1,7 @@
 window.duanduanGameChaoJiYongShi.data.allGameFightingStageConfigurationTransformFunction = (rawConfig, commonConfig) => {
     const {
         filePathsPrefix,
+        fileExt,
     } = commonConfig
 
     const {
@@ -9,7 +10,7 @@ window.duanduanGameChaoJiYongShi.data.allGameFightingStageConfigurationTransform
     } = rawConfig
 
     const filePathsPrefixOfThisRole = `${filePathsPrefix}`
-    const imageFilePath = `${filePathsPrefixOfThisRole}/stage-${typeIdInFilePathAndCSSClassName}.png`
+    const imageFilePath = `${filePathsPrefixOfThisRole}/stage-${typeIdInFilePathAndCSSClassName}.${fileExt || 'jpg'}`
 
     const transformedConfig = {
         name,

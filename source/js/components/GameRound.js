@@ -114,10 +114,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.status.isRunning = true
 
         console.warn('虚假逻辑开始。')
+        const ms = Math.floor(Math.random() * 13579 + 2468)
+        console.log(`等待：${ms}ms`)
         await new Promise(resolve => {
-            const ms = Math.floor(Math.random() * 4567)
             setTimeout(() => {
-                console.log(`游戏耗时：${ms}ms`)
+                // console.log(`游戏耗时：${ms}ms`)
                 resolve()
             }, ms)
         })

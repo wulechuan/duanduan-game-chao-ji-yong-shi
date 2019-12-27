@@ -1,5 +1,12 @@
 window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function () {
     const createElement = document.createElement.bind(document)
+    
+    const fighterHealthyRanges = {
+        'role-is-healthy': 75,
+        'role-is-wounded': 30,
+        'role-is-dying': NaN,
+    }
+
 
     const app = window.duanduanGameChaoJiYongShi
     const { classes } = app
@@ -30,6 +37,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
 
     function _init(fighterStatusBar) {
         _createDOMs(fighterStatusBar)
+        fighterStatusBar.setFighterHPBar(100)
     }
     
     function _createDOMs(fighterStatusBar) {
@@ -47,6 +55,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
         avatarElement.className = [
             'avatar',
         ].join(' ')
+
+        avatarElement.style.backgroundImage = `url(${fighter.images.avatar.filePath})`
 
         const hpBarContainerElement = createElement('div')
         hpBarContainerElement.className = [
@@ -67,8 +77,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
 
         hpBarElement.appendChild(hpElement)
         hpBarContainerElement.appendChild(hpBarElement)
-        rootElement.appendChild(hpBarContainerElement)
         rootElement.appendChild(avatarElement)
+        rootElement.appendChild(hpBarContainerElement)
 
         fighterStatusBar.el = {
             root: rootElement,
@@ -80,10 +90,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
 
     function setFighterHPBar(percentage) {
         const {
-            hpBar,
+            // hpBar,
             hp,
         } = this.el
 
         hp.style.width = `${percentage}%`
+
+        hp.className = `hp `
+        if (percentage >= fighterHealthyRanges['role-is-healthy']) {
+            hp.className += 'role-is-healthy'
+        } else if (percentage >= fighterHealthyRanges['role-is-wounded']) {
+            hp.className += 'role-is-wounded'
+        } else {
+            hp.className += 'role-is-dying'
+        }
     }
 })();
