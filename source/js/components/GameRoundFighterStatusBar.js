@@ -31,7 +31,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
 
         _init.call(this)
 
-        console.log(`“${fighter.name}”的【游戏局斗士血条】创建完毕。`)
+        console.log(`“${fighter.data.name}”的【游戏局斗士血条】创建完毕。`)
     }
 
 

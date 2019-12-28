@@ -37,7 +37,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
         this.game = game
-        this.playerId = playerId
 
         const {
             name,
@@ -49,6 +48,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         } = gameRoleCandidate.data
 
         this.data = {
+            playerId,
             name,
             typeIdInFilePathAndCSSClassName,
             fullHealthPoint,
@@ -126,8 +126,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function die() {
-        const { game } = this
-        game.end({ loser: this })
+        console.warn('有问题的代码')
+        this.game.end({ loser: this })
     }
 
 

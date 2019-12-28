@@ -15,7 +15,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         this.subComponents = {
             uiScreens: {},
-            uiParts: {},
+            parts: {},
         }
 
         this.data = {
@@ -26,6 +26,12 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 finalWinner: null,
                 finalLoser: null,
                 winningPlayerId: NaN,
+            },
+            gameRounds: {
+                minWinningRoundsPerPlayer: NaN,
+                maxRoundsToRun: NaN,
+                history: [],
+                current: null,
             },
         }
 
@@ -65,8 +71,8 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         const { GameRunningScreen } = classes
         const gameRunningScreen = new GameRunningScreen(this, initOptions)
 
-        this.data.gameRounds = gameRunningScreen.data.gameRounds
         this.subComponents.uiScreens.gameRunningScreen = gameRunningScreen
+        this.subComponents.parts.gameRoundsRunner = gameRunningScreen.provideGameRoundsRunner()
     }
 
     function _queryAndSetupMoreDOMs() {
@@ -83,19 +89,24 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     async function start() {
         const {
-            fightersPickingScreen,
-            gameRunningScreen,
-        } = this.subComponents.uiScreens
+            uiScreens: {
+                fightersPickingScreen,
+                gameRunningScreen,
+            },
+            parts: {
+                gameRoundsRunner,
+            },
+        } = this.subComponents
 
-        fightersPickingScreen.showUp()
         gameRunningScreen.hide()
+        fightersPickingScreen.showUp()
 
         await fightersPickingScreen.pickFightersForBothPlayers()
 
         fightersPickingScreen.leaveAndHide()
         gameRunningScreen.showUp()
 
-        gameRunningScreen.start()
+        gameRoundsRunner.createAndStartNewRound()
     }
 
     function end() {

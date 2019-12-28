@@ -27,6 +27,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         }
 
         this.game = game
+        this.gameRoundsRunner = game.subComponents.parts.gameRoundsRunner
 
         this.subComponents = {}
 
@@ -47,11 +48,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             isOver: false,
         }
 
-        this.start            = start           .bind(this)
-        this.end              = end             .bind(this)
-        this.annouceResult    = annouceResult   .bind(this)
-        this.showUp           = showUp          .bind(this)
-        this.leaveAndHide     = leaveAndHide    .bind(this)
+        this.start         = start        .bind(this)
+        this.end           = end          .bind(this)
+        this.annouceResult = annouceResult.bind(this)
+        this.showUp        = showUp       .bind(this)
+        this.leaveAndHide  = leaveAndHide .bind(this)
         
 
         _init.call(this)
@@ -62,9 +63,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
     function _init() {
-        _createFightingStage       .call(this)
-        _createGameRoundStatusBlock.call(this)
-        _createMoreDOMs            .call(this)
+        _createFightingStageRandomly.call(this)
+        _createGameRoundStatusBlock .call(this)
+        _createMoreDOMs             .call(this)
         this.el.root.style.display = 'none'
     }
     
@@ -84,11 +85,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         })
     }
 
-    function _createFightingStage() {
-        const { GameFightingStage } = classes
+    function _createFightingStageRandomly() {
         const stageConfigs = this.game.data.allGameFightingStageConfigurations
         const chosenStageConfig = stageConfigs[randomPositiveIntegerLessThan(stageConfigs.length)]
-        this.subComponents.fightingStage = new GameFightingStage(chosenStageConfig)
+        _createFightingStage.call(this, chosenStageConfig)
+    }
+
+    function _createFightingStage(stageConfig) {
+        const { GameFightingStage } = classes
+        this.subComponents.fightingStage = new GameFightingStage(stageConfig)
     }
 
     function _createGameRoundStatusBlock() {
@@ -166,13 +171,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         }
 
         this.annouceResult()
-        this.game.endCurrentRound()
+        this.gameRoundsRunner.endCurrentRound()
     }
 
     function annouceResult() {
         const { winner, loser } = this.data.fighters
-        console.log('Winner:', winner.name)
-        console.log('Loser:',  loser.name)
+        console.log('胜者：', winner.data.name)
+        console.log('败者：',  loser.data.name)
     }
 
     function leaveAndHide() {
