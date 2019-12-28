@@ -2,6 +2,9 @@ window.duanduanGameChaoJiYongShi.utils = (function () {
     const createElement = document.createElement.bind(document)
 
     return {
+        randomFloatBetween(m, n) {
+            return Math.random() * ( m - n ) + n
+        },
         randomPositiveIntegerLessThan(limit) {
             return Math.floor(Math.random() * limit)
         },
