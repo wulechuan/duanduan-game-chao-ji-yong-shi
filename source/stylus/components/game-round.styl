@@ -8,4 +8,36 @@
     left 0
     right 0
     bottom 0
+
+    &.entering {
+        animation game-round-entering 0.4s ease-out
+    }
+
+    &.leaving {
+        animation game-round-leaving 0.4s ease-in
+    }
+
+    @keyframes game-round-entering {
+        0% {
+            transform translateY(-110%) scale(0.79)
+            opacity 0
+        }
+
+        to {
+            transform none
+            opacity 1
+        }
+    }
+
+    @keyframes game-round-leaving {
+        0% {
+            transform none
+            opacity 1
+        }
+
+        to {
+            transform translateY(110%) scale(0.79)
+            opacity 0
+        }
+    }
 }

@@ -105,6 +105,92 @@
   right:0;
   bottom:0;
 }
+.game-round.entering{
+  animation:game-round-entering 0.4s ease-out;
+}
+.game-round.leaving{
+  animation:game-round-leaving 0.4s ease-in;
+}
+@-moz-keyframes game-round-entering{
+  0%{
+    transform:translateY(-110%) scale(0.79);
+    opacity:0;
+  }
+  to{
+    transform:none;
+    opacity:1;
+  }
+}
+@-webkit-keyframes game-round-entering{
+  0%{
+    transform:translateY(-110%) scale(0.79);
+    opacity:0;
+  }
+  to{
+    transform:none;
+    opacity:1;
+  }
+}
+@-o-keyframes game-round-entering{
+  0%{
+    transform:translateY(-110%) scale(0.79);
+    opacity:0;
+  }
+  to{
+    transform:none;
+    opacity:1;
+  }
+}
+@keyframes game-round-entering{
+  0%{
+    transform:translateY(-110%) scale(0.79);
+    opacity:0;
+  }
+  to{
+    transform:none;
+    opacity:1;
+  }
+}
+@-moz-keyframes game-round-leaving{
+  0%{
+    transform:none;
+    opacity:1;
+  }
+  to{
+    transform:translateY(110%) scale(0.79);
+    opacity:0;
+  }
+}
+@-webkit-keyframes game-round-leaving{
+  0%{
+    transform:none;
+    opacity:1;
+  }
+  to{
+    transform:translateY(110%) scale(0.79);
+    opacity:0;
+  }
+}
+@-o-keyframes game-round-leaving{
+  0%{
+    transform:none;
+    opacity:1;
+  }
+  to{
+    transform:translateY(110%) scale(0.79);
+    opacity:0;
+  }
+}
+@keyframes game-round-leaving{
+  0%{
+    transform:none;
+    opacity:1;
+  }
+  to{
+    transform:translateY(110%) scale(0.79);
+    opacity:0;
+  }
+}
 .game-round-status-block{
   position:absolute;
   width:100%;

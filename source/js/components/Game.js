@@ -244,14 +244,27 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         const game = this
         const {
             gameRounds,
+            gameRounds: {
+                history: historicalGameRounds,
+            },
         } = game
 
+        const historicalGameRoundsCount = historicalGameRounds.length
 
-        const gameRoundIndex = gameRounds.history.length + 1
-        const newGameRound = new GameRound(game, gameRoundIndex)
+        const lastRunGameRound = historicalGameRounds[historicalGameRoundsCount - 1]
+
+        const displayingIndexOfNewGameRound = historicalGameRoundsCount + 1
+        const newGameRound = new GameRound(game, displayingIndexOfNewGameRound)
         gameRounds.current = newGameRound
 
         game.el.gameRoundsContainer.appendChild(newGameRound.el.root)
+
+
+        if (lastRunGameRound instanceof GameRound) {
+            lastRunGameRound.leaveAndHide()
+        }
+
+        newGameRound.showUp()
     }
 
     function _startCurrentRound() {

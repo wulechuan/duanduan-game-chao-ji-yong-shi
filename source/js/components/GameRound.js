@@ -46,6 +46,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.start            = start           .bind(this)
         this.end              = end             .bind(this)
         this.annouceResult    = annouceResult   .bind(this)
+        this.showUp           = showUp          .bind(this)
+        this.leaveAndHide     = leaveAndHide    .bind(this)
         
 
         _init(this)
@@ -59,6 +61,23 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         _createStage(gameRound)
         _createRoundStatusBar(gameRound)
         _createMoreDOMs(gameRound)
+        gameRound.el.root.style.display = 'none'
+    }
+    
+    function showUp() {
+        const rootElement = this.el.root
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                rootElement.style.display = ''
+        
+                rootElement.classList.add('entering')
+                rootElement.onanimationend = function () {
+                    rootElement.classList.remove('entering')
+                    rootElement.onanimationend = null
+                }
+            }, 200)
+        })
     }
 
     function _createStage(gameRound) {
@@ -156,5 +175,16 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const { winner, loser } = this.fighters
         console.log('Winner:', winner.name)
         console.log('Loser:',  loser.name)
+    }
+
+    function leaveAndHide() {
+        const rootElement = this.el.root
+
+        rootElement.classList.add('leaving')
+        rootElement.onanimationend = function () {
+            rootElement.style.display = 'none'
+            rootElement.classList.remove('leaving')
+            rootElement.onanimationend = null
+        }
     }
 })();
