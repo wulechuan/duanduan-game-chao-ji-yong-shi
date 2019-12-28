@@ -11,7 +11,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
     const { createDOMWithClassNames } = utils
 
     
-    return function GameRoundFighterStatusBar(playerId, fighter) {
+    return function GameRoundFighterStatusBar(fighter) {
         const { GameRole } = classes
 
         if (!new.target) {
@@ -23,7 +23,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
         }
 
         this.data = {
-            playerId,
             fighter,
         }
 
@@ -46,9 +45,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
             fighter,
         } = this.data
 
+        const fighterData = fighter.data
+
         const rootElement = createDOMWithClassNames('div', [
             'role-status-bar',
-            `player-${fighter.playerId}`,
+            `player-${fighterData.playerId}`,
         ])
 
         const hpBarContainerElement = createDOMWithClassNames('div', [
@@ -67,7 +68,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
             'avatar',
         ])
 
-        avatarElement.style.backgroundImage = `url(${fighter.data.images.avatar.filePath})`
+        avatarElement.style.backgroundImage = `url(${fighterData.images.avatar.filePath})`
 
 
         hpBarElement.appendChild(hpElement)

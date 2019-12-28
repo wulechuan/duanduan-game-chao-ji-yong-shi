@@ -29,6 +29,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             images,
         }
 
+        this.showUp       = showUp      .bind(this)
+        this.leaveAndHide = leaveAndHide.bind(this)
+
         _init.call(this)
 
         console.log(`【游戏角色候选人】“${name}”创建完毕。`)
@@ -59,5 +62,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
         this.el = {
             root: rootElement,
         }
+    }
+
+    function showUp() {
+        const rootElement = this.el.root
+        rootElement.style.display = ''
+    }
+
+    function leaveAndHide() {
+        const rootElement = this.el.root
+        rootElement.style.display = 'none'
     }
 })();

@@ -22,10 +22,14 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         this.game = game
         this.subComponents = {}
         this.data = {}
-        this.status = {}
+        this.status = {
+            fighter1HasDecided: false,
+            fighter2HasDecided: false,
+        }
 
 
         this.pickFightersForBothPlayers = pickFightersForBothPlayers.bind(this)
+        this.onEitherFighterDecided     = onEitherFighterDecided    .bind(this)
         this.showUp                     = showUp                    .bind(this)
         this.hide                       = hide                      .bind(this)
         this.leaveAndHide               = leaveAndHide              .bind(this)
@@ -68,44 +72,58 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         }
     }
 
-    async function pickFightersForBothPlayers() {
+    function pickFightersForBothPlayers() {
         const {
             fighterPickers,
         } = this.subComponents
 
         fighterPickers.forEach(fp => fp.startPickingFighter())
-
-        console.warn('虚假逻辑开始。')
-        function fakePickingFighter(playerId, fighterPicker) {
-            const ms = Math.floor(Math.random() * 4000)
-
-            return new Promise(resolve => {
-                const fighterRoleConfig = fighterPicker.decideFighter()
-
-                setTimeout(() => {
-                    console.log(`${playerId}: ${ms}ms`)
-                    resolve(fighterRoleConfig)
-                }, ms)
-            })
-        }
-
-        const fighterRoleConfigs = await Promise.all(fighterPickers.map((fp, i) => {
-            return fakePickingFighter(i + 1, fp)
-        }))
-
-        console.warn('虚假逻辑结束。')
-
-        this.game.data.pickedFighterRoleConfigurations.both = fighterRoleConfigs
     }
 
     function showUp() {
-        const rootElement = this.el.root
-        rootElement.style.display = ''
+        this.el.root.style.display = ''
+        
+        setTimeout(() => {
+            const pickingScreen = this
+            const [
+                fighterPickerForPlayer1,
+                fighterPickerForPlayer2,
+            ] = this.subComponents.fighterPickers
+
+            window.onkeydown = e => {
+                const { key } = e
+                console.log('key:', key, 'keyCode', e.keyCode)
+
+                switch (key) {
+                    case 'z':
+                        pickingScreen.onEitherFighterDecided(0, fighterPickerForPlayer1.stopRollingRoles())
+                        break
+
+                    case '/':
+                        pickingScreen.onEitherFighterDecided(1, fighterPickerForPlayer2.stopRollingRoles())
+                        break
+                }
+            }
+        }, 800)
     }
 
     function hide() {
+        window.onkeydown = null
         const rootElement = this.el.root
         rootElement.style.display = 'none'
+    }
+
+    function onEitherFighterDecided(arrayIndex, decidedFighterRoleConfig) {
+        const pickedFighterRoleConfigs = this.game.data.pickedFighterRoleConfigurations.both
+
+        pickedFighterRoleConfigs[arrayIndex] = decidedFighterRoleConfig
+
+        const { status } = this
+        status[`fighter${arrayIndex + 1}HasDecided`] = true
+
+        if (status.fighter1HasDecided && status.fighter2HasDecided) {
+            this.game.start()
+        }
     }
 
     function leaveAndHide() {

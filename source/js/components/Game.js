@@ -22,7 +22,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             allGameFighterCandidatesForBothPlayers,
             allGameFightingStageConfigurations,
             pickedFighterRoleConfigurations: {
-                both: null,
+                both: [],
                 finalWinnerRoleConfig: null,
                 finalLoserRoleConfig: null,
                 winningPlayerId: NaN,
@@ -44,8 +44,9 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         }
 
 
-        this.start = start.bind(this)
-        this.end   = end  .bind(this)
+        this.prepare = prepare.bind(this)
+        this.start   = start  .bind(this)
+        this.end     = end    .bind(this)
 
         _init.call(this, initOptions)
 
@@ -87,7 +88,21 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
 
-    async function start() {
+    function prepare() {
+        const {
+            uiScreens: {
+                fightersPickingScreen,
+                gameRunningScreen,
+            },
+        } = this.subComponents
+        
+        gameRunningScreen.hide()
+        fightersPickingScreen.showUp()
+        
+        fightersPickingScreen.pickFightersForBothPlayers()
+    }
+
+    function start() {
         const {
             uiScreens: {
                 fightersPickingScreen,
@@ -97,11 +112,6 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 gameRoundsRunner,
             },
         } = this.subComponents
-
-        gameRunningScreen.hide()
-        fightersPickingScreen.showUp()
-
-        await fightersPickingScreen.pickFightersForBothPlayers()
 
         fightersPickingScreen.leaveAndHide()
         gameRunningScreen.showUp()

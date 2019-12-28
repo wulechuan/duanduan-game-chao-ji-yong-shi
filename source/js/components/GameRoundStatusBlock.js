@@ -35,8 +35,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundStatusBlock = (function () {
 
     function _createStatusBarForBothFighters() {
         const { GameRoundFighterStatusBar } = classes
-        this.subComponents.fighterStatusBars = this.gameRound.data.fighters.both.map((fighter, index) => {
-            return new GameRoundFighterStatusBar(index + 1, fighter)
+        this.subComponents.fighterStatusBars = this.gameRound.data.fighters.both.map(fighter => {
+            return new GameRoundFighterStatusBar(fighter)
         })
     }
 

@@ -102,6 +102,6 @@ window.duanduanGameChaoJiYongShi = {
 
         appData.game = game
 
-        game.start()
+        game.prepare()
     },
 }
