@@ -80,27 +80,22 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
             const ms = Math.floor(Math.random() * 4000)
 
             return new Promise(resolve => {
-                const fighterCandidate = fighterPicker.decideFighter()
+                const fighterRoleConfig = fighterPicker.decideFighter()
 
                 setTimeout(() => {
-                    console.log(`${playerId}: ${ms}ms`, )
-                    resolve(fighterCandidate)
+                    console.log(`${playerId}: ${ms}ms`)
+                    resolve(fighterRoleConfig)
                 }, ms)
             })
         }
 
-        const fighterCandidates = await Promise.all(fighterPickers.map((fp, i) => {
+        const fighterRoleConfigs = await Promise.all(fighterPickers.map((fp, i) => {
             return fakePickingFighter(i + 1, fp)
         }))
 
-        const bothFighters = fighterCandidates.map((fc, i) => {
-            const { GameRole } = classes
-            return new GameRole(this.game, i + 1, fc)
-        })
-
         console.warn('虚假逻辑结束。')
 
-        this.game.data.fighters.both = bothFighters
+        this.game.data.pickedFighterRoleConfigurations.both = fighterRoleConfigs
     }
 
     function showUp() {

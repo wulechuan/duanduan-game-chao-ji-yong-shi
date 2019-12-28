@@ -18,7 +18,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             fighter: {
                 candidates: gameRoleCandidates,
                 arrayIndexOfCurrentCandidate: 0,
-                decidedFighter: null,
+                decidedCandidate: null,
+                decidedRoleConfig: null,
             },
         }
 
@@ -103,8 +104,13 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
     function decideFighter() {
         const { fighter } = this.data
-        fighter.decidedFighter = fighter.candidates[fighter.arrayIndexOfCurrentCandidate]
+        const decidedCandidate = fighter.candidates[fighter.arrayIndexOfCurrentCandidate]
+
+        fighter.decidedCandidate  = decidedCandidate
+        fighter.decidedRoleConfig = decidedCandidate.roleConfig
+
         this.status.fighterHasDecided = true
-        return fighter.decidedFighter
+
+        return fighter.decidedRoleConfig
     }
 })();

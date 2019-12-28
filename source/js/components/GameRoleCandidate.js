@@ -3,7 +3,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
     const { utils } = app
     const { createDOMWithClassNames } = utils
 
-    return function GameRoleCandidate(playerId, options) {
+    return function GameRoleCandidate(playerId, roleConfig) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRoleCandidate 构造函数。')
         }
@@ -15,7 +15,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             attackingPower,
             defencingPower,
             images,
-        } = options
+        } = roleConfig
+
+        this.roleConfig = roleConfig
 
         this.data = {
             playerId,

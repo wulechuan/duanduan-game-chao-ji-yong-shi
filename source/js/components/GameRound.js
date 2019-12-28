@@ -6,7 +6,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         randomPositiveIntegerLessThan,
         createDOMWithClassNames,
     } = utils
-    
+
     return function GameRound(game, gameRoundNumber) {
         const { Game } = classes
 
@@ -33,11 +33,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         this.data = {
             gameRoundNumber,
-    
+
             fighters: {
-                both: game.data.fighters.both,
+                both: null,
                 winner: null,
                 loser: null,
+                winnerRoleConfig: null,
+                loserRoleConfig: null,
                 winnerArrayIndex: NaN,
                 loserArrayIndex: NaN,
             },
@@ -53,7 +55,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.annouceResult = annouceResult.bind(this)
         this.showUp        = showUp       .bind(this)
         this.leaveAndHide  = leaveAndHide .bind(this)
-        
+
 
         _init.call(this)
 
@@ -63,25 +65,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
     function _init() {
+        _createFighters             .call(this)
         _createFightingStageRandomly.call(this)
         _createGameRoundStatusBlock .call(this)
         _createMoreDOMs             .call(this)
         this.el.root.style.display = 'none'
     }
-    
-    function showUp() {
-        const rootElement = this.el.root
 
-        return new Promise(resolve => {
-            setTimeout(() => {
-                rootElement.style.display = ''
-        
-                rootElement.classList.add('entering')
-                rootElement.onanimationend = function () {
-                    rootElement.classList.remove('entering')
-                    rootElement.onanimationend = null
-                }
-            }, 200)
+    function _createFighters() {
+        const { game } = this
+        const pickedFighterRoleConfigurations = game.data.pickedFighterRoleConfigurations.both
+        this.data.fighters.both = pickedFighterRoleConfigurations.map((roleConfig, i) => {
+            const { GameRole } = classes
+            return new GameRole(game, i + 1, roleConfig)
         })
     }
 
@@ -124,7 +120,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         rootElement.appendChild(fightingStage.el.root)
         rootElement.appendChild(bothFightersContainerElement)
         rootElement.appendChild(statusBlock.el.root)
-        
+
         this.el = {
             root: rootElement,
         }
@@ -161,11 +157,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         if (fighter1 === loser) {
             fighters.winner = fighter2
             fighters.loser  = fighter1
+            fighters.winnerRoleConfig = fighter2.roleConfig
+            fighters.loserRoleConfig  = fighter1.roleConfig
             fighters.winnerArrayIndex = 1
             fighters.loserArrayIndex  = 0
         } else {
             fighters.winner = fighter1
             fighters.loser  = fighter2
+            fighters.winnerRoleConfig = fighter1.roleConfig
+            fighters.loserRoleConfig  = fighter2.roleConfig
             fighters.winnerArrayIndex = 0
             fighters.loserArrayIndex  = 1
         }
@@ -178,6 +178,22 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const { winner, loser } = this.data.fighters
         console.log('胜者：', winner.data.name)
         console.log('败者：',  loser.data.name)
+    }
+
+    function showUp() {
+        const rootElement = this.el.root
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                rootElement.style.display = ''
+
+                rootElement.classList.add('entering')
+                rootElement.onanimationend = function () {
+                    rootElement.classList.remove('entering')
+                    rootElement.onanimationend = null
+                }
+            }, 200)
+        })
     }
 
     function leaveAndHide() {

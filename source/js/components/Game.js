@@ -21,10 +21,10 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.data = {
             allGameFighterCandidatesForBothPlayers,
             allGameFightingStageConfigurations,
-            fighters: {
+            pickedFighterRoleConfigurations: {
                 both: null,
-                finalWinner: null,
-                finalLoser: null,
+                finalWinnerRoleConfig: null,
+                finalLoserRoleConfig: null,
                 winningPlayerId: NaN,
             },
             gameRounds: {
@@ -63,7 +63,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         const { GameFightersPickingScreen } = classes
         const fightersPickingScreen = new GameFightersPickingScreen(this, initOptions)
         
-        this.data.fighters.both = fightersPickingScreen.data.fighters
+        // this.data.pickedFighterRoleConfigurations.both = fightersPickingScreen.data.pickedFighterRoleConfigurations
         this.subComponents.uiScreens.fightersPickingScreen = fightersPickingScreen
     }
 

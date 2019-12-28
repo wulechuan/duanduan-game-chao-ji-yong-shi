@@ -11,8 +11,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     const { utils, classes } = app
     const { createDOMWithClassNames } = utils
 
-    return function GameRole(game, playerId, gameRoleCandidate) {
-        const { Game, GameRoleCandidate } = classes
+    return function GameRole(game, playerId, gameRoleConfig) {
+        const { Game } = classes
 
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRole 构造函数。')
@@ -30,10 +30,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏角色】。')
         }
 
-        if (!(gameRoleCandidate instanceof GameRoleCandidate)) {
-            throw new TypeError('创建【游戏角色】时，必须指明其蓝本是哪个【游戏角色候选人】。')
-        }
-
 
 
         this.game = game
@@ -45,7 +41,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             attackingPower,
             defencingPower,
             images,
-        } = gameRoleCandidate.data
+        } = gameRoleConfig
 
         this.data = {
             playerId,
@@ -56,13 +52,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             attackingPower,
             defencingPower,
             images,
+            currentGameRound: null,
         }
 
 
-        this.setPoseTo    = setPoseTo   .bind(this)
-        this.toAttack     = toAttack    .bind(this)
-        this.toBeAttacked = toBeAttacked.bind(this)
-        this.die          = die         .bind(this)
+        this.joinGameRound = joinGameRound.bind(this)
+        this.setPoseTo     = setPoseTo    .bind(this)
+        this.attack        = attack       .bind(this)
+        this.toBeAttacked  = toBeAttacked .bind(this)
+        this.die           = die          .bind(this)
 
         _init.call(this)
 
@@ -97,7 +95,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
     }
 
-    function toAttack() {
+    function joinGameRound(gameRound) {
+        if (!(gameRound instanceof GameRound)) {
+            throw new TypeError('【角色】只能加入 GameRound 的实例对象。')
+        }
+
+        this.data.currentGameRound = gameRound
+    }
+
+    function attack() {
         return this.attackingPower
     }
 

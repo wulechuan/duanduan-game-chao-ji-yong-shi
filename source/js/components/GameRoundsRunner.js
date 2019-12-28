@@ -116,7 +116,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
     }
 
     function endCurrentRound() {
-        const { gameRounds, fighters } = this.game.data
+        const { gameRounds, pickedFighterRoleConfigurations } = this.game.data
 
         this.status.isRunningOneRound = false
 
@@ -134,35 +134,39 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         historicalGameRounds.push(currentGameRound)
         gameRounds.current = null
 
-        const [ fighter1, fighter2 ] = fighters.both
+        const [ fighterRoleConfig1, fighterRoleConfig2 ] = pickedFighterRoleConfigurations.both
 
-        const fighter1WonRounds = historicalGameRounds.filter(
-            gameRound => gameRound.data.fighters.winner === fighter1
+        const fighterRole1WonRounds = historicalGameRounds.filter(
+            gameRound => gameRound.data.fighters.winnerRoleConfig === fighterRoleConfig1
         )
 
-        const fighter2WonRounds = historicalGameRounds.filter(
-            gameRound => gameRound.data.fighters.winner === fighter2
+        const fighterRole2WonRounds = historicalGameRounds.filter(
+            gameRound => gameRound.data.fighters.winnerRoleConfig === fighterRoleConfig2
         )
 
         const shouldEndGame = historicalGameRounds.length >= gameRounds.maxRoundsToRun ||
-            fighter1WonRounds.length >= minWinningRoundsPerPlayer ||
-            fighter2WonRounds.length >= minWinningRoundsPerPlayer
+            fighterRole1WonRounds.length >= minWinningRoundsPerPlayer ||
+            fighterRole2WonRounds.length >= minWinningRoundsPerPlayer
             
 
         if (shouldEndGame) {
-            let finalWinner
-            let finalLoser
+            let finalWinnerRoleConfig
+            let finalLoserRoleConfig
+            let winningPlayerId = 0
 
-            if (fighter1WonRounds.length > fighter2WonRounds.length) {
-                finalWinner = fighter1
-                finalLoser  = fighter2
+            if (fighterRole1WonRounds.length > fighterRole2WonRounds.length) {
+                finalWinnerRoleConfig = fighterRoleConfig1
+                finalLoserRoleConfig  = fighterRoleConfig2
+                winningPlayerId = 1
             } else {
-                finalWinner = fighter2
-                finalLoser  = fighter1
+                finalWinnerRoleConfig = fighterRoleConfig2
+                finalLoserRoleConfig  = fighterRoleConfig1
+                winningPlayerId = 2
             }
 
-            fighters.finalWinner = finalWinner
-            fighters.finalLoser  = finalLoser
+            pickedFighterRoleConfigurations.finalWinnerRoleConfig = finalWinnerRoleConfig
+            pickedFighterRoleConfigurations.finalLoserRoleConfig  = finalLoserRoleConfig
+            pickedFighterRoleConfigurations.winningPlayerId       = winningPlayerId
 
             this.end()
         } else {
