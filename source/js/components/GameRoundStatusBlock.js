@@ -16,31 +16,33 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundStatusBlock = (function () {
 
         this.gameRound = gameRound
 
-        this.fighters = gameRound.fighters.both
+        this.subComponents = {}
+        this.data = {}
 
         this.setFighterHPBar = setFighterHPBar.bind(this)
 
-        _init(this)
+        _init.call(this)
 
         console.log('【游戏局状态栏】创建完毕。')
     }
 
 
 
-    function _init(gameRoundStatusBlock) {
-        _createStatusBarForBothFighters(gameRoundStatusBlock)
-        _createMoreDOMs(gameRoundStatusBlock)
+    function _init() {
+        _createStatusBarForBothFighters.call(this)
+        _createMoreDOMs                .call(this)
     }
 
-    function _createStatusBarForBothFighters(gameRoundStatusBlock) {
+    function _createStatusBarForBothFighters() {
         const { GameRoundFighterStatusBar } = classes
-        gameRoundStatusBlock.fighterStatusBars = gameRoundStatusBlock.fighters.map((fighter, index) => {
+        console.log(this.gameRound.data.fighters)
+        this.subComponents.fighterStatusBars = this.gameRound.data.fighters.both.map((fighter, index) => {
             return new GameRoundFighterStatusBar(index + 1, fighter)
         })
     }
 
-    function _createMoreDOMs(gameRoundStatusBlock) {
-        const { gameRoundIndex, fighterStatusBars } = gameRoundStatusBlock
+    function _createMoreDOMs() {
+        const { fighterStatusBars } = this.subComponents
 
         const rootElement = createDOMWithClassNames('div', [
             'game-round-status-block',
@@ -57,10 +59,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundStatusBlock = (function () {
         rootElement.appendChild(versusIconElement)
         rootElement.appendChild(fightersStatusBarRootElement[1])
 
-        gameRoundStatusBlock.el = {
+        this.el = {
             root: rootElement,
             versusIcon: versusIconElement,
-            fighterStatusBars: fightersStatusBarRootElement,
         }
     }
 

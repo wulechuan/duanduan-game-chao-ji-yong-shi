@@ -74,17 +74,13 @@ window.duanduanGameChaoJiYongShi = {
 
         appData.allGameFightingStageConfigurations = allGameFightingStageConfigurations
 
-        const { GameFightingStage } = window.duanduanGameChaoJiYongShi.classes
-
-        console.log('\n准备创建所有候选【对战舞台】……')
-
-        console.log('所有候选【对战舞台】创建完毕。')
+        console.log('\n所有候选【对战舞台数据】就绪。\n\n')
     },
 
 
     createNewGameAndRunIt() {
         const {
-            data,
+            data: appData,
             data: {
                 allGameFighterCandidatesForBothPlayers,
                 allGameFightingStageConfigurations,
@@ -95,13 +91,17 @@ window.duanduanGameChaoJiYongShi = {
         } = this
 
 
-        const game = new Game({
-            allGameFighterCandidatesForBothPlayers,
-            allGameFightingStageConfigurations,
-        })
+        const game = new Game(
+            document.querySelector('#app'),
+            {
+                allGameFighterCandidatesForBothPlayers,
+                allGameFightingStageConfigurations,
+                // maxRoundsToRun: 3,
+            }
+        )
 
-        data.game = game
+        appData.game = game
 
-        game.prepare()
+        game.start()
     },
 }

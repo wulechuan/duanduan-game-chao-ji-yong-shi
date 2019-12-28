@@ -46,42 +46,43 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             attackingPower,
             defencingPower,
             images,
-        } = gameRoleCandidate
+        } = gameRoleCandidate.data
 
-        this.name = name
-        this.typeIdInFilePathAndCSSClassName = typeIdInFilePathAndCSSClassName
-        this.fullHealthPoint = fullHealthPoint
-        this.healthPoint = fullHealthPoint
-        this.attackingPower = attackingPower
-        this.defencingPower = defencingPower
-        this.images = images
+        this.data = {
+            name,
+            typeIdInFilePathAndCSSClassName,
+            fullHealthPoint,
+            healthPoint: fullHealthPoint,
+            attackingPower,
+            defencingPower,
+            images,
+        }
 
 
-        this.setState     = setState    .bind(this)
-        this.setPose      = setPose     .bind(this)
+        this.setPoseTo    = setPoseTo   .bind(this)
         this.toAttack     = toAttack    .bind(this)
         this.toBeAttacked = toBeAttacked.bind(this)
         this.die          = die         .bind(this)
 
-        _init(this)
+        _init.call(this)
 
         console.log(`【游戏角色】“${name}”创建完毕。`)
     }
 
 
 
-    function _init(gameRole) {
-        _createDOMs(gameRole)
+    function _init() {
+        _createDOMs.call(this)
     }
 
-    function _createDOMs(gameRole) {
+    function _createDOMs() {
         const {
             playerId,
             typeIdInFilePathAndCSSClassName,
             images: {
                 poses,
             },
-        } = gameRole
+        } = this.data
 
         const rootElement = createDOMWithClassNames('div', [
             `player-${playerId}`,
@@ -91,13 +92,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         rootElement.style.backgroundImage = `url(${poses['default'].filePath})`
 
-        gameRole.el = {
+        this.el = {
             root: rootElement,
         }
-    }
-
-    function setState(newState) {
-
     }
 
     function toAttack() {
@@ -134,7 +131,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
 
-    function setPose(poseCSSClassNameToApply) {
+    function setPoseTo(poseCSSClassNameToApply) {
         const gameRole = this
 
         const roleRootDOM = gameRole.el.root

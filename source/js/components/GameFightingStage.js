@@ -7,41 +7,34 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
             throw new Error('必须使用 new 运算符来调用 GameFightingStage 构造函数。')
         }
 
-        // if (!(gameRound instanceof GameRound)) {
-        //     throw new TypeError('创建【游戏对战舞台】时，必须指明其应隶属于哪个【游戏局】。')
-        // }
-
-        // if (!gameRound.isRunningOneRound) {
-        //     throw new Error('【游戏局】已经结束。不能为已经结束的【游戏局】创建【游戏对战舞台】。')
-        // }
-
         const {
             name,
             typeIdInFilePathAndCSSClassName,
             imageFilePath,
         } = gameFightingStageConfiguration
 
-        this.typeIdInFilePathAndCSSClassName = typeIdInFilePathAndCSSClassName
-        this.name = name
-        this.imageFilePath = imageFilePath
+        this.data = {
+            typeIdInFilePathAndCSSClassName,
+            name,
+            imageFilePath,
+        }
 
-
-        _init(this)
+        _init.call(this)
 
         console.log(`【游戏对战舞台】“${name}”创建完毕。`)
     }
 
 
 
-    function _init(stage) {
-        _createDOMs(stage)
+    function _init() {
+        _createDOMs.call(this)
     }
 
-    function _createDOMs(stage) {
+    function _createDOMs() {
         const {
             typeIdInFilePathAndCSSClassName,
             imageFilePath,
-        } = stage
+        } = this.data
 
         const rootElement = createDOMWithClassNames('div', [
             'fighting-stage',
@@ -50,7 +43,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
 
         rootElement.style.backgroundImage = `url(${imageFilePath})`
 
-        stage.el = {
+        this.el = {
             root: rootElement,
         }
     }

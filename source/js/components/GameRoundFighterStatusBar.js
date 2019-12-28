@@ -19,30 +19,32 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
         }
 
         if (!(fighter instanceof GameRole)) {
-            throw new TypeError('创建【游戏局战士血条】时，必须指明其应隶属于哪个【游戏角色】。')
+            throw new TypeError('创建【游戏局斗士血条】时，必须指明其应隶属于哪个【游戏角色】。')
         }
 
-        this.playerId = playerId
-        this.fighter = fighter
+        this.data = {
+            playerId,
+            fighter,
+        }
 
         this.setFighterHPBar = setFighterHPBar.bind(this)
 
-        _init(this)
+        _init.call(this)
 
-        console.log(`“${fighter.name}”的【游戏局战士血条】创建完毕。`)
+        console.log(`“${fighter.name}”的【游戏局斗士血条】创建完毕。`)
     }
 
 
 
-    function _init(fighterStatusBar) {
-        _createDOMs(fighterStatusBar)
-        fighterStatusBar.setFighterHPBar(100)
+    function _init() {
+        _createDOMs.call(this)
+        this.setFighterHPBar(100)
     }
     
-    function _createDOMs(fighterStatusBar) {
+    function _createDOMs() {
         const {
             fighter,
-        } = fighterStatusBar
+        } = this.data
 
         const rootElement = createDOMWithClassNames('div', [
             'role-status-bar',
@@ -65,7 +67,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
             'avatar',
         ])
 
-        avatarElement.style.backgroundImage = `url(${fighter.images.avatar.filePath})`
+        avatarElement.style.backgroundImage = `url(${fighter.data.images.avatar.filePath})`
 
 
         hpBarElement.appendChild(hpElement)
@@ -73,10 +75,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
         rootElement.appendChild(avatarElement)
         rootElement.appendChild(hpBarContainerElement)
 
-        fighterStatusBar.el = {
+        this.el = {
             root: rootElement,
             avatar: avatarElement,
-            hpBar: hpBarElement,
+            // hpBar: hpBarElement,
             hp: hpElement,
         }
     }

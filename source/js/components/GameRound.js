@@ -7,7 +7,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         createDOMWithClassNames,
     } = utils
     
-    return function GameRound(game, gameRoundIndex) {
+    return function GameRound(game, gameRoundNumber) {
         const { Game } = classes
 
         if (!new.target) {
@@ -27,15 +27,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         }
 
         this.game = game
-        this.gameRoundIndex = gameRoundIndex
 
+        this.subComponents = {}
 
-        this.fighters = {
-            both: game.fighters.bothAttenders,
-            winner: null,
-            loser: null,
-            winnerArrayIndex: NaN,
-            loserArrayIndex: NaN,
+        this.data = {
+            gameRoundNumber,
+    
+            fighters: {
+                both: game.data.fighters.both,
+                winner: null,
+                loser: null,
+                winnerArrayIndex: NaN,
+                loserArrayIndex: NaN,
+            },
         }
 
         this.status = {
@@ -50,18 +54,18 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.leaveAndHide     = leaveAndHide    .bind(this)
         
 
-        _init(this)
+        _init.call(this)
 
         console.log('【游戏局】创建完毕。')
     }
 
 
 
-    function _init(gameRound) {
-        _createStage(gameRound)
-        _createRoundStatusBar(gameRound)
-        _createMoreDOMs(gameRound)
-        gameRound.el.root.style.display = 'none'
+    function _init() {
+        _createFightingStage       .call(this)
+        _createGameRoundStatusBlock.call(this)
+        _createMoreDOMs            .call(this)
+        this.el.root.style.display = 'none'
     }
     
     function showUp() {
@@ -80,50 +84,44 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         })
     }
 
-    function _createStage(gameRound) {
+    function _createFightingStage() {
         const { GameFightingStage } = classes
-        const stageConfigs = gameRound.game.allGameFightingStageConfigurations
+        const stageConfigs = this.game.data.allGameFightingStageConfigurations
         const chosenStageConfig = stageConfigs[randomPositiveIntegerLessThan(stageConfigs.length)]
-        gameRound.stage = new GameFightingStage(chosenStageConfig)
+        this.subComponents.fightingStage = new GameFightingStage(chosenStageConfig)
     }
 
-    function _createRoundStatusBar(gameRound) {
+    function _createGameRoundStatusBlock() {
         const { GameRoundStatusBlock } = classes
-        gameRound.statusBlock = new GameRoundStatusBlock(gameRound)
+        this.subComponents.statusBlock = new GameRoundStatusBlock(this)
     }
 
-    function _createMoreDOMs(gameRound) {
-        const { gameRoundIndex } = gameRound
+    function _createMoreDOMs() {
+        const { gameRoundNumber } = this
 
-        const [ fighter1, fighter2 ] = gameRound.fighters.both
-
-        const fighter1RootElement = fighter1.el.root
-        const fighter2RootElement = fighter2.el.root
-        const stageRootElement = gameRound.stage.el.root
-        const gameRoundStatusBlockRootElement = gameRound.statusBlock.el.root
+        const {
+            fightingStage,
+            statusBlock,
+        } = this.subComponents
 
 
         const rootElement = createDOMWithClassNames('div', [
             'game-round',
-            `game-round-${gameRoundIndex}`,
+            `game-round-${gameRoundNumber}`,
         ])
 
-        const fightersElement = createDOMWithClassNames('div', [
+        const bothFightersContainerElement = createDOMWithClassNames('div', [
             'fighters',
         ])
 
-        fightersElement.appendChild(fighter1RootElement)
-        fightersElement.appendChild(fighter2RootElement)
+        this.data.fighters.both.forEach(f => bothFightersContainerElement.appendChild(f.el.root))
 
-        rootElement.appendChild(stageRootElement)
-        rootElement.appendChild(fightersElement)
-        rootElement.appendChild(gameRoundStatusBlockRootElement)
+        rootElement.appendChild(fightingStage.el.root)
+        rootElement.appendChild(bothFightersContainerElement)
+        rootElement.appendChild(statusBlock.el.root)
         
-        gameRound.el = {
+        this.el = {
             root: rootElement,
-            stage: stageRootElement,
-            fighter1: fighter1RootElement,
-            fighter2: fighter2RootElement,
         }
     }
 
@@ -132,7 +130,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.status.isRunning = true
 
         console.warn('虚假逻辑开始。')
-        const ms = Math.floor(Math.random() * 13579 + 2468)
+        const ms = Math.floor(Math.random() * 1357 + 246)
         console.log(`等待：${ms}ms`)
         await new Promise(resolve => {
             setTimeout(() => {
@@ -142,7 +140,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         })
         console.warn('虚假逻辑结束。')
 
-        this.end({ loser: this.fighters.both[0] })
+        this.end({ loser: this.data.fighters.both[0] })
     }
 
     function end(options) {
@@ -152,7 +150,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         const { loser } = options
 
-        const { fighters } = this
+        const { fighters } = this.data
         const [ fighter1, fighter2 ] = fighters.both
 
         if (fighter1 === loser) {
@@ -172,7 +170,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     }
 
     function annouceResult() {
-        const { winner, loser } = this.fighters
+        const { winner, loser } = this.data.fighters
         console.log('Winner:', winner.name)
         console.log('Loser:',  loser.name)
     }

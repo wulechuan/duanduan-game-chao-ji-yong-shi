@@ -8,8 +8,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             throw new Error('必须使用 new 运算符来调用 GameRoleCandidate 构造函数。')
         }
 
-        this.playerId = playerId
-
         const {
             name,
             typeIdInFilePathAndCSSClassName,
@@ -19,30 +17,34 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             images,
         } = options
 
-        this.name = name
-        this.typeIdInFilePathAndCSSClassName = typeIdInFilePathAndCSSClassName
-        this.fullHealthPoint = fullHealthPoint
-        this.healthPoint = fullHealthPoint
-        this.attackingPower = attackingPower
-        this.defencingPower = defencingPower
-        this.images = images
+        this.data = {
+            playerId,
+            name,
+            typeIdInFilePathAndCSSClassName,
+            fullHealthPoint,
+            attackingPower,
+            defencingPower,
+            images,
+        }
 
-        _init(this)
+        _init.call(this)
 
         console.log(`【游戏角色候选人】“${name}”创建完毕。`)
     }
 
 
-    function _init(gameRoleCandidate) {
-        createDOMs(gameRoleCandidate)
+    function _init() {
+        _createDOMs.call(this)
     }
 
-    function createDOMs(gameRoleCandidate) {
+    function _createDOMs() {
         const {
             // playerId,
             // typeIdInFilePathAndCSSClassName,
             images,
-        } = gameRoleCandidate
+        } = this.data
+
+        const defaultPose = images.poses['default']
 
         const rootElement = createDOMWithClassNames('div', [
             // `player-${playerId}`,
@@ -50,9 +52,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             // `role-candidate-${typeIdInFilePathAndCSSClassName}`,
         ])
 
-        rootElement.style.backgroundImage = `url(${images.poses['default'].filePath})`
+        rootElement.style.backgroundImage = `url(${defaultPose.filePath})`
         
-        gameRoleCandidate.el = {
+        this.el = {
             root: rootElement,
         }
     }
