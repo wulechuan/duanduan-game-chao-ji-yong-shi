@@ -56,7 +56,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     function _init(initOptions) {
         _createFightersPickingScreen.call(this, initOptions)
         _createRunningScreen.call(this, initOptions)
-        console.log(this)
+        console.log('\n', this, '\n\n')
         _queryAndSetupMoreDOMs.call(this)
     }
 
