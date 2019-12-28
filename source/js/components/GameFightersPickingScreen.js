@@ -66,11 +66,16 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
             new GameFighterPicker(1, {
                 gameRoleCandidates: candidatesForPlayer1,
                 keyForStoppingRollingRoles: keysForStoppingRollingRoles.forPlayer1,
+                // keyForPickingPrevCandidate: 'x',
+                // keyForPickingNextCandidate: 'c',
+                // shouldNotAutoRoll: false,
             }),
 
             new GameFighterPicker(2, {
                 gameRoleCandidates: candidatesForPlayer2,
                 keyForStoppingRollingRoles: keysForStoppingRollingRoles.forPlayer2,
+                keyForPickingPrevCandidate: undefined,
+                keyForPickingNextCandidate: undefined,
             }),
         ]
     }

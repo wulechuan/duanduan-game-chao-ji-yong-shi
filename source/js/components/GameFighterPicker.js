@@ -12,22 +12,50 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             throw new Error('必须使用 new 运算符来调用 GameFighterPicker 构造函数。')
         }
 
+        let {
+            keyForPickingPrevCandidate,
+            keyForPickingNextCandidate,
+        } = initOptions
+
         const {
             gameRoleCandidates,
             keyForStoppingRollingRoles,
+            shouldNotAutoRoll,
         } = initOptions
 
-        let _keyForStoppingRollingRoles = keyForStoppingRollingRoles
-        if (typeof _keyForStoppingRollingRoles !== 'string') {
+        if (typeof keyForStoppingRollingRoles !== 'string') {
             throw new TypeError('keyForStoppingRollingRoles 字符串值，且必须为单个字符。')
-        } else if (_keyForStoppingRollingRoles.length !== 1) {
+        } else if (keyForStoppingRollingRoles.length !== 1) {
             throw new RangeError('keyForStoppingRollingRoles 字符串仅允许包含单个字符。')
+        }
+
+        if (!shouldNotAutoRoll && (keyForPickingPrevCandidate === undefined || keyForPickingPrevCandidate === null)) {
+            keyForPickingPrevCandidate = undefined
+        } else {
+            if (typeof keyForPickingPrevCandidate !== 'string') {
+                throw new TypeError('keyForPickingPrevCandidate 字符串值，且必须为单个字符。')
+            } else if (keyForPickingPrevCandidate.length !== 1) {
+                throw new RangeError('keyForPickingPrevCandidate 字符串仅允许包含单个字符。')
+            }
+        }
+
+
+        if (!shouldNotAutoRoll && (keyForPickingNextCandidate === undefined || keyForPickingNextCandidate === null)) {
+            keyForPickingNextCandidate = undefined
+        } else {
+            if (typeof keyForPickingNextCandidate !== 'string') {
+                throw new TypeError('keyForPickingNextCandidate 字符串值，且必须为单个字符。')
+            } else if (keyForPickingNextCandidate.length !== 1) {
+                throw new RangeError('keyForPickingNextCandidate 字符串仅允许包含单个字符。')
+            }
         }
 
         this.data = {
             playerId,
 
-            keyForStoppingRollingRoles: _keyForStoppingRollingRoles,
+            keyForStoppingRollingRoles,
+            keyForPickingPrevCandidate,
+            keyForPickingNextCandidate,
 
             fighter: {
                 candidates: gameRoleCandidates,
@@ -41,6 +69,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             isRollingRoles: false,
             rollingIntervalId: NaN,
             fighterHasDecided: false,
+            shouldNotAutoRoll: !!shouldNotAutoRoll,
         }
 
         this.startPickingFighter      = startPickingFighter     .bind(this)
@@ -63,7 +92,14 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
     }
     
     function _createDOMs() {
-        const { playerId, keyForStoppingRollingRoles, fighter } = this.data
+        const {
+            playerId,
+            keyForStoppingRollingRoles,
+            keyForPickingPrevCandidate,
+            keyForPickingNextCandidate,
+            fighter,
+        } = this.data
+        
         const {
             candidates: fighterCandidates,
         } = fighter
@@ -73,14 +109,44 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             `player-${playerId}`,
         ])
 
-        const keyboardTipElement = createDOMWithClassNames('div', [
+        const keyboardTipsContainerElement = createDOMWithClassNames('div', [
+            'keyboard-tips',
+        ])
+
+        const keyboardTipElement1 = createDOMWithClassNames('div', [
             'keyboard-tip',
             'decision-maker',
         ])
 
-        keyboardTipElement.innerText = keyForStoppingRollingRoles
+        const keyboardTipElement2 = createDOMWithClassNames('div', [
+            'keyboard-tip',
+            'pick-prev-candidate',
+        ])
 
-        rootElement.appendChild(keyboardTipElement)
+        const keyboardTipElement3 = createDOMWithClassNames('div', [
+            'keyboard-tip',
+            'pick-next-candidate',
+        ])
+
+        keyboardTipElement1.innerText = keyForStoppingRollingRoles
+
+        if (keyForPickingPrevCandidate) {
+            keyboardTipElement2.innerText = keyForPickingPrevCandidate
+        } else {
+            keyboardTipElement2.style.display = 'none'
+        }
+
+        if (keyForPickingNextCandidate) {
+            keyboardTipElement3.innerText = keyForPickingNextCandidate
+        } else {
+            keyboardTipElement3.style.display = 'none'
+        }
+
+        keyboardTipsContainerElement.appendChild(keyboardTipElement1)
+        keyboardTipsContainerElement.appendChild(keyboardTipElement2)
+        keyboardTipsContainerElement.appendChild(keyboardTipElement3)
+
+        rootElement.appendChild(keyboardTipsContainerElement)
 
         fighterCandidates.forEach(fc => rootElement.appendChild(fc.el.root))
 
@@ -90,7 +156,11 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
     }
 
     function startPickingFighter() {
-        this.startRollingRoles()
+        if (this.status.shouldNotAutoRoll) {
+            console.warn('暂未实现手工选择战士的功能！')
+        } else {
+            this.startRollingRoles()
+        }
     }
 
     function startRollingRoles(intervalInMilliseconds) {

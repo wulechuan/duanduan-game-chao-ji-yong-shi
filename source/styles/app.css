@@ -106,13 +106,23 @@
   z-index:319;
   border:0.4rem double #000;
   background-color:#fff;
+  position:absolute;
+  margin:-1.5rem -1.5rem;
 }
 .role-candidates-slot .keyboard-tip.decision-maker{
-  position:absolute;
   top:auto;
   bottom:0;
   left:50%;
-  margin:auto -1.5rem -1.5rem auto;
+}
+.role-candidates-slot .keyboard-tip.pick-prev-candidate,
+.role-candidates-slot .keyboard-tip.pick-next-candidate{
+  top:50%;
+}
+.role-candidates-slot .keyboard-tip.pick-prev-candidate{
+  left:0;
+}
+.role-candidates-slot .keyboard-tip.pick-next-candidate{
+  right:0;
 }
 .role-candidates-slot .role-candidate{
   left:0;

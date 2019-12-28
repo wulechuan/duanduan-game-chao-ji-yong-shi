@@ -45,12 +45,26 @@
         border 0.4rem double black
         background-color: white
 
+        position absolute
+        margin (@width * -0.5) (@height * -0.5)
+
         &.decision-maker {
-            position absolute
             top auto
             bottom 0
             left 50%
-            margin auto (@width * -0.5) (@height * -0.5) auto
+        }
+
+        &.pick-prev-candidate,
+        &.pick-next-candidate {
+            top 50%
+        }
+
+        &.pick-prev-candidate {
+            left 0
+        }
+
+        &.pick-next-candidate {
+            right 0
         }
     }
 
