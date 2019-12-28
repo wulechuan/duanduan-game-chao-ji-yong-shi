@@ -1,3 +1,35 @@
+.count-down-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width:auto;
+  height:auto;
+  background-color:rgba(0,0,0,0.75);
+}
+.count-down-overlay .modal{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width:16rem;
+  height:10rem;
+  margin:auto;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border:0.4rem double #000;
+  border-radius:1rem;
+  background-color:#fff;
+  box-shadow:0 0 1rem rgba(0,0,0,0.219);
+}
+.count-down-overlay .digit{
+  text-align:center;
+  font-size:6rem;
+  margin-bottom:0.2rem;
+}
 .role,
 .role-candidate{
   position:absolute;
@@ -172,6 +204,9 @@ body{
   bottom:0;
   width:auto;
   height:auto;
+}
+.count-down-overlay{
+  z-index:900;
 }
 .fighting-stage{
   z-index:0;

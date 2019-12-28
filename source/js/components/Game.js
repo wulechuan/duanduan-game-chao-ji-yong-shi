@@ -58,8 +58,6 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             current: null,
         }
 
-        this.el = {}
-
         this.status = {
             isRunningOneRound: false,
             isOver: false,
@@ -82,7 +80,18 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
     function _init(game) {
-        const { el, fighters } = game
+        _createCountDownOverlay(game)
+        _queryAndSetupMoreDOMs(game)
+    }
+
+    function _createCountDownOverlay(game) {
+        const { CountDownOverlay } = classes
+        const countDownOverlay = new CountDownOverlay()
+        game.countDownOverlay = countDownOverlay
+    }
+
+    function _queryAndSetupMoreDOMs(game) {
+        const { fighters, countDownOverlay } = game
         const {
             candidatesForPlayer1: gameRoleCandidatesForPlayer1,
             candidatesForPlayer2: gameRoleCandidatesForPlayer2,
@@ -95,21 +104,32 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         const roleCandidatesSlot2Element = document.querySelector('.role-candidates-slot.player-2')
         const gameRoundsContainerElement = gameRunningScreenElement.querySelector('.game-rounds')
 
-        // el.roleCandidatesSlot1Element = roleCandidatesSlot1Element
-        // el.roleCandidatesSlot2Element = roleCandidatesSlot2Element
-        el.rolePickingScreenElement = rolePickingScreenElement
-        el.gameRunningScreenElement = gameRunningScreenElement
-        el.gameRoundsContainerElement = gameRoundsContainerElement
+        gameRunningScreenElement.appendChild(countDownOverlay.el.root)
 
-        insertGameRoleCandidatesToDocument(gameRoleCandidatesForPlayer1.allCandidates, roleCandidatesSlot1Element)
-        insertGameRoleCandidatesToDocument(gameRoleCandidatesForPlayer2.allCandidates, roleCandidatesSlot2Element)
+
+        insertGameRoleCandidatesToDocument(
+            gameRoleCandidatesForPlayer1.allCandidates,
+            roleCandidatesSlot1Element
+        )
+
+        insertGameRoleCandidatesToDocument(
+            gameRoleCandidatesForPlayer2.allCandidates,
+            roleCandidatesSlot2Element
+        )
+
+        game.el = {
+            rolePickingScreen: rolePickingScreenElement,
+            gameRunningScreen: gameRunningScreenElement,
+            gameRoundsContainer: gameRoundsContainerElement,
+        }
+
 
 
         function insertGameRoleCandidatesToDocument(roleCandidates, containerElement) {
             roleCandidates.forEach((grc, i) => {
                 const roleCandidateRootElement = grc.el.root
                 containerElement.appendChild(roleCandidateRootElement)
-                roleCandidateRootElement.style.top = 0; // `${100 * i}%`
+                roleCandidateRootElement.style.top = 0;
             })
         }
     }
@@ -122,13 +142,13 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     async function _beginChoosingFighters() {
         const {
             el: {
-                rolePickingScreenElement,
-                gameRunningScreenElement,
+                rolePickingScreen,
+                gameRunningScreen,
             },
         } = this
 
-        rolePickingScreenElement.style.display = ''
-        gameRunningScreenElement.style.display = 'none'
+        rolePickingScreen.style.display = ''
+        gameRunningScreen.style.display = 'none'
 
 
 
@@ -147,15 +167,15 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 }, ms)
             })
         }
-        
+
         await Promise.all([
             fakePickingFighter(1, this.fighters.candidatesForPlayer1),
             fakePickingFighter(2, this.fighters.candidatesForPlayer2),
         ])
         console.warn('虚假逻辑结束。')
-        
-        
-        
+
+
+
         this.confirmFighterForPlayer(1)
         this.confirmFighterForPlayer(2)
     }
@@ -194,34 +214,21 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
 
     async function createAndStartNewRound() {
-        // function countDown(countDownSeconds) {
-        //     return new Promise((resolve, reject) => {
-        //         console.log(countDownSeconds)
-        //         setTimeout(() => {
-        //             resolve()
-        //         }, 1000)
-        //     })
-        // }
-
         _createNewRoundAndShowItUp.call(this)
-
-        // await countDown(3)
-        // await countDown(2)
-        // await countDown(1)
-
+        await this.countDownOverlay.countDown(3)
         _startCurrentRound.call(this)
     }
 
     function start() {
         const {
             el: {
-                rolePickingScreenElement,
-                gameRunningScreenElement,
+                rolePickingScreen,
+                gameRunningScreen,
             },
         } = this
 
-        rolePickingScreenElement.style.display = 'none'
-        gameRunningScreenElement.style.display = ''
+        rolePickingScreen.style.display = 'none'
+        gameRunningScreen.style.display = ''
 
         this.createAndStartNewRound()
     }
@@ -239,12 +246,12 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             gameRounds,
         } = game
 
-        
+
         const gameRoundIndex = gameRounds.history.length + 1
         const newGameRound = new GameRound(game, gameRoundIndex)
         gameRounds.current = newGameRound
 
-        game.el.gameRoundsContainerElement.appendChild(newGameRound.el.root)
+        game.el.gameRoundsContainer.appendChild(newGameRound.el.root)
     }
 
     function _startCurrentRound() {
@@ -258,9 +265,9 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     function endCurrentRound() {
         const game = this
         const { status, gameRounds, fighters } = game
-        
+
         status.isRunningOneRound = false
-        
+
         const {
             minWinningRoundsPerPlayer,
             history: historicalGameRounds,
