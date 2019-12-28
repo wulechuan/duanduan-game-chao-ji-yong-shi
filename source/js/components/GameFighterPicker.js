@@ -7,13 +7,27 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         createDOMWithClassNames,
     } = utils
     
-    return function GameFighterPicker(playerId, gameRoleCandidates) {
+    return function GameFighterPicker(playerId, initOptions) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameFighterPicker 构造函数。')
         }
 
+        const {
+            gameRoleCandidates,
+            keyForStoppingRollingRoles,
+        } = initOptions
+
+        let _keyForStoppingRollingRoles = keyForStoppingRollingRoles
+        if (typeof _keyForStoppingRollingRoles !== 'string') {
+            throw new TypeError('keyForStoppingRollingRoles 字符串值，且必须为单个字符。')
+        } else if (_keyForStoppingRollingRoles.length !== 1) {
+            throw new RangeError('keyForStoppingRollingRoles 字符串仅允许包含单个字符。')
+        }
+
         this.data = {
             playerId,
+
+            keyForStoppingRollingRoles: _keyForStoppingRollingRoles,
 
             fighter: {
                 candidates: gameRoleCandidates,
@@ -49,7 +63,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
     }
     
     function _createDOMs() {
-        const { playerId, fighter } = this.data
+        const { playerId, keyForStoppingRollingRoles, fighter } = this.data
         const {
             candidates: fighterCandidates,
         } = fighter
@@ -58,6 +72,15 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             'role-candidates-slot',
             `player-${playerId}`,
         ])
+
+        const keyboardTipElement = createDOMWithClassNames('div', [
+            'keyboard-tip',
+            'decision-maker',
+        ])
+
+        keyboardTipElement.innerText = keyForStoppingRollingRoles
+
+        rootElement.appendChild(keyboardTipElement)
 
         fighterCandidates.forEach(fc => rootElement.appendChild(fc.el.root))
 

@@ -1,4 +1,9 @@
 window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function () {
+    const keysForStoppingRollingRoles = {
+        forPlayer1: 'z',
+        forPlayer2: 'm',
+    }
+
     const app = window.duanduanGameChaoJiYongShi
     const { utils, classes } = app
 
@@ -51,10 +56,23 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
 
     function _createFighterPickersForBothPlayers() {
         const { GameFighterPicker } = classes
-        const twoArraysOfCandidates = this.game.data.allGameFighterCandidatesForBothPlayers
-        this.subComponents.fighterPickers = twoArraysOfCandidates.map(
-            (candidates, i) => new GameFighterPicker(i + 1, candidates)
-        )
+
+        const [
+            candidatesForPlayer1,
+            candidatesForPlayer2,
+        ] = this.game.data.allGameFighterCandidatesForBothPlayers
+        
+        this.subComponents.fighterPickers = [
+            new GameFighterPicker(1, {
+                gameRoleCandidates: candidatesForPlayer1,
+                keyForStoppingRollingRoles: keysForStoppingRollingRoles.forPlayer1,
+            }),
+
+            new GameFighterPicker(2, {
+                gameRoleCandidates: candidatesForPlayer2,
+                keyForStoppingRollingRoles: keysForStoppingRollingRoles.forPlayer2,
+            }),
+        ]
     }
 
     function _createMoreDOMs() {
@@ -95,12 +113,12 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
                 console.log('key:', key, 'keyCode', e.keyCode)
 
                 switch (key) {
-                    case 'z':
-                        pickingScreen.onEitherFighterDecided(0, fighterPickerForPlayer1.stopRollingRoles())
+                    case fighterPickerForPlayer1.data.keyForStoppingRollingRoles:
+                        pickingScreen.onEitherFighterDecided(fighterPickerForPlayer1)
                         break
 
-                    case '/':
-                        pickingScreen.onEitherFighterDecided(1, fighterPickerForPlayer2.stopRollingRoles())
+                    case fighterPickerForPlayer2.data.keyForStoppingRollingRoles:
+                        pickingScreen.onEitherFighterDecided(fighterPickerForPlayer2)
                         break
                 }
             }
@@ -113,10 +131,16 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         rootElement.style.display = 'none'
     }
 
-    function onEitherFighterDecided(arrayIndex, decidedFighterRoleConfig) {
-        const pickedFighterRoleConfigs = this.game.data.pickedFighterRoleConfigurations.both
+    function onEitherFighterDecided(fighterPicker) {
+        const decidedFighterRoleConfig = fighterPicker.stopRollingRoles()
 
+        const { playerId } = fighterPicker.data
+        
+        const pickedFighterRoleConfigs = this.game.data.pickedFighterRoleConfigurations.both
+        const arrayIndex = playerId - 1
         pickedFighterRoleConfigs[arrayIndex] = decidedFighterRoleConfig
+
+        fighterPicker.el.root.classList.add('fighter-has-decided')
 
         const { status } = this
         status[`fighter${arrayIndex + 1}HasDecided`] = true

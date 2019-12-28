@@ -1,6 +1,9 @@
 .role-picking-screen {
-    background-image: url('../images/game-ui/挑选角色阶段的背景.webp')
+    background-image: \
+        linear-gradient(to right, rgba(black, 0.9) 30%, transparent 44%, transparent 56%, rgba(black, 0.9) 70%),\
+        url('../images/game-ui/挑选角色阶段的背景.webp')
     background-size: cover
+    background-position: center
 }
 
 .role-candidates-slot {
@@ -11,7 +14,6 @@
     margin-top: -0.5 * @height
     margin-left: 100px
     margin-right: @margin-left
-    overflow: hidden
 
     &.player-1 {
         left 50px
@@ -21,6 +23,36 @@
         right 50px
     }
 
+    &.fighter-has-decided .keyboard-tip {
+        // display none
+        opacity 0.05
+    }
+
+
+    .keyboard-tip {
+        box-sizing content-box
+        width 3rem
+        height @width
+        line-height: @height * 0.9
+        border-radius: 0.5rem
+        text-align: center
+        opacity 1
+        transition opacity 0.2s ease-out
+
+        font-size: 2rem;
+        z-index 319
+
+        border 0.4rem double black
+        background-color: white
+
+        &.decision-maker {
+            position absolute
+            top auto
+            bottom 0
+            left 50%
+            margin auto (@width * -0.5) (@height * -0.5) auto
+        }
+    }
 
     .role-candidate {
         left 0
