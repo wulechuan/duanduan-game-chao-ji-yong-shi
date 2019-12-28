@@ -1,6 +1,4 @@
 window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
-    const createElement = document.createElement.bind(document)
-
     const gameRoleAllPossiblePoseCSSClassNames = [
         'is-attacking',
         'is-suffering',
@@ -10,9 +8,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
     const app = window.duanduanGameChaoJiYongShi
+    const { utils, classes } = app
+    const { createDOMWithClassNames } = utils
 
     return function GameRole(game, playerId, gameRoleCandidate) {
-        const { Game, GameRoleCandidate } = app.classes
+        const { Game, GameRoleCandidate } = classes
 
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRole 构造函数。')
@@ -83,15 +83,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             },
         } = gameRole
 
-        const rootElement = createElement('div')
-        rootElement.className = [
+        const rootElement = createDOMWithClassNames('div', [
             `player-${playerId}`,
             'role',
             `role-candidate-${typeIdInFilePathAndCSSClassName}`,
-        ].join(' ')
+        ])
 
         rootElement.style.backgroundImage = `url(${poses['default'].filePath})`
-
 
         gameRole.el = {
             root: rootElement,

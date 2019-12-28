@@ -1,6 +1,4 @@
 window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function () {
-    const createElement = document.createElement.bind(document)
-    
     const fighterHealthyRanges = {
         'role-is-healthy': 75,
         'role-is-wounded': 30,
@@ -9,7 +7,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
 
 
     const app = window.duanduanGameChaoJiYongShi
-    const { classes } = app
+    const { utils, classes } = app
+    const { createDOMWithClassNames } = utils
 
     
     return function GameRoundFighterStatusBar(playerId, fighter) {
@@ -45,34 +44,28 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
             fighter,
         } = fighterStatusBar
 
-        const rootElement = createElement('div')
-        rootElement.className = [
+        const rootElement = createDOMWithClassNames('div', [
             'role-status-bar',
             `player-${fighter.playerId}`,
-        ].join(' ')
+        ])
 
-        const avatarElement = createElement('div')
-        avatarElement.className = [
+        const hpBarContainerElement = createDOMWithClassNames('div', [
+            'hp-bar-container',
+        ])
+
+        const hpBarElement = createDOMWithClassNames('div', [
+            'hp-bar',
+        ])
+
+        const hpElement = createDOMWithClassNames('div', [
+            'hp',
+        ])
+
+        const avatarElement = createDOMWithClassNames('div', [
             'avatar',
-        ].join(' ')
+        ])
 
         avatarElement.style.backgroundImage = `url(${fighter.images.avatar.filePath})`
-
-        const hpBarContainerElement = createElement('div')
-        hpBarContainerElement.className = [
-            'hp-bar-container',
-        ].join(' ')
-
-        const hpBarElement = createElement('div')
-        hpBarElement.className = [
-            'hp-bar',
-        ].join(' ')
-
-        const hpElement = createElement('div')
-        hpElement.className = [
-            'hp',
-        ].join(' ')
-
 
 
         hpBarElement.appendChild(hpElement)

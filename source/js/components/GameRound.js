@@ -1,10 +1,11 @@
 window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
-    const createElement = document.createElement.bind(document)
-
     const app = window.duanduanGameChaoJiYongShi
-    const { utils, classes, data: appData } = app
+    const { utils, classes } = app
 
-    const { randomPositiveIntegerLessThan } = utils
+    const {
+        randomPositiveIntegerLessThan,
+        createDOMWithClassNames,
+    } = utils
     
     return function GameRound(game, gameRoundIndex) {
         const { Game } = classes
@@ -83,16 +84,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const gameRoundStatusBlockRootElement = gameRound.statusBlock.el.root
 
 
-        const rootElement = createElement('div')
-        rootElement.className = [
+        const rootElement = createDOMWithClassNames('div', [
             'game-round',
             `game-round-${gameRoundIndex}`,
-        ].join(' ')
+        ])
 
-        const fightersElement = createElement('div')
-        fightersElement.className = [
+        const fightersElement = createDOMWithClassNames('div', [
             'fighters',
-        ].join(' ')
+        ])
 
         fightersElement.appendChild(fighter1RootElement)
         fightersElement.appendChild(fighter2RootElement)

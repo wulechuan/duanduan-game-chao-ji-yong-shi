@@ -1,4 +1,8 @@
 window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
+    const app = window.duanduanGameChaoJiYongShi
+    const { utils } = app
+    const { createDOMWithClassNames } = utils
+
     return function GameRoleCandidate(playerId, options) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRoleCandidate 构造函数。')
@@ -40,12 +44,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             images,
         } = gameRoleCandidate
 
-        const rootElement = document.createElement('div')
-        rootElement.className = [
+        const rootElement = createDOMWithClassNames('div', [
             // `player-${playerId}`,
             'role-candidate',
             // `role-candidate-${typeIdInFilePathAndCSSClassName}`,
-        ].join(' ')
+        ])
 
         rootElement.style.backgroundImage = `url(${images.poses['default'].filePath})`
         

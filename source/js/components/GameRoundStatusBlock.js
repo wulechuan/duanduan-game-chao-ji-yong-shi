@@ -1,9 +1,7 @@
 window.duanduanGameChaoJiYongShi.classes.GameRoundStatusBlock = (function () {
-    const createElement = document.createElement.bind(document)
-
     const app = window.duanduanGameChaoJiYongShi
-    const { classes } = app
-
+    const { utils, classes } = app
+    const { createDOMWithClassNames } = utils
 
     return function GameRoundStatusBlock(gameRound) {
         const { GameRound } = classes
@@ -44,17 +42,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundStatusBlock = (function () {
     function _createMoreDOMs(gameRoundStatusBlock) {
         const { gameRoundIndex, fighterStatusBars } = gameRoundStatusBlock
 
-        const rootElement = createElement('div')
-        rootElement.className = [
+        const rootElement = createDOMWithClassNames('div', [
             'game-round-status-block',
-        ].join(' ')
+        ])
 
 
-        const versusIconElement = createElement('div')
-        versusIconElement.className = [
+        const versusIconElement = createDOMWithClassNames('div', [
             'icon-versus',
-        ].join(' ')
-
+        ])
 
         const fightersStatusBarRootElement = fighterStatusBars.map(bar => bar.el.root)
 

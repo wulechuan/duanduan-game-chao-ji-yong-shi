@@ -33,8 +33,6 @@ const taskCycleOfStylusCompilation = createOneTaskCycleForCompilingStylus({
     },
 })
 
-console.log('taskCycleOfStylusCompilation:', taskCycleOfStylusCompilation)
-
 const {
     cleanAllOldOuput,
     buildEverythingOnce,

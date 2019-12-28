@@ -1,5 +1,6 @@
 window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
-    // const { GameRound } = window.duanduanGameChaoJiYongShi.classes
+    const { utils } = window.duanduanGameChaoJiYongShi
+    const { createDOMWithClassNames } = utils
 
     return function GameFightingStage(gameFightingStageConfiguration) {
         if (!new.target) {
@@ -42,11 +43,10 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
             imageFilePath,
         } = stage
 
-        const rootElement = document.createElement('div')
-        rootElement.className = [
+        const rootElement = createDOMWithClassNames('div', [
             'fighting-stage',
             `fighting-stage-${typeIdInFilePathAndCSSClassName}`,
-        ].join(' ')
+        ])
 
         rootElement.style.backgroundImage = `url(${imageFilePath})`
 

@@ -66,15 +66,15 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         }
 
 
-        this.prepare                 = prepare                .bind(this)
-        this.confirmFighterForPlayer = confirmFighterForPlayer.bind(this)
-        this.onOneFighterConfirmed   = onOneFighterConfirmed  .bind(this)
+        this.prepare                   = prepare                  .bind(this)
+        this.confirmFighterForPlayer   = confirmFighterForPlayer  .bind(this)
+        this.onOneFighterConfirmed     = onOneFighterConfirmed    .bind(this)
 
-        this.start                   = start                  .bind(this)
-        this.end                     = end                    .bind(this)
+        this.start                     = start                    .bind(this)
+        this.end                       = end                      .bind(this)
 
-        this.startNewRound           = startNewRound          .bind(this)
-        this.endCurrentRound         = endCurrentRound        .bind(this)
+        this.createAndStartNewRound    = createAndStartNewRound   .bind(this)
+        this.endCurrentRound           = endCurrentRound          .bind(this)
 
         _init(this)
 
@@ -193,22 +193,26 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
 
-    async function showStartingCountDown() {
-        async function countDown(countDownSeconds) {
-            return new Promise((resolve, reject) => {
-                console.log(countDownSeconds)
-                setTimeout(() => {
-                    resolve()
-                }, 1000)
-            })
-        }
+    async function createAndStartNewRound() {
+        // function countDown(countDownSeconds) {
+        //     return new Promise((resolve, reject) => {
+        //         console.log(countDownSeconds)
+        //         setTimeout(() => {
+        //             resolve()
+        //         }, 1000)
+        //     })
+        // }
 
-        await countDown(3)
-        await countDown(2)
-        await countDown(1)
+        _createNewRoundAndShowItUp.call(this)
+
+        // await countDown(3)
+        // await countDown(2)
+        // await countDown(1)
+
+        _startCurrentRound.call(this)
     }
 
-    async function start() {
+    function start() {
         const {
             el: {
                 rolePickingScreenElement,
@@ -219,8 +223,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         rolePickingScreenElement.style.display = 'none'
         gameRunningScreenElement.style.display = ''
 
-        await showStartingCountDown()
-        this.startNewRound()
+        this.createAndStartNewRound()
     }
 
     function end() {
@@ -228,7 +231,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         console.log('游戏结束。')
     }
 
-    function startNewRound() {
+    function _createNewRoundAndShowItUp() {
         const { GameRound } = app.classes
 
         const game = this
@@ -242,9 +245,14 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         gameRounds.current = newGameRound
 
         game.el.gameRoundsContainerElement.appendChild(newGameRound.el.root)
+    }
 
-        game.status.isRunningOneRound = true
-        newGameRound.start()
+    function _startCurrentRound() {
+        const game = this
+        const { status, gameRounds } = game
+
+        status.isRunningOneRound = true
+        gameRounds.current.start()
     }
 
     function endCurrentRound() {
@@ -297,6 +305,8 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             fighters.finalLoser  = finalLoser
 
             this.end()
+        } else {
+            this.createAndStartNewRound()
         }
     }
 })();

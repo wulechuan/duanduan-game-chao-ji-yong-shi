@@ -3,9 +3,9 @@
     "files.exclude": {
         "**/node_modules": true,
         "**/.DS_Store": true,
-        "gulpfile.esm.js": true,
         ".markdownlint*": true,
         ".gitignore*": true,
-        "package-lock.json": true
+        "package-lock.json": true,
+        "gulpfile.esm.js": true
     }
 }

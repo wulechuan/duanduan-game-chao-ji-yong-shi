@@ -6,7 +6,7 @@
   "description": "我给端儿做的小游戏",
   "main": "gulpfile.esm.js",
   "scripts": {
-    "start": "gulp"
+    "start": "gulp    --silent"
   },
   "private": true,
   "devDependencies": {
