@@ -96,7 +96,7 @@ window.duanduanGameChaoJiYongShi = {
             {
                 allGameFighterCandidatesForBothPlayers,
                 allGameFightingStageConfigurations,
-                maxRoundsToRun: 5,
+                // maxRoundsToRun: 5,
             }
         )
 

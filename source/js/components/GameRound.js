@@ -50,11 +50,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             isOver: false,
         }
 
-        this.start         = start        .bind(this)
-        this.end           = end          .bind(this)
-        this.annouceResult = annouceResult.bind(this)
-        this.showUp        = showUp       .bind(this)
-        this.leaveAndHide  = leaveAndHide .bind(this)
+        this.start        = start       .bind(this)
+        this.end          = end         .bind(this)
+        this.showUp       = showUp      .bind(this)
+        this.leaveAndHide = leaveAndHide.bind(this)
 
 
         _init.call(this)
@@ -77,7 +76,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const pickedFighterRoleConfigurations = game.data.pickedFighterRoleConfigurations.both
         this.data.fighters.both = pickedFighterRoleConfigurations.map((roleConfig, i) => {
             const { GameRole } = classes
-            return new GameRole(game, i + 1, roleConfig)
+            const newGameRole = new GameRole(game, i + 1, roleConfig)
+            newGameRole.joinGameRound(this)
+            return newGameRole
         })
     }
 
@@ -170,14 +171,18 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             fighters.loserArrayIndex  = 1
         }
 
-        this.annouceResult()
+        annouceResult.call(this)
+
         this.gameRoundsRunner.endCurrentRound()
     }
 
     function annouceResult() {
         const { winner, loser } = this.data.fighters
-        console.log('胜者：', winner.data.name)
-        console.log('败者：',  loser.data.name)
+        console.log(
+            '\n胜者：', winner.data.name,
+            '\n败者：',  loser.data.name,
+            '\n\n'
+        )
     }
 
     function showUp() {

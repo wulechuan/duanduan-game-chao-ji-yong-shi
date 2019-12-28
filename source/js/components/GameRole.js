@@ -33,6 +33,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
         this.game = game
+        this.gameRoleConfig = gameRoleConfig
+        this.joinedGameRound = null
 
         const {
             name,
@@ -52,7 +54,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             attackingPower,
             defencingPower,
             images,
-            currentGameRound: null,
         }
 
 
@@ -96,11 +97,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function joinGameRound(gameRound) {
+        const { GameRound } = classes
+
         if (!(gameRound instanceof GameRound)) {
             throw new TypeError('【角色】只能加入 GameRound 的实例对象。')
         }
 
-        this.data.currentGameRound = gameRound
+        this.joinedGameRound = gameRound
     }
 
     function attack() {
@@ -132,8 +135,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function die() {
-        console.warn('有问题的代码')
-        this.game.end({ loser: this })
+        this.joinedGameRound.end({ loser: this })
     }
 
 

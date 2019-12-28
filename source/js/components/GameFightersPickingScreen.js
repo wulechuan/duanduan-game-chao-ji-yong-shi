@@ -122,6 +122,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         status[`fighter${arrayIndex + 1}HasDecided`] = true
 
         if (status.fighter1HasDecided && status.fighter2HasDecided) {
+            window.onkeydown = null
             this.game.start()
         }
     }
