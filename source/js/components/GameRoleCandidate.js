@@ -34,7 +34,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
 
         _init.call(this)
 
-        console.log(`【游戏角色候选人】“${name}”创建完毕。`)
+        // console.log(`【游戏角色候选人】“${name}”创建完毕。`)
     }
 
 

@@ -28,11 +28,11 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         }
 
 
-        this.pickFightersForBothPlayers = pickFightersForBothPlayers.bind(this)
-        this.onEitherFighterDecided     = onEitherFighterDecided    .bind(this)
-        this.showUp                     = showUp                    .bind(this)
-        this.hide                       = hide                      .bind(this)
-        this.leaveAndHide               = leaveAndHide              .bind(this)
+        this.startPickingFightersForBothPlayers = startPickingFightersForBothPlayers.bind(this)
+        this.onEitherFighterDecided             = onEitherFighterDecided            .bind(this)
+        this.showUp                             = showUp                            .bind(this)
+        this.hide                               = hide                              .bind(this)
+        this.leaveAndHide                       = leaveAndHide                      .bind(this)
 
 
         _init.call(this)
@@ -68,6 +68,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
                 keyForPickingPrevCandidate: player1KeyboardShortcuts.prevCandidate,
                 keyForPickingNextCandidate: player1KeyboardShortcuts.nextCandidate,
                 // shouldNotAutoRoll: false,
+                onFighterDecided: this.onEitherFighterDecided,
             }),
 
             new GameFighterPicker(2, {
@@ -76,6 +77,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
                 keyForPickingPrevCandidate: player2KeyboardShortcuts.prevCandidate,
                 keyForPickingNextCandidate: player2KeyboardShortcuts.nextCandidate,
                 // shouldNotAutoRoll: false,
+                onFighterDecided: this.onEitherFighterDecided,
             }),
         ]
     }
@@ -95,55 +97,39 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         }
     }
 
-    function pickFightersForBothPlayers() {
-        this.subComponents.fighterPickers.forEach(fp => fp.startPickingFighter())
+    function startPickingFightersForBothPlayers() {
+        const keyboardEngineConfigForBothPlayers = this.subComponents.fighterPickers.reduce((kec, fp) => {
+            kec = {
+                ...kec,
+                ...fp.data.keyboardEngineConfig,
+            }
+            fp.startPickingFighter()
+            return kec
+        }, {})
+
+        // console.log(keyboardEngineConfigForBothPlayers)
+
+        this.game.services.keyboardEngine.start(keyboardEngineConfigForBothPlayers)
     }
 
-    function onEitherFighterDecided(fighterPicker) {
-        const decidedFighterRoleConfig = fighterPicker.stopRollingRoles()
-
-        const { playerId } = fighterPicker.data
-        
+    function onEitherFighterDecided(playerId, decidedFighterRoleConfig) {
         const pickedFighterRoleConfigs = this.game.data.pickedFighterRoleConfigurations.both
         const arrayIndex = playerId - 1
         pickedFighterRoleConfigs[arrayIndex] = decidedFighterRoleConfig
 
-        fighterPicker.el.root.classList.add('fighter-has-decided')
-
         const { status } = this
-        status[`fighter${arrayIndex + 1}HasDecided`] = true
+        status[`fighter${playerId}HasDecided`] = true
 
         if (status.fighter1HasDecided && status.fighter2HasDecided) {
-            window.onkeydown = null
+            this.game.services.keyboardEngine.stop()
             this.game.start()
         }
     }
 
     function showUp() {
         this.el.root.style.display = ''
-        
         setTimeout(() => {
-            const pickingScreen = this
-            const [
-                fighterPickerForPlayer1,
-                fighterPickerForPlayer2,
-            ] = this.subComponents.fighterPickers
-
-            window.onkeydown = e => {
-                let { key } = e
-                key = key.toUpperCase()
-                // console.log('key:', key, 'keyCode', e.keyCode)
-
-                switch (key) {
-                    case fighterPickerForPlayer1.data.keyForStoppingRollingRoles:
-                        pickingScreen.onEitherFighterDecided(fighterPickerForPlayer1)
-                        break
-
-                    case fighterPickerForPlayer2.data.keyForStoppingRollingRoles:
-                        pickingScreen.onEitherFighterDecided(fighterPickerForPlayer2)
-                        break
-                }
-            }
+            this.startPickingFightersForBothPlayers()
         }, 800)
     }
 

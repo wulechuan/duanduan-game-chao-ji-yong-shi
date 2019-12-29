@@ -112,7 +112,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
     function _startCurrentRound() {
         const { gameRounds } = this.game.data
         this.status.isRunningOneRound = true
-        gameRounds.current.start()
+        // gameRounds.current.start()
     }
 
     function endCurrentRound() {

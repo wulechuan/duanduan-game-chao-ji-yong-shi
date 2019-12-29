@@ -4,52 +4,70 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
             throw new Error('必须使用 new 运算符来调用 KeyboardEngine 构造函数。')
         }
 
-        const thisKeyboardEngine = this
 
         this.data = {
             keyRegistries: null,
         }
 
         this.status = {
-            isPaused: false,
+            isRunning: false,
         }
 
-
-
+        const thisKeyboardEngine = this
         this.eventListenerForKeyDown = function (event) {
-            const { key } = event
-            console.log('listener: this', this)
-            thisKeyboardEngine.eventHandlerForKeyDown(key)
+            // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
+            thisKeyboardEngine.eventHandlerForKeyDown(event.key)
         }
 
         this.start                  = start                 .bind(this)
+        this.stop                   = stop                  .bind(this)
         this.eventHandlerForKeyDown = eventHandlerForKeyDown.bind(this)
     }
 
     function eventHandlerForKeyDown(key) {
-        const matchedAction = this.data.keyRegistries[key]
+        const upperCaseKey = key.toUpperCase()
+        const matchedAction = this.data.keyRegistries[upperCaseKey]
         matchedAction && matchedAction()
     }
     
     function start(keyRawRegistries) {
-        const keys = Object.keys(keyRawRegistries)
-        console.log(keys)
-        const validRegistries = keys.reduce((validReg, key) => {
-            const providedAction = keyRawRegistries[key]
-
-            if (providedAction) {
-                if (typeof providedAction !== 'function') {
-                    throw new TypeError('注册按键的动作必须使用一个函数。')
+        if (!keyRawRegistries || typeof keyRawRegistries !== 'object') {
+            console.log('没有指定新的按键侦听配置。遂将沿用旧有配置。')
+        } else {
+            const keys = Object.keys(keyRawRegistries)
+            const validRegistries = keys.reduce((validReg, key) => {
+                const providedAction = keyRawRegistries[key]
+    
+                if (providedAction) {
+                    if (typeof providedAction !== 'function') {
+                        throw new TypeError('注册按键的动作必须使用一个函数。')
+                    }
+    
+                    validReg[key] = providedAction
                 }
+    
+                return validReg
+            }, {})
 
-                validReg[key] = providedAction
-            }
+            this.data.keyRegistries = validRegistries
+        }
 
-            return validReg
-        }, {})
+        if (!this.data.keyRegistries) {
+            throw new ReferenceError('从未配置过按键侦听引擎。')
+        }
 
-        this.data.keyRegistries = validRegistries
+        if (!this.status.isRunning) {
+            window.addEventListener('keydown', this.eventListenerForKeyDown)
+            this.status.isRunning = true
+            console.log('按键侦听引擎已经启动。')
+        }
+    }
 
-        window.addEventListener('keydown', this.eventListenerForKeyDown)
+    function stop() {
+        if (this.status.isRunning) {
+            window.removeEventListener('keydown', this.eventListenerForKeyDown)
+            this.status.isRunning = false
+            console.log('按键侦听引擎已经停止。')
+        }
     }
 })();

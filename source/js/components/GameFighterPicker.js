@@ -21,6 +21,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         const {
             gameRoleCandidates,
             shouldNotAutoRoll,
+            onFighterDecided,
         } = initOptions
 
         if (typeof keyForStoppingRollingRoles !== 'string') {
@@ -63,6 +64,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             keyForPickingPrevCandidate,
             keyForPickingNextCandidate,
 
+            keyboardEngineConfig: null,
+
             fighter: {
                 candidates: gameRoleCandidates,
                 arrayIndexOfCurrentCandidate: 0,
@@ -78,12 +81,19 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             shouldNotAutoRoll: !!shouldNotAutoRoll,
         }
 
-        this.startPickingFighter      = startPickingFighter     .bind(this)
-        this.startRollingRoles        = startRollingRoles       .bind(this)
-        this.stopRollingRoles         = stopRollingRoles        .bind(this)
-        this.pickOneCandidate         = pickOneCandidate        .bind(this)
-        this.pickOneCandidateRandomly = pickOneCandidateRandomly.bind(this)
-        this.decideFighter            = decideFighter           .bind(this)
+        this.events = {
+            onFighterDecided,
+        }
+
+        this.updateKeyboardEngineConfig = updateKeyboardEngineConfig.bind(this)
+        this.createKeyboardEngineConfig = this.updateKeyboardEngineConfig
+
+        this.startPickingFighter        = startPickingFighter       .bind(this)
+        this.startRollingRoles          = startRollingRoles         .bind(this)
+        this.stopRollingRoles           = stopRollingRoles          .bind(this)
+        this.pickOneCandidate           = pickOneCandidate          .bind(this)
+        this.pickOneCandidateRandomly   = pickOneCandidateRandomly  .bind(this)
+        this.decideFighter              = decideFighter             .bind(this)
 
         _init.call(this)
 
@@ -94,6 +104,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
     function _init() {
         _createDOMs.call(this)
+        this.createKeyboardEngineConfig()
         this.pickOneCandidateRandomly()
     }
     
@@ -134,20 +145,6 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             'pick-next-candidate',
         ])
 
-        keyboardTipElement1.innerText = keyForStoppingRollingRoles
-
-        if (keyForPickingPrevCandidate) {
-            keyboardTipElement2.innerText = keyForPickingPrevCandidate
-        } else {
-            keyboardTipElement2.style.display = 'none'
-        }
-
-        if (keyForPickingNextCandidate) {
-            keyboardTipElement3.innerText = keyForPickingNextCandidate
-        } else {
-            keyboardTipElement3.style.display = 'none'
-        }
-
         keyboardTipsContainerElement.appendChild(keyboardTipElement1)
         keyboardTipsContainerElement.appendChild(keyboardTipElement2)
         keyboardTipsContainerElement.appendChild(keyboardTipElement3)
@@ -158,10 +155,52 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
         this.el = {
             root: rootElement,
+            keyboardTipStoppingRollingRoles: keyboardTipElement1,
+            keyboardTipPickPrevCandidate: keyboardTipElement2,
+            keyboardTipPickNextCandidate: keyboardTipElement3,
+        }
+    }
+
+    function updateKeyboardEngineConfig() {
+        const {
+            keyboardTipStoppingRollingRoles,
+            keyboardTipPickPrevCandidate,
+            keyboardTipPickNextCandidate,
+        } = this.el
+
+        const {
+            keyForStoppingRollingRoles,
+            keyForPickingPrevCandidate,
+            keyForPickingNextCandidate,
+        } = this.data
+
+        this.data.keyboardEngineConfig = {
+            [keyForStoppingRollingRoles]: this.stopRollingRoles,
+        }
+        keyboardTipStoppingRollingRoles.innerText = keyForStoppingRollingRoles
+
+        if (keyForPickingPrevCandidate) {
+            keyboardTipPickPrevCandidate.innerText = keyForPickingPrevCandidate
+            keyboardTipPickPrevCandidate.style.display = ''
+            // this.data.keyboardEngineConfig[keyForPickingPrevCandidate] = someAction
+        } else {
+            keyboardTipPickPrevCandidate.style.display = 'none'
+        }
+
+        if (keyForPickingNextCandidate) {
+            keyboardTipPickNextCandidate.innerText = keyForPickingNextCandidate
+            keyboardTipPickNextCandidate.style.display = ''
+            // this.data.keyboardEngineConfig[keyForPickingNextCandidate] = someAction
+        } else {
+            keyboardTipPickNextCandidate.style.display = 'none'
         }
     }
 
     function startPickingFighter() {
+        if (!this.data.keyboardEngineConfig) {
+            throw new Error('尚未创建【按键引擎】的配置，无法进行人机交互。因此不应启动【战士选择】进程。')
+        }
+
         if (this.status.shouldNotAutoRoll) {
             console.warn('暂未实现手工选择战士的功能！')
         } else {
@@ -249,6 +288,16 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         fighter.decidedRoleConfig = decidedCandidate.roleConfig
 
         this.status.fighterHasDecided = true
+
+        this.el.root.classList.add('fighter-has-decided')
+
+        const {
+            onFighterDecided,
+        } = this.events
+
+        if (typeof onFighterDecided === 'function') {
+            onFighterDecided(this.data.playerId, fighter.decidedRoleConfig)
+        }
 
         return fighter.decidedRoleConfig
     }

@@ -18,6 +18,8 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             parts: {},
         }
 
+        this.services = {}
+
         this.data = {
             allGameFighterCandidatesForBothPlayers,
             allGameFightingStageConfigurations,
@@ -64,11 +66,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     function _createKeyboardEngine() {
         const { KeyboardEngine } = classes
-
-        const keyboardEngine = new KeyboardEngine()
-        keyboardEngine.start({
-            'x': function() { console.log('shit')}
-        })
+        this.services.keyboardEngine = new KeyboardEngine()
     }
 
     function _createFightersPickingScreen(initOptions) {
@@ -109,8 +107,6 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         
         gameRunningScreen.hide()
         fightersPickingScreen.showUp()
-        
-        fightersPickingScreen.pickFightersForBothPlayers()
     }
 
     function start() {
@@ -126,7 +122,6 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         fightersPickingScreen.leaveAndHide()
         gameRunningScreen.showUp()
-
         gameRoundsRunner.createAndStartNewRound()
     }
 
