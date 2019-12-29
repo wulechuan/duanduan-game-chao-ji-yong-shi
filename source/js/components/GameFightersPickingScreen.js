@@ -1,12 +1,7 @@
 window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function () {
-    const keysForStoppingRollingRoles = {
-        forPlayer1: 'z',
-        forPlayer2: 'm',
-    }
-
     const app = window.duanduanGameChaoJiYongShi
-    const { utils, classes } = app
-
+    const { utils, classes, data: appData } = app
+    
     const { createDOMWithClassNames } = utils
 
     return function GameFightersPickingScreen(game, initOptions) {
@@ -56,6 +51,10 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
 
     function _createFighterPickersForBothPlayers() {
         const { GameFighterPicker } = classes
+        const {
+            player1: player1KeyboardShortcuts,
+            player2: player2KeyboardShortcuts,
+        } = appData.keyboardShortcuts.gameFightersPicking
 
         const [
             candidatesForPlayer1,
@@ -65,17 +64,18 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         this.subComponents.fighterPickers = [
             new GameFighterPicker(1, {
                 gameRoleCandidates: candidatesForPlayer1,
-                keyForStoppingRollingRoles: keysForStoppingRollingRoles.forPlayer1,
-                // keyForPickingPrevCandidate: 'x',
-                // keyForPickingNextCandidate: 'c',
+                keyForStoppingRollingRoles: player1KeyboardShortcuts.stopRolling,
+                keyForPickingPrevCandidate: player1KeyboardShortcuts.prevCandidate,
+                keyForPickingNextCandidate: player1KeyboardShortcuts.nextCandidate,
                 // shouldNotAutoRoll: false,
             }),
 
             new GameFighterPicker(2, {
                 gameRoleCandidates: candidatesForPlayer2,
-                keyForStoppingRollingRoles: keysForStoppingRollingRoles.forPlayer2,
-                keyForPickingPrevCandidate: undefined,
-                keyForPickingNextCandidate: undefined,
+                keyForStoppingRollingRoles: player2KeyboardShortcuts.stopRolling,
+                keyForPickingPrevCandidate: player2KeyboardShortcuts.prevCandidate,
+                keyForPickingNextCandidate: player2KeyboardShortcuts.nextCandidate,
+                // shouldNotAutoRoll: false,
             }),
         ]
     }

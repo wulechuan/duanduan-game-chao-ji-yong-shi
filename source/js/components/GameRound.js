@@ -99,7 +99,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     }
 
     function _createMoreDOMs() {
-        const { gameRoundNumber } = this
+        const { gameRoundNumber } = this.data
 
         const {
             fightingStage,

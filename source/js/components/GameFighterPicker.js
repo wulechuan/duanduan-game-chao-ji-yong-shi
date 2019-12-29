@@ -15,11 +15,11 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         let {
             keyForPickingPrevCandidate,
             keyForPickingNextCandidate,
+            keyForStoppingRollingRoles,
         } = initOptions
 
         const {
             gameRoleCandidates,
-            keyForStoppingRollingRoles,
             shouldNotAutoRoll,
         } = initOptions
 
@@ -29,6 +29,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             throw new RangeError('keyForStoppingRollingRoles 字符串仅允许包含单个字符。')
         }
 
+        keyForStoppingRollingRoles = keyForStoppingRollingRoles.toUpperCase()
+
         if (!shouldNotAutoRoll && (keyForPickingPrevCandidate === undefined || keyForPickingPrevCandidate === null)) {
             keyForPickingPrevCandidate = undefined
         } else {
@@ -37,6 +39,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             } else if (keyForPickingPrevCandidate.length !== 1) {
                 throw new RangeError('keyForPickingPrevCandidate 字符串仅允许包含单个字符。')
             }
+
+            keyForPickingPrevCandidate = keyForPickingPrevCandidate.toUpperCase()
         }
 
 
@@ -48,6 +52,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             } else if (keyForPickingNextCandidate.length !== 1) {
                 throw new RangeError('keyForPickingNextCandidate 字符串仅允许包含单个字符。')
             }
+
+            keyForPickingNextCandidate = keyForPickingNextCandidate.toUpperCase()
         }
 
         this.data = {
