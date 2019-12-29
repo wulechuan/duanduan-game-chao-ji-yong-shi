@@ -4,6 +4,21 @@
         url('../images/game-ui/挑选角色阶段的背景.webp')
     background-size: cover
     background-position: center
+
+    &.leaving {
+        animation fighters-picking-screen-leaving 0.3s ease-in
+
+        @keyframes fighters-picking-screen-leaving {
+            0% {
+                transform none
+                opacity 1
+            }
+            to {
+                transform: translateY(110%) scale(0.79)
+                opacity 0
+            }
+        }
+    }
 }
 
 .role-candidates-slot {

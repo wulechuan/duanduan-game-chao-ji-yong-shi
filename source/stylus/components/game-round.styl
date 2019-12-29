@@ -9,35 +9,52 @@
     right 0
     bottom 0
 
+
     &.entering {
         animation game-round-entering 0.4s ease-out
+
+        @keyframes game-round-entering {
+            0% {
+                transform translateY(-110%) scale(0.79)
+                opacity 0
+            }
+
+            to {
+                transform none
+                opacity 1
+            }
+        }
     }
+
 
     &.leaving {
         animation game-round-leaving 0.4s ease-in
+
+
+        @keyframes game-round-leaving {
+            0% {
+                transform none
+                opacity 1
+            }
+
+            to {
+                transform translateY(110%) scale(0.79)
+                opacity 0
+            }
+        }
     }
 
-    @keyframes game-round-entering {
-        0% {
-            transform translateY(-110%) scale(0.79)
-            opacity 0
-        }
 
-        to {
-            transform none
-            opacity 1
-        }
+    .fighting-stage {
+        z-index 0
     }
 
-    @keyframes game-round-leaving {
-        0% {
-            transform none
-            opacity 1
-        }
-
-        to {
-            transform translateY(110%) scale(0.79)
-            opacity 0
-        }
+    .fighters {
+        position relative
+        z-index 10
+    }
+    
+    .game-round-status-block {
+        z-index 90
     }
 }

@@ -96,11 +96,27 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
     }
 
     function pickFightersForBothPlayers() {
-        const {
-            fighterPickers,
-        } = this.subComponents
+        this.subComponents.fighterPickers.forEach(fp => fp.startPickingFighter())
+    }
 
-        fighterPickers.forEach(fp => fp.startPickingFighter())
+    function onEitherFighterDecided(fighterPicker) {
+        const decidedFighterRoleConfig = fighterPicker.stopRollingRoles()
+
+        const { playerId } = fighterPicker.data
+        
+        const pickedFighterRoleConfigs = this.game.data.pickedFighterRoleConfigurations.both
+        const arrayIndex = playerId - 1
+        pickedFighterRoleConfigs[arrayIndex] = decidedFighterRoleConfig
+
+        fighterPicker.el.root.classList.add('fighter-has-decided')
+
+        const { status } = this
+        status[`fighter${arrayIndex + 1}HasDecided`] = true
+
+        if (status.fighter1HasDecided && status.fighter2HasDecided) {
+            window.onkeydown = null
+            this.game.start()
+        }
     }
 
     function showUp() {
@@ -132,31 +148,11 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
 
     function hide() {
         window.onkeydown = null
-        const rootElement = this.el.root
-        rootElement.style.display = 'none'
-    }
-
-    function onEitherFighterDecided(fighterPicker) {
-        const decidedFighterRoleConfig = fighterPicker.stopRollingRoles()
-
-        const { playerId } = fighterPicker.data
-        
-        const pickedFighterRoleConfigs = this.game.data.pickedFighterRoleConfigurations.both
-        const arrayIndex = playerId - 1
-        pickedFighterRoleConfigs[arrayIndex] = decidedFighterRoleConfig
-
-        fighterPicker.el.root.classList.add('fighter-has-decided')
-
-        const { status } = this
-        status[`fighter${arrayIndex + 1}HasDecided`] = true
-
-        if (status.fighter1HasDecided && status.fighter2HasDecided) {
-            window.onkeydown = null
-            this.game.start()
-        }
+        this.el.root.style.display = 'none'
     }
 
     function leaveAndHide() {
+        window.onkeydown = null
         const rootElement = this.el.root
 
         rootElement.classList.add('leaving')

@@ -1,3 +1,12 @@
+.ui-screen{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width:auto;
+  height:auto;
+}
 .count-down-overlay{
   position:fixed;
   top:0;
@@ -75,6 +84,49 @@
   background-size:cover;
   background-position:center;
 }
+.role-picking-screen.leaving{
+  animation:fighters-picking-screen-leaving 0.3s ease-in;
+}
+@-moz-keyframes fighters-picking-screen-leaving{
+  0%{
+    transform:none;
+    opacity:1;
+  }
+  to{
+    transform:translateY(110%) scale(0.79);
+    opacity:0;
+  }
+}
+@-webkit-keyframes fighters-picking-screen-leaving{
+  0%{
+    transform:none;
+    opacity:1;
+  }
+  to{
+    transform:translateY(110%) scale(0.79);
+    opacity:0;
+  }
+}
+@-o-keyframes fighters-picking-screen-leaving{
+  0%{
+    transform:none;
+    opacity:1;
+  }
+  to{
+    transform:translateY(110%) scale(0.79);
+    opacity:0;
+  }
+}
+@keyframes fighters-picking-screen-leaving{
+  0%{
+    transform:none;
+    opacity:1;
+  }
+  to{
+    transform:translateY(110%) scale(0.79);
+    opacity:0;
+  }
+}
 .role-candidates-slot{
   width:400px;
   height:400px;
@@ -142,9 +194,6 @@
 .game-round.entering{
   animation:game-round-entering 0.4s ease-out;
 }
-.game-round.leaving{
-  animation:game-round-leaving 0.4s ease-in;
-}
 @-moz-keyframes game-round-entering{
   0%{
     transform:translateY(-110%) scale(0.79);
@@ -185,6 +234,9 @@
     opacity:1;
   }
 }
+.game-round.leaving{
+  animation:game-round-leaving 0.4s ease-in;
+}
 @-moz-keyframes game-round-leaving{
   0%{
     transform:none;
@@ -224,6 +276,16 @@
     transform:translateY(110%) scale(0.79);
     opacity:0;
   }
+}
+.game-round .fighting-stage{
+  z-index:0;
+}
+.game-round .fighters{
+  position:relative;
+  z-index:10;
+}
+.game-round .game-round-status-block{
+  z-index:90;
 }
 .game-round-status-block{
   position:absolute;
@@ -316,25 +378,6 @@ html{
 body{
   margin:0;
 }
-.ui-screen{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  width:auto;
-  height:auto;
-}
 .count-down-overlay{
   z-index:900;
-}
-.fighting-stage{
-  z-index:0;
-}
-.game-round-status-block{
-  z-index:90;
-}
-.fighters{
-  position:relative;
-  z-index:10;
 }

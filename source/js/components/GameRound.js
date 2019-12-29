@@ -127,22 +127,17 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         }
     }
 
-    async function start() {
+    function start() {
         console.log('【游戏局】开始。')
         this.status.isRunning = true
+    }
 
-        console.warn('虚假逻辑开始。')
-        const ms = Math.floor(Math.random() * 1357 + 246)
-        console.log(`等待：${ms}ms`)
-        await new Promise(resolve => {
-            setTimeout(() => {
-                // console.log(`游戏耗时：${ms}ms`)
-                resolve()
-            }, ms)
-        })
-        console.warn('虚假逻辑结束。')
+    function startListeningToKeyboardEvents() {
+        
+    }
 
-        this.end({ loser: this.data.fighters.both[0] })
+    function stopListeningToKeyboardEvents() {
+
     }
 
     function end(options) {
