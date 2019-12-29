@@ -54,10 +54,21 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
     function _init(initOptions) {
+        _createKeyboardEngine       .call(this)
         _createFightersPickingScreen.call(this, initOptions)
-        _createRunningScreen.call(this, initOptions)
+        _createRunningScreen        .call(this, initOptions)
+        _queryAndSetupMoreDOMs      .call(this)
+
         console.log('\n', this, '\n\n')
-        _queryAndSetupMoreDOMs.call(this)
+    }
+
+    function _createKeyboardEngine() {
+        const { KeyboardEngine } = classes
+
+        const keyboardEngine = new KeyboardEngine()
+        keyboardEngine.start({
+            'x': function() { console.log('shit')}
+        })
     }
 
     function _createFightersPickingScreen(initOptions) {
