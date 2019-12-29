@@ -97,7 +97,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
         _init.call(this)
 
-        console.log('【游戏角色选择器】创建完毕。')
+        // console.log('【游戏角色选择器】创建完毕。')
     }
 
 

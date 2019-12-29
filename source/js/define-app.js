@@ -46,7 +46,7 @@ window.duanduanGameChaoJiYongShi = {
     prepareAllGameRoleCandidatesForPlayer(playerId, allGameRoleConfigurations) {
         const { GameRoleCandidate } = this.classes
 
-        console.log('\n准备为玩家', playerId, '创建所有【角色候选人】……')
+        // console.log('\n准备为玩家', playerId, '创建所有【角色候选人】……')
 
         const gameRoleCandidates = allGameRoleConfigurations.map(roleConfig => {
             return new GameRoleCandidate(playerId, roleConfig)

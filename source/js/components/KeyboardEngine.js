@@ -4,7 +4,6 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
             throw new Error('必须使用 new 运算符来调用 KeyboardEngine 构造函数。')
         }
 
-
         this.data = {
             keyRegistries: null,
         }
@@ -25,6 +24,7 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
     }
 
     function eventHandlerForKeyDown(key) {
+        console.log('按键引擎监测到按键：', key)
         const upperCaseKey = key.toUpperCase()
         const matchedAction = this.data.keyRegistries[upperCaseKey]
         matchedAction && matchedAction()

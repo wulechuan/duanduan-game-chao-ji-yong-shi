@@ -52,21 +52,25 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         _init.call(this, initOptions)
 
-        console.log('【游戏】创建完毕。')
+        console.log('【游戏】创建完毕。\n\n', this, '\n\n')
     }
 
     function _init(initOptions) {
         _createKeyboardEngine       .call(this)
+        _createCountDownOverlay     .call(this)
         _createFightersPickingScreen.call(this, initOptions)
         _createRunningScreen        .call(this, initOptions)
         _queryAndSetupMoreDOMs      .call(this)
-
-        console.log('\n', this, '\n\n')
     }
 
     function _createKeyboardEngine() {
         const { KeyboardEngine } = classes
         this.services.keyboardEngine = new KeyboardEngine()
+    }
+
+    function _createCountDownOverlay() {
+        const { CountDownOverlay } = classes
+        this.services.countDownOverlay = new CountDownOverlay()
     }
 
     function _createFightersPickingScreen(initOptions) {
@@ -91,9 +95,14 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             gameRunningScreen,
         } = this.subComponents.uiScreens
 
+        const {
+            countDownOverlay,
+        } = this.services
+
         const rootElement = this.el.root
         rootElement.appendChild(fightersPickingScreen.el.root)
         rootElement.appendChild(gameRunningScreen    .el.root)
+        rootElement.appendChild(countDownOverlay     .el.root)
     }
 
 

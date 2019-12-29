@@ -50,13 +50,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
     }
 
     function _init() {
-        _createCountDownOverlay.call(this)
-        _createMoreDOMs        .call(this)
-    }
-
-    function _createCountDownOverlay() {
-        const { CountDownOverlay } = classes
-        this.subComponents.countDownOverlay = new CountDownOverlay()
+        _createMoreDOMs.call(this)
     }
 
     function _createMoreDOMs() {
@@ -71,8 +65,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
 
 
     async function createAndStartNewRound() {
+        const {
+            countDownOverlay,
+            keyboardEngine,
+        } = this.game.services
+
         _createNewRoundAndShowItUp.call(this)
-        await this.subComponents.countDownOverlay.countDown(3)
+        await countDownOverlay.countDown(3)
         _startCurrentRound.call(this)
     }
 
@@ -110,9 +109,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
     }
 
     function _startCurrentRound() {
-        const { gameRounds } = this.game.data
         this.status.isRunningOneRound = true
-        // gameRounds.current.start()
+        this.game.data.gameRounds.current.start()
     }
 
     function endCurrentRound() {

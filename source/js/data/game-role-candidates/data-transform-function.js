@@ -33,10 +33,14 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleConfigurationTransformFunction 
 
     images.poses = Object.keys(fileNamesIndexingByCSSClassName).reduce((poseConfig, poseName) => {
         const poseFileName = fileNamesIndexingByCSSClassName[poseName]
-        poseConfig[poseName] = {
-            // fileName: poseFileName,
-            filePath: `${filePathsPrefixOfThisRole}/${poseFileName}`,
+
+        if (poseFileName) {
+            poseConfig[poseName] = {
+                // fileName: poseFileName,
+                filePath: `${filePathsPrefixOfThisRole}/${poseFileName}`,
+            }
         }
+
         return poseConfig
     }, {})
 

@@ -45,6 +45,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             images,
         } = gameRoleConfig
 
+        this.logString = `玩家 ${playerId} 的【游戏角色】“${name}”`
+
         this.data = {
             playerId,
             name,
@@ -61,11 +63,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.setPoseTo     = setPoseTo    .bind(this)
         this.attack        = attack       .bind(this)
         this.toBeAttacked  = toBeAttacked .bind(this)
-        this.die           = die          .bind(this)
+        this.win           = win          .bind(this)
+        this.lose          = lose         .bind(this)
 
         _init.call(this)
 
-        console.log(`【游戏角色】“${name}”创建完毕。`)
+        console.log(`${this.logString}”创建完毕。`)
     }
 
 
@@ -129,21 +132,20 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         this.healthPoint = healthPoint
 
-        if (this.healthPoint <= 0.000001) {
-            this.die()
-        }
+        this.joinedGameRound.judge()
     }
 
-    function die() {
-        this.joinedGameRound.end({ loser: this })
+    function win() {
+        this.setPoseTo('has-won')
     }
-
+    
+    function lose() {
+        this.setPoseTo('has-lost')
+    }
 
     function setPoseTo(poseCSSClassNameToApply) {
-        const gameRole = this
-
-        const roleRootDOM = gameRole.el.root
-        const classList = roleRootDOM.classList
+        const rootElement = this.el.root
+        const classList = rootElement.classList
 
         gameRoleAllPossiblePoseCSSClassNames.forEach(poseCSSClassName => {
             if (poseCSSClassName !== poseCSSClassNameToApply && classList.contains(poseCSSClassName)) {
@@ -155,21 +157,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             classList.add(poseCSSClassNameToApply)
         }
 
-        const roleGamingSettings = gameRole.gamingSettings
-        const {
-            imageFilesContainerFolderPath,
-            fileNamesIndexingByCSSClassName,
-        } = roleGamingSettings
+        const { poses } = this.data.images
+        const image = poses[poseCSSClassNameToApply]
 
-        let poseImageFileName = fileNamesIndexingByCSSClassName['default']
-        if (poseCSSClassNameToApply && poseCSSClassNameToApply !== 'default') {
-            let foundPoseImageFileName = fileNamesIndexingByCSSClassName[poseCSSClassNameToApply]
-
-            if (foundPoseImageFileName) {
-                poseImageFileName = foundPoseImageFileName
-            }
+        if (image) {
+            rootElement.style.backgroundImage = `url(${poses[poseCSSClassNameToApply]})`
         }
-
-        gameRole.el.root.style.backgroundImage = `url(${imageFilesContainerFolderPath}/${poseImageFileName})`
     }
 })();

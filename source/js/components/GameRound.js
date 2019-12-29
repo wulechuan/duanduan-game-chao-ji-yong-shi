@@ -52,6 +52,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         this.start        = start       .bind(this)
         this.end          = end         .bind(this)
+        this.judge        = judge       .bind(this)
         this.showUp       = showUp      .bind(this)
         this.leaveAndHide = leaveAndHide.bind(this)
 
@@ -128,45 +129,72 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     }
 
     function start() {
-        console.log('【游戏局】开始。')
+        console.log('\n\n【游戏局】开始。')
         this.status.isRunning = true
+
+        const {
+            keyboardEngine,
+        } = this.game.services
+
+        keyboardEngine.start({
+            'ENTER': () => {
+                console.warn('临时代码！')
+                const loserArrayIndex = Math.floor(Math.random() * 2)
+                this.data.fighters.both[loserArrayIndex].data.healthPoint = 0
+                this.judge()
+            },
+        })
     }
 
-    function startListeningToKeyboardEvents() {
-        
-    }
-
-    function stopListeningToKeyboardEvents() {
-
-    }
-
-    function end(options) {
-        this.status.isRunning = false
-        this.status.isOver = true
-        console.log('【游戏局】结束。')
-
-        const { loser } = options
-
-        const { fighters } = this.data
+    function judge() {
+        const fighters = this.data.fighters
         const [ fighter1, fighter2 ] = fighters.both
 
-        if (fighter1 === loser) {
-            fighters.winner = fighter2
-            fighters.loser  = fighter1
-            fighters.winnerRoleConfig = fighter2.roleConfig
-            fighters.loserRoleConfig  = fighter1.roleConfig
-            fighters.winnerArrayIndex = 1
-            fighters.loserArrayIndex  = 0
-        } else {
-            fighters.winner = fighter1
-            fighters.loser  = fighter2
-            fighters.winnerRoleConfig = fighter1.roleConfig
-            fighters.loserRoleConfig  = fighter2.roleConfig
-            fighters.winnerArrayIndex = 0
-            fighters.loserArrayIndex  = 1
+        const f1HP = fighter1.data.healthPoint
+        const f2HP = fighter2.data.healthPoint
+
+        const epsilon = 0.0001
+
+        if (f1HP >= epsilon && f2HP >= epsilon) {
+            return
         }
 
+        console.warn('暂未考虑双方同时阵亡的细则', f1HP, f2HP)
+        let winner, loser, winnerArrayIndex, loserArrayIndex
+        if (f1HP < f2HP) {
+            winner = fighter2
+            loser  = fighter1
+            winnerArrayIndex = 1
+            loserArrayIndex  = 0
+        } else {
+            winner = fighter1
+            loser  = fighter2
+            winnerArrayIndex = 0
+            loserArrayIndex  = 1
+        }
+
+        fighters.winner = winner
+        fighters.loser  = loser
+        fighters.winnerRoleConfig = winner.roleConfig
+        fighters.loserRoleConfig  = loser.roleConfig
+        fighters.winnerArrayIndex = winnerArrayIndex
+        fighters.loserArrayIndex  = loserArrayIndex
+
+        winner.win()
+        loser.lose()
+
+        this.end()
+    }
+
+    function end() {
+        this.game.services.keyboardEngine.stop()
+
         annouceResult.call(this)
+
+        this.status.isRunning = false
+        this.status.isOver = true
+
+        console.log('【游戏局】结束。\n\n\n')
 
         this.gameRoundsRunner.endCurrentRound()
     }
@@ -174,8 +202,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     function annouceResult() {
         const { winner, loser } = this.data.fighters
         console.log(
-            '\n胜者：', winner.data.name,
-            '\n败者：',  loser.data.name,
+            '\n胜者：', winner.logString,
+            '\n败者：',  loser.logString,
             '\n\n'
         )
     }

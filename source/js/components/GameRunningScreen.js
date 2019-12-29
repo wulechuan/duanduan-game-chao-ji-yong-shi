@@ -23,14 +23,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRunningScreen = (function () {
     }
 
     function _init(initOptions) {
-        _createCountDownOverlay.call(this)
         _createGameRoundsRunner.call(this, initOptions)
         _createMoreDOMs        .call(this)
-    }
-
-    function _createCountDownOverlay() {
-        const { CountDownOverlay } = classes
-        this.subComponents.countDownOverlay = new CountDownOverlay()
     }
 
     function _createGameRoundsRunner(initOptions) {
@@ -51,8 +45,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRunningScreen = (function () {
         ])
 
         rootElement.appendChild(gameRoundsRunner.el.root)
-        rootElement.appendChild(countDownOverlay.el.root)
-        
 
         this.el = {
             root: rootElement,

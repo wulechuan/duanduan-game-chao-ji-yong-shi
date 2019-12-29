@@ -66,7 +66,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
         {
             name: '巨力工头',
             typeIdInFilePathAndCSSClassName: '005',
-            fullHealthPoint: 10,
+            fullHealthPoint: 10000,
             attackingPower: 13000,
             defencingPower: 14000,
             avatarFileName: 'avatar.png',
