@@ -1,14 +1,23 @@
 {
   "name": "@wulechuan/game-duanduan-chao-ji-yong-shi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "wulechuan@live.com",
-  "license": "ISC",
-  "description": "我给端儿做的小游戏",
+  "license": "WTFPL",
+  "description": "我给端儿编写的简易游戏。他自己给取的名字叫《超级勇士》。",
   "main": "gulpfile.esm.js",
   "scripts": {
     "start": "gulp    --silent"
   },
   "private": true,
+  "keywords": [
+    "game",
+    "游戏",
+    "webapp",
+    "简易游戏",
+    "fighters",
+    "对战游戏",
+    "格斗游戏"
+  ],
   "devDependencies": {
     "gulp": "^4.0.2",
     "@wulechuan/gulp-classical-task-cycle": "^0.2.2",
@@ -16,5 +25,14 @@
     "esm": "^3.2.25",
     "gulp-postcss": "^8.0.0",
     "gulp-stylus": "^2.7.0"
+  },
+  "dependencies": {},
+  "homepage": "https://github.com/wulechuan/wulechuan-webapp-duanduan-chao-ji-yong-shi#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wulechuan/wulechuan-webapp-duanduan-chao-ji-yong-shi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wulechuan/wulechuan-webapp-duanduan-chao-ji-yong-shi/issues"
   }
 }
