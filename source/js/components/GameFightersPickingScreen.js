@@ -130,8 +130,9 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
             ] = this.subComponents.fighterPickers
 
             window.onkeydown = e => {
-                const { key } = e
-                console.log('key:', key, 'keyCode', e.keyCode)
+                let { key } = e
+                key = key.toUpperCase()
+                // console.log('key:', key, 'keyCode', e.keyCode)
 
                 switch (key) {
                     case fighterPickerForPlayer1.data.keyForStoppingRollingRoles:
