@@ -19,7 +19,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundStatusBlock = (function () {
         this.subComponents = {}
         this.data = {}
 
-        this.setFighterHPBar = setFighterHPBar.bind(this)
+        this.updateFightersStatusBaseOnFightersData = updateFightersStatusBaseOnFightersData.bind(this)
 
         _init.call(this)
 
@@ -64,7 +64,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundStatusBlock = (function () {
         }
     }
 
-    function setFighterHPBar() {
-
+    function updateFightersStatusBaseOnFightersData() {
+        this.subComponents.fighterStatusBars.forEach(
+            fsb => fsb.updateBasedOnFighterCurrentData()
+        )
     }
 })();

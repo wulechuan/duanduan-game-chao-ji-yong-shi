@@ -26,7 +26,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
             fighter,
         }
 
-        this.setFighterHPBar = setFighterHPBar.bind(this)
+        this.updateBasedOnFighterCurrentData = updateBasedOnFighterCurrentData.bind(this)
+        this.setFighterHPBar                 = setFighterHPBar                .bind(this)
 
         _init.call(this)
 
@@ -100,5 +101,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
         } else {
             hp.className += 'role-is-dying'
         }
+    }
+
+    function updateBasedOnFighterCurrentData() {
+        const {
+            fullHealthPoint,
+            healthPoint,
+        } = this.data.fighter.data
+        
+        const percentage = healthPoint * 100 / fullHealthPoint
+
+        // console.log('HP:', healthPoint, '/', fullHealthPoint)
+        // console.log('HP%:', percentage)
+
+        this.setFighterHPBar(percentage)
     }
 })();

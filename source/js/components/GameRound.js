@@ -18,10 +18,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             throw new TypeError('创建【游戏局】时，必须指明其应隶属于哪个【游戏】。')
         }
 
-        if (game.status.isRunningOneRound) {
-            throw new Error('【游戏】已经开始。不能为已经开始的【游戏】创建【游戏局】。')
-        }
-
         if (game.status.isOver) {
             throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏局】。')
         }
@@ -48,6 +44,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.status = {
             isRunning: false,
             isOver: false,
+            attackerIdOfNextRound: 0,
         }
 
         this.start        = start       .bind(this)
@@ -55,6 +52,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.judge        = judge       .bind(this)
         this.showUp       = showUp      .bind(this)
         this.leaveAndHide = leaveAndHide.bind(this)
+
+        console.log('旧版逻辑')
+        this._oldStyleOneFaceOff = _oldStyleOneFaceOff.bind(this)
 
 
         _init.call(this)
@@ -129,7 +129,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     }
 
     function start() {
-        console.log('\n\n【游戏局】开始。')
+        console.log(`\n\n【游戏局 ${this.data.gameRoundNumber}】开始。\n\n\n`)
+
         this.status.isRunning = true
 
         const {
@@ -137,6 +138,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         } = this.game.services
 
         keyboardEngine.start({
+            ' ': this._oldStyleOneFaceOff,
             'ENTER': () => {
                 console.warn('临时代码！')
                 const loserArrayIndex = Math.floor(Math.random() * 2)
@@ -146,7 +148,65 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         })
     }
 
+    function _decideHealthPointDecreaseForOneRole(roleAIsDefencer, roleA, roleB) {
+        const oldPoint = roleA.data.healthPoint
+
+        let roleADefensiveRatio
+        let roleBAttackingRatio
+        if (roleAIsDefencer) {
+            roleADefensiveRatio = Math.random() * 0.3 + 0.7
+            roleBAttackingRatio = Math.random() * 0.3 + 0.7
+        } else {
+            roleADefensiveRatio = Math.random() * 0.15
+            roleBAttackingRatio = Math.random() * 0.25 + 0.1
+        }
+
+        const attackFromB = roleB.data.attackingPower * roleBAttackingRatio
+        const defenceOfA  = roleA.data.defencingPower * roleADefensiveRatio
+
+        const decreaseLimit = Math.max(0, attackFromB - defenceOfA)
+
+        decrease = Math.min(oldPoint, Math.floor(Math.random() * decreaseLimit))
+        return decrease
+    }
+
+    function _oldStyleOneFaceOff() {
+        const { status } = this
+
+        if (!status.isRunning) {
+            return
+        }
+
+        const fighters = this.data.fighters.both
+
+        const attackerIdOfThisRound = status.attackerIdOfNextRound
+        const attackerIdOfNextRound = 1 - attackerIdOfThisRound
+
+        const attacker = fighters[attackerIdOfThisRound]
+        const defencer = fighters[attackerIdOfNextRound]
+
+        console.log(`${attacker.logString} 正在攻击 ${defencer.logString}...`)
+
+        attacker.setPoseTo('is-attacking')
+        defencer.setPoseTo('')
+
+        const decreasePoints = [
+            _decideHealthPointDecreaseForOneRole(true,  defencer, attacker),
+            _decideHealthPointDecreaseForOneRole(false, attacker, defencer),
+        ]
+
+        defencer.data.healthPoint -= decreasePoints[0]
+        attacker.data.healthPoint -= decreasePoints[1]
+
+        status.attackerIdOfNextRound = attackerIdOfNextRound
+
+        this.judge()
+    }
+
+
     function judge() {
+        this.subComponents.statusBlock.updateFightersStatusBaseOnFightersData()
+
         const fighters = this.data.fighters
         const [ fighter1, fighter2 ] = fighters.both
 
@@ -183,29 +243,33 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         winner.win()
         loser.lose()
 
-        this.end()
+        _ending.call(this)
+    }
+
+    function _ending() {
+        this.status.isRunning = false
+        this.status.isOver = true
+
+        _annouceResult.call(this)
     }
 
     function end() {
         this.game.services.keyboardEngine.stop()
-
-        annouceResult.call(this)
-
-        this.status.isRunning = false
-        this.status.isOver = true
-
-        console.log('【游戏局】结束。\n\n\n')
-
+        console.log(`【游戏局 ${this.data.gameRoundNumber}】结束。\n\n\n`)
         this.gameRoundsRunner.endCurrentRound()
     }
 
-    function annouceResult() {
+    function _annouceResult() {
         const { winner, loser } = this.data.fighters
         console.log(
             '\n胜者：', winner.logString,
             '\n败者：',  loser.logString,
             '\n\n'
         )
+
+        this.game.services.keyboardEngine.start({
+            'ENTER': this.end,
+        })
     }
 
     function showUp() {
