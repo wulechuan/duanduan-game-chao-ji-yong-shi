@@ -216,6 +216,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         const { status } = this
         if (status.isRollingRoles) { return }
 
+        this.pickOneCandidateRandomly()
+
         status.isRollingRoles = true
         status.rollingIntervalId = setInterval(() => {
             this.pickOneCandidateRandomly()
@@ -246,16 +248,16 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
         if (!(arrayNewIndex >= 0 && arrayNewIndex < candidates.length)) {
             console.warn(`玩家 ${this.data.playerId} 的角色候选人索引越界。`)
-            return
+            return 'failed'
         }
 
         if (this.status.fighterHasDecided) {
             console.warn(`玩家 ${this.data.playerId} 的角色已经选定了，不能再改。`)
-            return
+            return 'rejected'
         }
 
         if (arrayOldIndex === arrayNewIndex) {
-            return
+            return 'nothing-to-do'
         }
         
         fighter.arrayIndexOfCurrentCandidate = arrayNewIndex
@@ -267,12 +269,18 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
                 c.leaveAndHide()
             }
         })
+
+        return 'succeeded'
     }
 
     function pickOneCandidateRandomly() {
-        this.pickOneCandidate(
-            randomPositiveIntegerLessThan(this.data.fighter.candidates.length)
-        )
+        let result
+
+        do {
+            result = this.pickOneCandidate(
+                randomPositiveIntegerLessThan(this.data.fighter.candidates.length)
+            )
+        } while (result !== 'succeeded' && result !== 'rejected')
     }
 
     function decideFighter() {
