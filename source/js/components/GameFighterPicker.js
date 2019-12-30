@@ -64,7 +64,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             keyForPickingPrevCandidate,
             keyForPickingNextCandidate,
 
-            keyboardEngineConfig: null,
+            keyboardEngineKeyDownConfig: null,
 
             fighter: {
                 candidates: gameRoleCandidates,
@@ -111,9 +111,6 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
     function _createDOMs() {
         const {
             playerId,
-            keyForStoppingRollingRoles,
-            keyForPickingPrevCandidate,
-            keyForPickingNextCandidate,
             fighter,
         } = this.data
         
@@ -174,7 +171,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             keyForPickingNextCandidate,
         } = this.data
 
-        this.data.keyboardEngineConfig = {
+        const keyboardEngineKeyDownConfig = {
             [keyForStoppingRollingRoles]: this.stopRollingRoles,
         }
         keyboardTipStoppingRollingRoles.innerText = keyForStoppingRollingRoles
@@ -182,7 +179,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         if (keyForPickingPrevCandidate) {
             keyboardTipPickPrevCandidate.innerText = keyForPickingPrevCandidate
             keyboardTipPickPrevCandidate.style.display = ''
-            // this.data.keyboardEngineConfig[keyForPickingPrevCandidate] = someAction
+            // keyboardEngineKeyDownConfig[keyForPickingPrevCandidate] = someAction
         } else {
             keyboardTipPickPrevCandidate.style.display = 'none'
         }
@@ -190,14 +187,16 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         if (keyForPickingNextCandidate) {
             keyboardTipPickNextCandidate.innerText = keyForPickingNextCandidate
             keyboardTipPickNextCandidate.style.display = ''
-            // this.data.keyboardEngineConfig[keyForPickingNextCandidate] = someAction
+            // keyboardEngineKeyDownConfig[keyForPickingNextCandidate] = someAction
         } else {
             keyboardTipPickNextCandidate.style.display = 'none'
         }
+
+        this.data.keyboardEngineKeyDownConfig = keyboardEngineKeyDownConfig
     }
 
     function startPickingFighter() {
-        if (!this.data.keyboardEngineConfig) {
+        if (!this.data.keyboardEngineKeyDownConfig) {
             throw new Error('尚未创建【按键引擎】的配置，无法进行人机交互。因此不应启动【战士选择】进程。')
         }
 

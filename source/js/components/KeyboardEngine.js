@@ -12,60 +12,121 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
             isRunning: false,
         }
 
+
+        this.start                  = start                 .bind(this)
+        this.stop                   = stop                  .bind(this)
+        this.eventHandlerForKeyDown = eventHandlerForKeyDown.bind(this)
+        this.eventHandlerForKeyUp   = eventHandlerForKeyUp  .bind(this)
+
+
         const thisKeyboardEngine = this
+
         this.eventListenerForKeyDown = function (event) {
             // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
             thisKeyboardEngine.eventHandlerForKeyDown(event.key)
         }
 
-        this.start                  = start                 .bind(this)
-        this.stop                   = stop                  .bind(this)
-        this.eventHandlerForKeyDown = eventHandlerForKeyDown.bind(this)
+        this.eventListenerForKeyUp = function (event) {
+            // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
+            thisKeyboardEngine.eventHandlerForKeyUp(event.key)
+        }
     }
 
     function eventHandlerForKeyDown(key) {
-        console.log('按键引擎监测到按键：', key)
+        // console.log('按键引擎监测到键被按下：', key)
         const upperCaseKey = key.toUpperCase()
-        const matchedAction = this.data.keyRegistries[upperCaseKey]
+        const matchedAction = this.data.keyRegistries.keyDown[upperCaseKey]
         matchedAction && matchedAction()
     }
-    
+
+    function eventHandlerForKeyUp(key) {
+        // console.log('按键引擎监测到键被松开：', key)
+        const upperCaseKey = key.toUpperCase()
+        const matchedAction = this.data.keyRegistries.keyUp[upperCaseKey]
+        matchedAction && matchedAction()
+    }
+
     function start(keyRawRegistries) {
-        if (!keyRawRegistries || typeof keyRawRegistries !== 'object') {
-            console.log('没有指定新的按键侦听配置。遂将沿用旧有配置。')
-        } else {
-            const keys = Object.keys(keyRawRegistries)
+        function processOneTypeOfEventRegisters(rawReg) {
+            if (!rawReg || typeof rawReg !== 'object') { return }
+
+            const keys = Object.keys(rawReg)
+            if (keys.length === 0) { return }
+
             const validRegistries = keys.reduce((validReg, key) => {
-                const providedAction = keyRawRegistries[key]
-    
+                const providedAction = rawReg[key]
+
                 if (providedAction) {
                     if (typeof providedAction !== 'function') {
                         throw new TypeError('注册按键的动作必须使用一个函数。')
                     }
-    
+
                     validReg[key] = providedAction
                 }
-    
+
                 return validReg
             }, {})
 
+            return validRegistries
+        }
+
+
+
+        if (!keyRawRegistries || typeof keyRawRegistries !== 'object') {
+            console.log('没有指定新的按键侦听配置。遂将沿用旧有配置。')
+        } else {
+            const { keyDown: rawKeyDown, keyUp: rawKeyUp } = keyRawRegistries
+            // console.log('rawKeyDown', rawKeyDown)
+            // console.log('rawKeyUp',   rawKeyUp)
+
+            const validRegistriesForKeyDown = processOneTypeOfEventRegisters(rawKeyDown)
+            const validRegistriesForKeyUp   = processOneTypeOfEventRegisters(rawKeyUp)
+
+            if (!validRegistriesForKeyDown && !validRegistriesForKeyUp) {
+                throw new TypeError('没有指定任何有效的按键侦听配置。')
+            }
+
+            const validRegistries = {}
+
+            if (validRegistriesForKeyDown) {
+                validRegistries.keyDown = validRegistriesForKeyDown
+            }
+
+            if (validRegistriesForKeyUp) {
+                validRegistries.keyUp = validRegistriesForKeyUp
+            }
+
             this.data.keyRegistries = validRegistries
         }
+
 
         if (!this.data.keyRegistries) {
             throw new ReferenceError('从未配置过按键侦听引擎。')
         }
 
-        if (!this.status.isRunning) {
+
+        this.stop()
+
+        const {
+            keyDown,
+            keyUp,
+        } = this.data.keyRegistries
+
+        if (keyDown) {
             window.addEventListener('keydown', this.eventListenerForKeyDown)
-            this.status.isRunning = true
-            console.log('按键侦听引擎已经启动。')
         }
+
+        if (keyUp) {
+            window.addEventListener('keyup', this.eventListenerForKeyUp)
+        }
+
+        this.status.isRunning = true
     }
 
     function stop() {
         if (this.status.isRunning) {
             window.removeEventListener('keydown', this.eventListenerForKeyDown)
+            window.removeEventListener('keyup',   this.eventListenerForKeyUp)
             this.status.isRunning = false
             console.log('按键侦听引擎已经停止。')
         }

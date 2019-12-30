@@ -1,6 +1,6 @@
 window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     const app = window.duanduanGameChaoJiYongShi
-    const { utils, classes } = app
+    const { utils, classes, data: appData } = app
 
     const {
         randomPositiveIntegerLessThan,
@@ -73,14 +73,37 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     }
 
     function _createFighters() {
+        const { GameRole } = classes
+        const {
+            player1: player1KeyboardShortcuts,
+            player2: player2KeyboardShortcuts,
+        } = appData.keyboardShortcuts.gameRunning
+
         const { game } = this
-        const pickedFighterRoleConfigurations = game.data.pickedFighterRoleConfigurations.both
-        this.data.fighters.both = pickedFighterRoleConfigurations.map((roleConfig, i) => {
-            const { GameRole } = classes
-            const newGameRole = new GameRole(game, i + 1, roleConfig)
-            newGameRole.joinGameRound(this)
-            return newGameRole
-        })
+        const { fighters } = this.data
+
+        const [
+            palyer1PickedFighterRoleConfig,
+            palyer2PickedFighterRoleConfig,
+        ] = game.data.pickedFighterRoleConfigurations.both
+
+        fighters.both = [
+            new GameRole(game, 1, palyer1PickedFighterRoleConfig, {
+                keyForMovingLeftwards:  player1KeyboardShortcuts.moveLeftwards,
+                keyForMovingRightwards: player1KeyboardShortcuts.moveRightwards,
+                keyForAttack:           player1KeyboardShortcuts.attack,
+                keyForDefence:          player1KeyboardShortcuts.defence,
+            }),
+
+            new GameRole(game, 2, palyer2PickedFighterRoleConfig, {
+                keyForMovingLeftwards:  player2KeyboardShortcuts.moveLeftwards,
+                keyForMovingRightwards: player2KeyboardShortcuts.moveRightwards,
+                keyForAttack:           player2KeyboardShortcuts.attack,
+                keyForDefence:          player2KeyboardShortcuts.defence,
+            }),
+        ]
+
+        fighters.both.forEach(fighter => fighter.joinGameRound(this))
     }
 
     function _createFightingStageRandomly() {
@@ -137,7 +160,36 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             keyboardEngine,
         } = this.game.services
 
-        keyboardEngine.start({
+
+        const bothFighters = this.data.fighters.both
+
+        const {
+            keyDown: keyDownOfBothFighters,
+            keyUp:   keyUpOfBothFighters,
+        } = bothFighters.reduce((kec, fp) => {
+            const {
+                keyDown,
+                keyUp,
+            } = kec
+
+            kec = {
+                keyDown: {
+                    ...keyDown,
+                    ...fp.data.keyboardEngineKeyDownConfig,
+                },
+                keyUp: {
+                    ...keyUp,
+                    ...fp.data.keyboardEngineKeyUpConfig,
+                }
+            }
+
+            return kec
+        }, {
+            keyDown: {},
+            keyUp: {},
+        })
+
+        const globalKewDown = {
             ' ': this._oldStyleOneFaceOff,
             'ENTER': () => {
                 console.warn('临时代码！')
@@ -145,7 +197,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 this.data.fighters.both[loserArrayIndex].data.healthPoint = 0
                 this.judge()
             },
-        })
+        }
+
+        keyboardEngineConfigForBothPlayers = {
+            keyDown: {
+                ...keyDownOfBothFighters,
+                ...globalKewDown,
+            },
+            keyUp: {
+                ...keyUpOfBothFighters,
+            }
+        }
+
+        keyboardEngine.start(keyboardEngineConfigForBothPlayers)
     }
 
     function _decideHealthPointDecreaseForOneRole(roleAIsDefencer, roleA, roleB) {
@@ -268,7 +332,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         )
 
         this.game.services.keyboardEngine.start({
-            'ENTER': this.end,
+            keyDown: {
+                'ENTER': this.end,
+            },
         })
     }
 

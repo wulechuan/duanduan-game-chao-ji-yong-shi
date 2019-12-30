@@ -46,28 +46,33 @@
   font-size:6rem;
   margin-bottom:0.2rem;
 }
-.role,
-.role-candidate{
+.role{
   position:absolute;
+}
+.role-looks,
+.role-candidate{
   background-repeat:no-repeat;
   background-size:contain;
   background-position:center;
 }
+.role .locator,
+.role .role-looks,
+.role-candidate{
+  position:absolute;
+}
 .player-2 .role-candidate,
-.role.player-2{
+.player-2 .role-looks{
   transform:scaleX(-1);
 }
 .role{
-  width:30rem;
-  height:30rem;
-  top:6rem;
+  top:50%;
   z-index:5;
 }
 .role.player-1{
   left:2rem;
 }
 .role.player-2{
-  right:2rem;
+  right:32rem;
 }
 .role.is-attacking{
   z-index:6;
@@ -75,6 +80,21 @@
 .role.has-lost{
   opacity:0.6;
   filter:grayscale(0.8);
+}
+.role .locator{
+  top:0;
+  left:0;
+  width:10px;
+  height:10px;
+  transition-property:left top transform;
+  transition-timing-function:ease;
+  transition-duration:0.15s;
+}
+.role .role-looks{
+  width:30rem;
+  height:30rem;
+  left:0;
+  top:-15rem;
 }
 .role-picking-screen{
   background-image:linear-gradient(to right, rgba(0,0,0,0.9) 30%, transparent 44%, transparent 56%, rgba(0,0,0,0.9) 70%), url("../images/game-ui/挑选角色阶段的背景.webp");
@@ -190,6 +210,8 @@
 }
 .game-round-status-block{
   position:absolute;
+  top:0;
+  left:0;
   width:100%;
   display:flex;
   background-image:linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
@@ -378,6 +400,7 @@
 .game-round .fighters{
   position:relative;
   z-index:10;
+  height:100%;
 }
 .game-round .game-round-status-block{
   z-index:90;

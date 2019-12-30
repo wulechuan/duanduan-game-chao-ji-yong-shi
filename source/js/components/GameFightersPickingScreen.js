@@ -98,17 +98,36 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
     }
 
     function startPickingFightersForBothPlayers() {
-        const keyboardEngineConfigForBothPlayers = this.subComponents.fighterPickers.reduce((kec, fp) => {
+        const {
+            fighterPickers,
+        } = this.subComponents
+
+        const keyboardEngineConfigForBothPlayers = fighterPickers.reduce((kec, fp) => {
+            const {
+                keyDown,
+                keyUp,
+            } = kec
+
             kec = {
-                ...kec,
-                ...fp.data.keyboardEngineConfig,
+                keyDown: {
+                    ...keyDown,
+                    ...fp.data.keyboardEngineKeyDownConfig,
+                },
+                keyUp: {
+                    ...keyUp,
+                    ...fp.data.keyboardEngineKeyUpConfig,
+                }
             }
-            fp.startPickingFighter()
+
             return kec
-        }, {})
-
+        }, {
+            keyDown: {},
+            keyUp: {},
+        })
+        
         // console.log(keyboardEngineConfigForBothPlayers)
-
+        
+        fighterPickers.forEach(fighterPicker => fighterPicker.startPickingFighter())
         this.game.services.keyboardEngine.start(keyboardEngineConfigForBothPlayers)
     }
 

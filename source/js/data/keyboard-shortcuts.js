@@ -26,8 +26,8 @@ window.duanduanGameChaoJiYongShi.data.keyboardShortcuts = {
         },
 
         player2: {
-            moveLeftwards:  ',',
-            moveRightwards: '.',
+            moveLeftwards:  '.',
+            moveRightwards: '/',
             attack:         ';',
             defence:        '\'',
         },
