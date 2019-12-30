@@ -44,17 +44,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.status = {
             isRunning: false,
             isOver: false,
-            attackerIdOfNextRound: 0,
+
+            judgementInterval: 200, // milliseconds
+            judgementIntervalId: NaN,
         }
 
         this.start        = start       .bind(this)
         this.end          = end         .bind(this)
-        this.judge        = judge       .bind(this)
         this.showUp       = showUp      .bind(this)
         this.leaveAndHide = leaveAndHide.bind(this)
-
-        console.log('旧版逻辑')
-        this._oldStyleOneFaceOff = _oldStyleOneFaceOff.bind(this)
 
 
         _init.call(this)
@@ -151,11 +149,17 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         }
     }
 
+
+
+
     function start() {
         console.log(`\n\n【游戏局 ${this.data.gameRoundNumber}】开始。\n\n\n`)
-
         this.status.isRunning = true
+        _startKeyboardEngine.call(this)
+        _startJudgement.call(this)
+    }
 
+    function _startKeyboardEngine() {
         const {
             keyboardEngine,
         } = this.game.services
@@ -190,7 +194,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         })
 
         const globalKewDown = {
-            ' ': this._oldStyleOneFaceOff,
             'ENTER': () => {
                 console.warn('临时代码！')
                 const loserArrayIndex = Math.floor(Math.random() * 2)
@@ -212,65 +215,30 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         keyboardEngine.start(keyboardEngineConfigForBothPlayers)
     }
 
-    function _decideHealthPointDecreaseForOneRole(roleAIsDefencer, roleA, roleB) {
-        const oldPoint = roleA.data.healthPoint
-
-        let roleADefensiveRatio
-        let roleBAttackingRatio
-        if (roleAIsDefencer) {
-            roleADefensiveRatio = Math.random() * 0.3 + 0.7
-            roleBAttackingRatio = Math.random() * 0.3 + 0.7
-        } else {
-            roleADefensiveRatio = Math.random() * 0.15
-            roleBAttackingRatio = Math.random() * 0.25 + 0.1
-        }
-
-        const attackFromB = roleB.data.attackingPower * roleBAttackingRatio
-        const defenceOfA  = roleA.data.defencingPower * roleADefensiveRatio
-
-        const decreaseLimit = Math.max(0, attackFromB - defenceOfA)
-
-        decrease = Math.min(oldPoint, Math.floor(Math.random() * decreaseLimit))
-        return decrease
-    }
-
-    function _oldStyleOneFaceOff() {
+    function _startJudgement() {
         const { status } = this
-
-        if (!status.isRunning) {
-            return
-        }
-
-        const fighters = this.data.fighters.both
-
-        const attackerIdOfThisRound = status.attackerIdOfNextRound
-        const attackerIdOfNextRound = 1 - attackerIdOfThisRound
-
-        const attacker = fighters[attackerIdOfThisRound]
-        const defencer = fighters[attackerIdOfNextRound]
-
-        console.log(`${attacker.logString} 正在攻击 ${defencer.logString}...`)
-
-        attacker.setPoseTo('is-attacking')
-        defencer.setPoseTo('')
-
-        const decreasePoints = [
-            _decideHealthPointDecreaseForOneRole(true,  defencer, attacker),
-            _decideHealthPointDecreaseForOneRole(false, attacker, defencer),
-        ]
-
-        defencer.data.healthPoint -= decreasePoints[0]
-        attacker.data.healthPoint -= decreasePoints[1]
-
-        status.attackerIdOfNextRound = attackerIdOfNextRound
-
-        this.judge()
+        if (!status.isRunning) { return }
+        if (status.judgementIntervalId) { return }
+        status.judgementIntervalId = setInterval(() => {
+            _judgeOnce.call(this)
+        }, status.judgementInterval)
     }
 
+    function _stopJudgement() {
+        const { status } = this
+        if (!status.judgementIntervalId) { return }
+        clearInterval(status.judgementIntervalId)
+        status.judgementIntervalId = NaN
+    }
 
-    function judge() {
-        this.subComponents.statusBlock.updateFightersStatusBaseOnFightersData()
+    function _judgeOnce() {
+        _faceOffOnce.call(this)
+        if (_eitherFighterLose.call(this)) {
+            _roundHasAResult.call(this)
+        }
+    }
 
+    function _eitherFighterLose() {
         const fighters = this.data.fighters
         const [ fighter1, fighter2 ] = fighters.both
 
@@ -279,9 +247,49 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         const epsilon = 0.0001
 
-        if (f1HP >= epsilon && f2HP >= epsilon) {
-            return
-        }
+        return f1HP < epsilon || f2HP < epsilon
+    }
+
+    function _decideHPDecreasementForFighterBeingAttacked(attacker, sufferer) {
+        if (!attacker.status.isAttacking) { return 0 }
+
+        const oldPoint = sufferer.data.healthPoint
+
+        const suffererDefensiveRatio = Math.random() * 0.15
+        const attackerAttackingRatio = Math.random() * 0.25 + 0.1
+
+        const defencePoint = sufferer.data.defencingPower * suffererDefensiveRatio
+        const attackPoint  = attacker.data.attackingPower * attackerAttackingRatio
+
+        const desiredDecreasement = Math.ceil(
+            Math.max(0, attackPoint - defencePoint) * (Math.random() * 0.25 + 0.75)
+        )
+
+        const acceptedDecreasement = Math.min(oldPoint, desiredDecreasement)
+
+        return acceptedDecreasement
+    }
+
+    function _faceOffOnce() {
+        const [ fighter1, fighter2 ] = this.data.fighters.both
+
+        const fighter1HPDecreasement = _decideHPDecreasementForFighterBeingAttacked(fighter2, fighter1)
+        const fighter2HPDecreasement = _decideHPDecreasementForFighterBeingAttacked(fighter1, fighter2)
+
+        fighter1.$suffer(fighter1HPDecreasement)
+        fighter2.$suffer(fighter2HPDecreasement)
+
+        this.subComponents.statusBlock.updateFightersStatusBaseOnFightersData()
+    }
+
+    function _roundHasAResult() {
+        _stopJudgement.call(this)
+
+        const fighters = this.data.fighters
+        const [ fighter1, fighter2 ] = fighters.both
+
+        const f1HP = fighter1.data.healthPoint
+        const f2HP = fighter2.data.healthPoint
 
         console.warn('暂未考虑双方同时阵亡的细则', f1HP, f2HP)
         let winner, loser, winnerArrayIndex, loserArrayIndex

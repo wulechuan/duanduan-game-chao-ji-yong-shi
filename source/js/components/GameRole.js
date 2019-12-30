@@ -92,6 +92,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.stopAttack                 = stopAttack                .bind(this)
         this.startDefence               = startDefence              .bind(this)
         this.stopDefence                = stopDefence               .bind(this)
+        this.$suffer                    = $suffer                   .bind(this)
 
         this.win                        = win                       .bind(this)
         this.lose                       = lose                      .bind(this)
@@ -208,7 +209,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         if (actionIsAllowed) {
             this.status[actionFlagPropertyName] = true
             this.setPoseTo(poseName)
-            console.log(`玩家 ${this.data.playerId}`, actionFlagPropertyName)
+            // console.log(`玩家 ${this.data.playerId}`, actionFlagPropertyName)
         }
 
         return actionIsAllowed
@@ -218,7 +219,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const locatorElementStyle = this.el.locator.style
         const oldLeft = parseInt(locatorElementStyle.left)
         const newLeft = oldLeft + this.status.movementDeltaPerInterval * (shouldMoveLeftwards ? -1 : 1)
-        console.log('newLeft', newLeft)
         locatorElementStyle.left = `${newLeft}px`
     }
 
@@ -310,33 +310,26 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.setPoseTo('')
     }
 
-    function oldDefence(incoming) {
-        let {
-            healthPoint,
-        } = this
+    function $suffer(hpDecreasement) {
+        const oldHP = this.data.healthPoint
+        const newHP = Math.max(0, oldHP - hpDecreasement)
+        this.data.healthPoint = newHP
+    }
 
-        const {
-            defencingPower,
-        } = this
-
-        const {
-            attackingPower,
-        } = incoming
-
-        const attackingEffect = Math.max(0, attackingPower - defencingPower)
-
-        healthPoint = Math.max(0, healthPoint - attackingEffect)
-
-        this.healthPoint = healthPoint
-
-        this.joinedGameRound.judge()
+    function _stopAllPossibleActions() {
+        this.stopAttack()
+        this.stopDefence()
+        this.stopMovingLeftwards()
+        this.stopMovingRightwards()
     }
 
     function win() {
+        _stopAllPossibleActions.call(this)
         this.setPoseTo('has-won')
     }
 
     function lose() {
+        _stopAllPossibleActions.call(this)
         this.setPoseTo('has-lost')
     }
 
