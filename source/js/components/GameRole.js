@@ -70,7 +70,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             movementIntervalId: NaN,
 
             isAttacking: false,
-            attackInterval: 250, // milliseconds
+            attackInterval: 500, // milliseconds
             attackIntervalId: NaN,
             attackHalfIntervalTimerId: NaN,
 
@@ -265,7 +265,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function startAttack() {
-        if (_takeAnAction.call(this, 'isAttacking', '')) {
+        if (_takeAnAction.call(this, 'isAttacking', 'is-attacking')) {
             const { status } = this
             status.attackIntervalId = setInterval(() => {
                 this.setPoseTo('')
@@ -341,24 +341,31 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function setPoseTo(poseCSSClassNameToApply) {
-        const rootElement = this.el.root
-        const classList = rootElement.classList
+        const {
+            root: rootElement,
+            theLooks: theLooksElement,
+        } = this.el
+
+        const rootElementClassList = rootElement.classList
 
         gameRoleAllPossiblePoseCSSClassNames.forEach(poseCSSClassName => {
-            if (poseCSSClassName !== poseCSSClassNameToApply && classList.contains(poseCSSClassName)) {
-                classList.remove(poseCSSClassName)
+            if (poseCSSClassName !== poseCSSClassNameToApply && rootElementClassList.contains(poseCSSClassName)) {
+                rootElementClassList.remove(poseCSSClassName)
             }
         })
 
-        if (poseCSSClassNameToApply && !classList.contains(poseCSSClassNameToApply)) {
-            classList.add(poseCSSClassNameToApply)
+        if (poseCSSClassNameToApply && !rootElementClassList.contains(poseCSSClassNameToApply)) {
+            rootElementClassList.add(poseCSSClassNameToApply)
         }
 
         const { poses } = this.data.images
-        const image = poses[poseCSSClassNameToApply]
-
-        if (image) {
-            rootElement.style.backgroundImage = `url(${poses[poseCSSClassNameToApply]})`
+        const poseConfig = poses[poseCSSClassNameToApply]
+        
+        if (poseConfig) {
+            // console.log(`className: "${poseCSSClassNameToApply}"; imageFilePath: "${poseConfig.filePath}"`)
+            theLooksElement.style.backgroundImage = `url(${poseConfig.filePath})`
+        } else if (!poseCSSClassNameToApply) {
+            theLooksElement.style.backgroundImage = `url(${poses.default.filePath})`
         }
     }
 })();

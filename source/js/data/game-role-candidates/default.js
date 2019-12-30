@@ -13,6 +13,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
             fileNamesIndexingByCSSClassName: {
                 'default':      'pose-0.png',
                 'is-attacking': 'pose-1.png',
+                'is-defencing': '',
                 'is-suffering': '',
                 'has-won':      '',
                 'has-lost':     '',
@@ -28,6 +29,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
             fileNamesIndexingByCSSClassName: {
                 'default':      'pose-0.png',
                 'is-attacking': 'pose-1.png',
+                'is-defencing': '',
                 'is-suffering': '',
                 'has-won':      '',
                 'has-lost':     '',
@@ -43,6 +45,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
             fileNamesIndexingByCSSClassName: {
                 'default':      'pose-0.png',
                 'is-attacking': 'pose-1.png',
+                'is-defencing': '',
                 'is-suffering': '',
                 'has-won':      '',
                 'has-lost':     '',
@@ -58,6 +61,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
             fileNamesIndexingByCSSClassName: {
                 'default':      'pose-0.png',
                 'is-attacking': 'pose-1.png',
+                'is-defencing': '',
                 'is-suffering': '',
                 'has-won':      '',
                 'has-lost':     '',
@@ -73,6 +77,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
             fileNamesIndexingByCSSClassName: {
                 'default':      'pose-0.png',
                 'is-attacking': 'pose-1.png',
+                'is-defencing': '',
                 'is-suffering': '',
                 'has-won':      '',
                 'has-lost':     '',
