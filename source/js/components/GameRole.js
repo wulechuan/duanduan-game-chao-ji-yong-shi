@@ -134,9 +134,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             // `role-candidate-${typeIdInFilePathAndCSSClassName}`,
         ])
 
+        const popupsContainerElement = createDOMWithClassNames('div', [
+            'popups',
+        ])
+
         theLooksElement.style.backgroundImage = `url(${poses['default'].filePath})`
 
         locatorElement.appendChild(theLooksElement)
+        locatorElement.appendChild(popupsContainerElement)
         originElement.appendChild(locatorElement)
         rootElement.appendChild(originElement)
 
@@ -144,6 +149,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             root: rootElement,
             origin: originElement,
             locator: locatorElement,
+            popupsContainer: popupsContainerElement,
             theLooks: theLooksElement,
         }
 
@@ -384,6 +390,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const oldHP = this.data.healthPoint
         const actualHPDecrease = Math.min(oldHP, desiredHPDecrease)
 
+        createOneAutoDisappearPopup.call(this, {
+            timingForDisappearing: 2000,
+            rootElementExtraCSSClassNames: 'health-point-decrease',
+            content: - actualHPDecrease,
+        })
+
         // console.log(this.logString, '实际扣除', actualHPDecrease, '点血值。')
         this.data.healthPoint = oldHP - actualHPDecrease
     }
@@ -393,6 +405,35 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.quitDefenceMode()
         this.stopMovingLeftwards()
         this.stopMovingRightwards()
+    }
+
+    function createOneAutoDisappearPopup(options) {
+        const {
+            timingForDisappearing,
+            rootElementExtraCSSClassNames,
+            content,
+        } = options
+
+        const { AutoDisappearPopup } = classes
+
+        const rootElementLeftRatio   = (Math.random() * 0.5).toFixed(2)
+        const rootElementBottomRatio = (Math.random() * 0.5 + 0.32).toFixed(2)
+
+        rootElementLeft   = `calc( var(--fighter-visual-box-width ) * ${rootElementLeftRatio})`
+        rootElementBottom = `calc( var(--fighter-visual-box-height) * ${rootElementBottomRatio})`
+
+        new AutoDisappearPopup(
+            this.el.popupsContainer,
+            {
+                timingForDisappearing,
+                rootElementExtraCSSClassNames,
+                rootElementStyle: {
+                    left:   rootElementLeft,
+                    bottom: rootElementBottom,
+                },
+                content,
+            }
+        )
     }
 
     function win() {

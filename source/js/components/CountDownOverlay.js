@@ -12,19 +12,19 @@ window.duanduanGameChaoJiYongShi.classes.CountDownOverlay = (function () {
         this.countDown     = countDown    .bind(this)
         this.countDownOnce = countDownOnce.bind(this)
         
-        _init(this)
+        _init.call(this)
 
         console.log('【倒计时覆盖层】创建完毕。')
     }
 
 
 
-    function _init(countDownOverlay) {
-        _createDOMs(countDownOverlay)
-        countDownOverlay.el.root.style.display = 'none'
+    function _init() {
+        _createDOMs.call(this)
+        this.el.root.style.display = 'none'
     }
 
-    function _createDOMs(countDownOverlay) {
+    function _createDOMs() {
         const rootElement = createDOMWithClassNames('div', [
             'count-down-overlay',
         ])
@@ -38,10 +38,9 @@ window.duanduanGameChaoJiYongShi.classes.CountDownOverlay = (function () {
         ])
 
         modalElement.appendChild(digitElement)
-
         rootElement.appendChild(modalElement)
         
-        countDownOverlay.el = {
+        this.el = {
             root: rootElement,
             digit: digitElement,
         }

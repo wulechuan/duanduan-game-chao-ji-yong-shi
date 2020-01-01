@@ -199,9 +199,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const globalKewDown = {
             'ENTER': () => {
                 console.warn('临时代码！')
-                const loserArrayIndex = Math.floor(Math.random() * 2)
-                this.data.fighters.both[loserArrayIndex].data.healthPoint = 0
-                _processAllQueuedAttacks.call(this)
+                this.data.fighters.both[Math.floor(Math.random() * 2)].$suffer(100000000)
             },
         }
 
@@ -315,7 +313,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         const desiredDecrease = Math.ceil(Math.max(0, attackPoint - defencePoint)) + absoluteAttackingBasePoint
 
-        // console.log(`${attacker.logString}攻击生效。\n${sufferer.logString}因此应扣除`, desiredDecrease, '点血值。')
+        console.log(`${attacker.logString}攻击生效。\n${sufferer.logString}因此应扣除`, desiredDecrease, '点血值。')
         sufferer.$suffer(desiredDecrease)
     }
 

@@ -178,6 +178,7 @@
 }
 .fighters{
   position:absolute;
+  --fighter-visual-box-width:30rem;
   --fighter-visual-box-height:30rem;
   left:1rem;
   right:1rem;
@@ -200,6 +201,7 @@
 }
 .role .origin,
 .role .locator,
+.role .popups,
 .role .role-looks{
   position:absolute;
   top:auto;
@@ -210,17 +212,25 @@
 .role .origin{
   bottom:4.5rem;
 }
-.role .locator{
+.role .locator,
+.role .popups{
   bottom:0;
-  overflow:visible;
+}
+.role .locator{
   transition-property:top right bottom left transform;
   transition-timing-function:ease;
   transition-duration:0.15s;
 }
+.role .popups{
+  left:calc(var(--fighter-visual-box-width) / -4);
+}
+.role .popups *{
+  pointer-events:none;
+}
 .role .role-looks{
-  width:var(--fighter-visual-box-height);
+  width:var(--fighter-visual-box-width);
   height:var(--fighter-visual-box-height);
-  left:calc(var(--fighter-visual-box-height) / -2);
+  left:calc(var(--fighter-visual-box-width) / -2);
   right:auto;
   bottom:0;
 }
@@ -235,7 +245,7 @@
   opacity:1;
   transition:opaciy 0.3s ease-out;
 }
-.role.has-lost{
+.role.has-lost .role-looks{
   opacity:0.6;
   filter:grayscale(0.8);
 }
@@ -279,6 +289,95 @@
   line-height:2rem;
   border-radius:0.5rem;
 }
+.role .auto-disappear-popup{
+  position:absolute;
+  animation:fighter-auto-disappear-popup 1s ease-out both;
+}
+.role .auto-disappear-popup.health-point-decrease .content{
+  font-size:1rem;
+  padding:0.25em 1em;
+  line-height:1.5;
+  border-radius:0.5rem;
+  border:0.2rem double #fff;
+  color:#fff;
+  background-color:rgba(255,0,0,0.79);
+}
+@-moz-keyframes fighter-auto-disappear-popup{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  30%{
+    opacity:1;
+  }
+  45%, 75%{
+    transform:translateY(-100%);
+  }
+  75%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-160%);
+  }
+}
+@-webkit-keyframes fighter-auto-disappear-popup{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  30%{
+    opacity:1;
+  }
+  45%, 75%{
+    transform:translateY(-100%);
+  }
+  75%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-160%);
+  }
+}
+@-o-keyframes fighter-auto-disappear-popup{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  30%{
+    opacity:1;
+  }
+  45%, 75%{
+    transform:translateY(-100%);
+  }
+  75%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-160%);
+  }
+}
+@keyframes fighter-auto-disappear-popup{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  30%{
+    opacity:1;
+  }
+  45%, 75%{
+    transform:translateY(-100%);
+  }
+  75%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-160%);
+  }
+}
 .role.player-1{
   left:1rem;
   right:auto;
@@ -288,7 +387,7 @@
   right:auto;
 }
 .role.player-1 .origin{
-  left:calc(var(--fighter-visual-box-height) / 2);
+  left:calc(var(--fighter-visual-box-width) / 2);
   right:auto;
 }
 .role.player-2{
@@ -300,7 +399,7 @@
 }
 .role.player-2 .origin{
   left:auto;
-  right:calc(var(--fighter-visual-box-height) / 2);
+  right:calc(var(--fighter-visual-box-width) / 2);
 }
 .game-round-status-block{
   position:absolute;

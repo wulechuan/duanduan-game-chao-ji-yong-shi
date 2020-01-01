@@ -2,7 +2,8 @@ roundStatusBarHeight = 7rem
 
 .fighters {
     position absolute // for z-index
-    --fighter-visual-box-height: 30rem
+    --fighter-visual-box-width  30rem
+    --fighter-visual-box-height 30rem
     left 1rem
     right 1rem
 
@@ -11,7 +12,7 @@ roundStatusBarHeight = 7rem
     bottom 0.5rem
 
     overflow visible
-    
+
     width auto
     height auto
 }
@@ -32,6 +33,7 @@ roundStatusBarHeight = 7rem
 
     .origin,
     .locator,
+    .popups,
     .role-looks {
         position absolute
         top auto
@@ -49,9 +51,12 @@ roundStatusBarHeight = 7rem
         // height 20px
     }
 
-    .locator {
+    .locator,
+    .popups {
         bottom 0
-        overflow visible
+    }
+
+    .locator {
         transition-property: top right bottom left transform
         transition-timing-function: ease
         transition-duration: 0.15s
@@ -62,10 +67,23 @@ roundStatusBarHeight = 7rem
         // height 10px
     }
 
+    .popups {
+        left calc( var(--fighter-visual-box-width) / -4 )
+
+        // 以下是测试代码
+        // background-color rgba(green, 0.4)
+        // width  calc( var(--fighter-visual-box-width) / 2 )
+        // height var(--fighter-visual-box-height)
+    }
+
+    .popups * {
+        pointer-events none
+    }
+
     .role-looks {
-        width       var(--fighter-visual-box-height)
+        width       var(--fighter-visual-box-width)
         height      var(--fighter-visual-box-height)
-        left   calc(var(--fighter-visual-box-height) / -2 )
+        left   calc(var(--fighter-visual-box-width) / -2 )
         right  auto
         bottom 0
 
@@ -90,8 +108,11 @@ roundStatusBarHeight = 7rem
     // -----------------------------
 
     &.has-lost {
-        opacity 0.6
-        filter grayscale(0.8)
+
+        .role-looks {
+            opacity 0.6
+            filter grayscale(0.8)
+        }
 
         .keyboard-tips {
             opacity 0.1
@@ -148,7 +169,51 @@ roundStatusBarHeight = 7rem
 
         border-radius 0.5rem
     }
-    
+
+    .auto-disappear-popup {
+        position absolute
+        animation fighter-auto-disappear-popup 1s ease-out both
+
+        @keyframes fighter-auto-disappear-popup {
+            0% {
+                opacity 0
+                transform none
+            }
+
+            30% {
+                opacity 1
+            }
+
+            45%, 75% {
+                transform translateY(-100%)
+            }
+
+            75% {
+                opacity 1
+            }
+
+            100% {
+                opacity 0
+                transform translateY(-160%)
+            }
+        }
+
+        &.health-point-decrease {
+
+            .content {
+                font-size 1rem
+                padding 0.25em 1em
+                line-height 1.5
+
+                border-radius 0.5rem
+                border 0.2rem double white
+
+                color white
+                background-color rgba(red, 0.79)
+            }
+        }
+    }
+
     // -----------------------------
 
     &.player-1 {
@@ -161,7 +226,7 @@ roundStatusBarHeight = 7rem
         }
 
         .origin {
-            left calc( var(--fighter-visual-box-height) / 2 )
+            left calc( var(--fighter-visual-box-width) / 2 )
             right auto
         }
     }
@@ -173,10 +238,10 @@ roundStatusBarHeight = 7rem
             left auto
             right 0
         }
-        
+
         .origin {
             left auto
-            right calc( var(--fighter-visual-box-height) / 2 )
+            right calc( var(--fighter-visual-box-width) / 2 )
         }
     }
 }
