@@ -199,7 +199,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const globalKewDown = {
             'ENTER': () => {
                 console.warn('临时代码！')
-                this.data.fighters.both[Math.floor(Math.random() * 2)].$suffer(100000000)
+                const attackerArrayIndex = Math.floor(Math.random() * 2)
+                for (let i = 0; i < 1000; i++) {
+                    this.acceptOneAttackFromPlayer(attackerArrayIndex + 1)
+                }
             },
         }
 

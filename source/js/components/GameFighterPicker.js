@@ -80,9 +80,9 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         }
 
         this.status = {
-            shouldAutoPickFighterByWeights: !!shouldAutoPickFighterByWeights,
-            shouldForceRollingEvenIfAutoPickingByWeights: !!shouldForceRollingEvenIfAutoPickingByWeights,
-            shouldManuallyPickFighters: !!shouldManuallyPickFighters,
+            shouldManuallyPickFighters:                  !!shouldManuallyPickFighters,
+            shouldAutoPickFighterByWeights:               !shouldManuallyPickFighters && !!shouldAutoPickFighterByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights: !shouldManuallyPickFighters && !!shouldForceRollingEvenIfAutoPickingByWeights,
             shouldNotAutoRoll: shouldNotAutoRoll,
             isRollingRoles: false,
             rollingIntervalId: NaN,
@@ -263,7 +263,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             shouldAutoPickFighterByWeights,
             shouldForceRollingEvenIfAutoPickingByWeights,
             shouldNotAutoRoll,
-            shouldManuallyPickFighters,
+            // shouldManuallyPickFighters,
         } = this.status
 
         if (shouldAutoPickFighterByWeights) {

@@ -3,15 +3,15 @@ window.duanduanGameChaoJiYongShi.data.keyboardShortcuts = {
         global: {},
 
         player1: {
-            stopRolling:   'A',
-            prevCandidate: 'Z',
-            nextCandidate: 'X',
+            prevCandidate: 'A',
+            nextCandidate: 'S',
+            stopRolling:   'Z',
         },
 
         player2: {
-            stopRolling:   '\'',
-            prevCandidate: '.',
-            nextCandidate: '/',
+            prevCandidate: ';',
+            nextCandidate: '\'',
+            stopRolling:   '/',
         },
     },
 
