@@ -301,10 +301,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             ? (Math.random() * 0.2  + 0.8)
             : (Math.random() * 0.15 + 0.15)
 
-        const suffererDefensiveRatioActual = suffererDefensiveRatioIdea * (suffererOldHealthPoint / suffererFullHealthPoint)
+        const suffererDefensiveRatioActual = suffererDefensiveRatioIdea * Math.max(0.219, suffererOldHealthPoint / suffererFullHealthPoint)
 
         const attackerAttackingRatioIdea = Math.random() * 0.364 + 0.6
-        const attackerAttackingRatioActual = attackerAttackingRatioIdea * (attackerHealthPoint / attackerFullHealthPoint)
+        const attackerAttackingRatioActual = attackerAttackingRatioIdea * Math.max(0.319, attackerHealthPoint / attackerFullHealthPoint)
 
         const absoluteAttackingBasePoint = Math.ceil(Math.random() * 79 + 90)
 
