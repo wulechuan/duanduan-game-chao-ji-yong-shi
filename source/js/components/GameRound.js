@@ -45,14 +45,17 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             isRunning: false,
             isOver: false,
 
-            judgementInterval: 200, // milliseconds
+            judgementInterval: 66, // milliseconds
             judgementIntervalId: NaN,
+
+            fighterNewAttacksQueue: [],
         }
 
-        this.start        = start       .bind(this)
-        this.end          = end         .bind(this)
-        this.showUp       = showUp      .bind(this)
-        this.leaveAndHide = leaveAndHide.bind(this)
+        this.start                     = start                    .bind(this)
+        this.end                       = end                      .bind(this)
+        this.showUp                    = showUp                   .bind(this)
+        this.leaveAndHide              = leaveAndHide             .bind(this)
+        this.acceptOneAttackFromPlayer = acceptOneAttackFromPlayer.bind(this)
 
 
         _init.call(this)
@@ -198,7 +201,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 console.warn('临时代码！')
                 const loserArrayIndex = Math.floor(Math.random() * 2)
                 this.data.fighters.both[loserArrayIndex].data.healthPoint = 0
-                this.judge()
+                _processAllQueuedAttacks.call(this)
             },
         }
 
@@ -215,12 +218,16 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         keyboardEngine.start(keyboardEngineConfigForBothPlayers)
     }
 
+    function acceptOneAttackFromPlayer(playerId) {
+        this.status.fighterNewAttacksQueue.push(playerId)
+    }
+
     function _startJudgementInterval() {
         const { status } = this
         if (!status.isRunning) { return }
         if (status.judgementIntervalId) { return }
         status.judgementIntervalId = setInterval(() => {
-            _judgeOnce.call(this)
+            _processAllQueuedAttacks.call(this)
         }, status.judgementInterval)
     }
 
@@ -231,9 +238,28 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         status.judgementIntervalId = NaN
     }
 
-    function _judgeOnce() {
-        _faceOffOnce.call(this)
-        if (_eitherFighterLose.call(this)) {
+    function _processAllQueuedAttacks() {
+        const { status } = this
+        const { fighterNewAttacksQueue } = status
+
+        let arrayIndex = 0
+        let eitherFighterLose = false
+
+        while (arrayIndex < fighterNewAttacksQueue.length) {
+            const attackerPlayerId = fighterNewAttacksQueue[arrayIndex]
+
+            _judgeOnce.call(this, attackerPlayerId)
+
+            eitherFighterLose = _eitherFighterLose.call(this)
+            if (eitherFighterLose) { break }
+
+            arrayIndex++
+        }
+
+        status.fighterNewAttacksQueue = []
+        this.subComponents.statusBlock.updateFightersStatusBaseOnFightersData()
+
+        if (eitherFighterLose) {
             _roundHasAResult.call(this)
         }
     }
@@ -250,36 +276,47 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         return f1HP < epsilon || f2HP < epsilon
     }
 
-    function _decideHPDecreasementForFighterBeingAttacked(attacker, sufferer) {
-        if (!attacker.status.isAttacking) { return 0 }
+    function _judgeOnce(attackerPlayerId) {
+        const attackerArrayIndex = attackerPlayerId - 1
+        const suffererArrayIndex = 1 - attackerArrayIndex
 
-        const oldPoint = sufferer.data.healthPoint
+        const bothFighters = this.data.fighters.both
+        const attacker = bothFighters[attackerArrayIndex]
+        const sufferer = bothFighters[suffererArrayIndex]
 
-        const suffererDefensiveRatio = Math.random() * 0.15
-        const attackerAttackingRatio = Math.random() * 0.25 + 0.1
+        const attackerData = sufferer.data
+        const attackerHealthPoint     = attackerData.healthPoint
+        const attackerFullHealthPoint = attackerData.fullHealthPoint
 
-        const defencePoint = sufferer.data.defencingPower * suffererDefensiveRatio
-        const attackPoint  = attacker.data.attackingPower * attackerAttackingRatio
+        const suffererData = sufferer.data
+        const suffererFullHealthPoint = suffererData.fullHealthPoint
+        const suffererOldHealthPoint = suffererData.healthPoint
+        const suffererIsDefencing    = sufferer.status.isInDefencingMode
 
-        const desiredDecreasement = Math.ceil(
-            Math.max(0, attackPoint - defencePoint) * (Math.random() * 0.25 + 0.75)
-        )
 
-        const acceptedDecreasement = Math.min(oldPoint, desiredDecreasement)
+        const {
+            roleAttackingPowerExtraRatio,
+            roleDefencingPowerExtraRatio,
+        } = appData.gameGlobalSettings
 
-        return acceptedDecreasement
-    }
+        const suffererDefensiveRatioIdea = suffererIsDefencing
+            ? (Math.random() * 0.2  + 0.8)
+            : (Math.random() * 0.15 + 0.15)
 
-    function _faceOffOnce() {
-        const [ fighter1, fighter2 ] = this.data.fighters.both
+        const suffererDefensiveRatioActual = suffererDefensiveRatioIdea * (suffererOldHealthPoint / suffererFullHealthPoint)
 
-        const fighter1HPDecreasement = _decideHPDecreasementForFighterBeingAttacked(fighter2, fighter1)
-        const fighter2HPDecreasement = _decideHPDecreasementForFighterBeingAttacked(fighter1, fighter2)
+        const attackerAttackingRatioIdea = Math.random() * 0.364 + 0.6
+        const attackerAttackingRatioActual = attackerAttackingRatioIdea * (attackerHealthPoint / attackerFullHealthPoint)
 
-        fighter1.$suffer(fighter1HPDecreasement)
-        fighter2.$suffer(fighter2HPDecreasement)
+        const absoluteAttackingBasePoint = Math.ceil(Math.random() * 79 + 90)
 
-        this.subComponents.statusBlock.updateFightersStatusBaseOnFightersData()
+        const defencePoint = sufferer.data.defencingPower * suffererDefensiveRatioActual * roleAttackingPowerExtraRatio
+        const attackPoint  = attacker.data.attackingPower * attackerAttackingRatioActual * roleDefencingPowerExtraRatio
+
+        const desiredDecrease = Math.ceil(Math.max(0, attackPoint - defencePoint)) + absoluteAttackingBasePoint
+
+        // console.log(`${attacker.logString}攻击生效。\n${sufferer.logString}因此应扣除`, desiredDecrease, '点血值。')
+        sufferer.$suffer(desiredDecrease)
     }
 
     function _roundHasAResult() {

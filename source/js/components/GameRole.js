@@ -65,12 +65,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             movementInterval: 200, // milliseconds
             movementIntervalId: NaN,
 
-            isAttacking: false,
-            attackInterval: 500, // milliseconds
-            attackIntervalId: NaN,
-            attackHalfIntervalTimerId: NaN,
+            isInAttackingMode: false,
+            attackingPoseDuration: 180,
+            attackingPoseTimerId: NaN,
 
-            isDefencing: false,
+            isInDefencingMode: false,
         }
 
 
@@ -84,19 +83,20 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.startMovingRightwards      = startMovingRightwards     .bind(this)
         this.stopMovingLeftwards        = stopMovingLeftwards       .bind(this)
         this.stopMovingRightwards       = stopMovingRightwards      .bind(this)
-        this.startAttack                = startAttack               .bind(this)
-        this.stopAttack                 = stopAttack                .bind(this)
-        this.startDefence               = startDefence              .bind(this)
-        this.stopDefence                = stopDefence               .bind(this)
-        this.$suffer                    = $suffer                   .bind(this)
+        this.enterAttackMode            = enterAttackMode           .bind(this)
+        this.quitAttackMode             = quitAttackMode            .bind(this)
+        this.enterDefenceMode           = enterDefenceMode          .bind(this)
+        this.quitDefenceMode            = quitDefenceMode           .bind(this)
 
         this.win                        = win                       .bind(this)
         this.lose                       = lose                      .bind(this)
 
+        this.$suffer                    = $suffer                   .bind(this)
+
 
         _init.call(this, initOptions)
 
-        console.log(`${this.logString}”创建完毕。`)
+        console.log(`${this.logString}创建完毕。`)
     }
 
 
@@ -212,15 +212,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const keyboardEngineKeyDownConfig = {
             [keyForMovingLeftwards]:  this.startMovingLeftwards,
             [keyForMovingRightwards]: this.startMovingRightwards,
-            [keyForAttack]:           this.startAttack,
-            [keyForDefence]:          this.startDefence,
+            [keyForAttack]:           this.enterAttackMode,
+            [keyForDefence]:          this.enterDefenceMode,
         }
 
         const keyboardEngineKeyUpConfig = {
             [keyForMovingLeftwards]:  this.stopMovingLeftwards,
             [keyForMovingRightwards]: this.stopMovingRightwards,
-            [keyForAttack]:           this.stopAttack,
-            [keyForDefence]:          this.stopDefence,
+            [keyForAttack]:           this.quitAttackMode,
+            [keyForDefence]:          this.quitDefenceMode,
         }
 
         data.keyboardEngineKeyDownConfig = keyboardEngineKeyDownConfig
@@ -275,10 +275,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const {
             isMovingLeftwards,
             isMovingRightwards,
-            isAttacking,
-            isDefencing,
+            isInAttackingMode,
+            isInDefencingMode,
         } = this.status
-        return !isMovingLeftwards && !isMovingRightwards && !isAttacking && !isDefencing
+        return !isMovingLeftwards && !isMovingRightwards && !isInAttackingMode && !isInDefencingMode
     }
 
     function _takeAnAction(actionFlagPropertyName, poseName) {
@@ -342,61 +342,55 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.setPoseTo('')
     }
 
-    function startAttack() {
-        if (_takeAnAction.call(this, 'isAttacking', 'is-attacking')) {
+    function enterAttackMode() {
+        if (_takeAnAction.call(this, 'isInAttackingMode', 'is-attacking')) {
+            this.joinedGameRound.acceptOneAttackFromPlayer(this.data.playerId)
+
             const { status } = this
-            status.attackIntervalId = setInterval(() => {
+            status.attackingPoseTimerId = setTimeout(() => {
                 this.setPoseTo('')
-
-                if (status.attackHalfIntervalTimerId) {
-                    clearTimeout(status.attackHalfIntervalTimerId)
-                    status.attackHalfIntervalTimerId = NaN
-                }
-
-                status.attackHalfIntervalTimerId = setTimeout(() => {
-                    this.setPoseTo('is-attacking')
-                }, Math.floor(status.attackInterval / 2))
-            }, status.attackInterval)
+            }, Math.floor(status.attackingPoseDuration))
         }
     }
 
-    function stopAttack() {
+    function quitAttackMode() {
         const { status } = this
-        if (!status.isAttacking) { return }
-        clearInterval(status.attackIntervalId)
-        status.attackIntervalId = NaN
+        if (!status.isInAttackingMode) { return }
 
-        if (status.attackHalfIntervalTimerId) {
-            clearTimeout(status.attackHalfIntervalTimerId)
-            status.attackHalfIntervalTimerId = NaN
+        if (status.attackingPoseTimerId) {
+            clearTimeout(status.attackingPoseTimerId)
+            status.attackingPoseTimerId = NaN
         }
 
-        status.isAttacking = false
         this.setPoseTo('')
+
+        status.isInAttackingMode = false
     }
 
-    function startDefence() {
-        if (_takeAnAction.call(this, 'isDefencing', 'is-defencing')) {
+    function enterDefenceMode() {
+        if (_takeAnAction.call(this, 'isInDefencingMode', 'is-defencing')) {
             // Nothing more.
         }
     }
 
-    function stopDefence() {
+    function quitDefenceMode() {
         const { status } = this
-        if (!status.isDefencing) { return }
-        status.isDefencing = false
+        if (!status.isInDefencingMode) { return }
+        status.isInDefencingMode = false
         this.setPoseTo('')
     }
 
-    function $suffer(hpDecreasement) {
+    function $suffer(desiredHPDecrease) {
         const oldHP = this.data.healthPoint
-        const newHP = Math.max(0, oldHP - hpDecreasement)
-        this.data.healthPoint = newHP
+        const actualHPDecrease = Math.min(oldHP, desiredHPDecrease)
+
+        // console.log(this.logString, '实际扣除', actualHPDecrease, '点血值。')
+        this.data.healthPoint = oldHP - actualHPDecrease
     }
 
     function _stopAllPossibleActions() {
-        this.stopAttack()
-        this.stopDefence()
+        this.quitAttackMode()
+        this.quitDefenceMode()
         this.stopMovingLeftwards()
         this.stopMovingRightwards()
     }
