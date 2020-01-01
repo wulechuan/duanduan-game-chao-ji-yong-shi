@@ -11,6 +11,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             allGameFighterCandidatesForBothPlayers,
             allGameFightingStageConfigurations,
             // maxRoundsToRun,
+            // shouldAutoPickFightersByWeights,
         } = initOptions
 
         this.subComponents = {

@@ -11,6 +11,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
         const {
             name,
             typeIdInFilePathAndCSSClassName,
+            selectionWeightDuringAutoRolling,
             fullHealthPoint,
             attackingPower,
             defencingPower,
@@ -23,6 +24,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             playerId,
             name,
             typeIdInFilePathAndCSSClassName,
+            selectionWeightDuringAutoRolling,
             fullHealthPoint,
             attackingPower,
             defencingPower,

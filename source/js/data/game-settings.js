@@ -1,4 +1,9 @@
 window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
+    maxRoundsToRun: 5,
+    shouldAutoPickFightersByWeights: true,
+    shouldForceRollingEvenIfAutoPickingByWeights: true,
+    shouldManuallyPickFighters: true,
+
     /*
         如果攻击力、防御力相对于角色的生命值的比率过于浮夸，
         例如，所有角色生命点数在 1 万级别，而攻击力同样均在 1 万级别，

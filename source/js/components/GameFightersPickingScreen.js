@@ -19,10 +19,19 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
             throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏斗士选择界面】。')
         }
 
+        const {
+            shouldAutoPickFightersByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights,
+            shouldManuallyPickFighters,
+        } = initOptions
+
         this.game = game
         this.subComponents = {}
         this.data = {}
         this.status = {
+            shouldAutoPickFightersByWeights: !!shouldAutoPickFightersByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights: !!shouldForceRollingEvenIfAutoPickingByWeights,
+            shouldManuallyPickFighters: !!shouldManuallyPickFighters,
             fighter1HasDecided: false,
             fighter2HasDecided: false,
         }
@@ -60,6 +69,12 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
             candidatesForPlayer1,
             candidatesForPlayer2,
         ] = this.game.data.allGameFighterCandidatesForBothPlayers
+
+        const {
+            shouldAutoPickFightersByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights,
+            shouldManuallyPickFighters,
+        } = this.status
         
         this.subComponents.fighterPickers = [
             new GameFighterPicker(1, {
@@ -68,6 +83,9 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
                 keyForPickingPrevCandidate: player1KeyboardShortcuts.prevCandidate,
                 keyForPickingNextCandidate: player1KeyboardShortcuts.nextCandidate,
                 // shouldNotAutoRoll: false,
+                shouldAutoPickFighterByWeights: shouldAutoPickFightersByWeights,
+                shouldForceRollingEvenIfAutoPickingByWeights,
+                shouldManuallyPickFighters,
                 onFighterDecided: this.onEitherFighterDecided,
             }),
 
@@ -77,6 +95,9 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
                 keyForPickingPrevCandidate: player2KeyboardShortcuts.prevCandidate,
                 keyForPickingNextCandidate: player2KeyboardShortcuts.nextCandidate,
                 // shouldNotAutoRoll: false,
+                shouldAutoPickFighterByWeights: shouldAutoPickFightersByWeights,
+                shouldForceRollingEvenIfAutoPickingByWeights,
+                shouldManuallyPickFighters,
                 onFighterDecided: this.onEitherFighterDecided,
             }),
         ]

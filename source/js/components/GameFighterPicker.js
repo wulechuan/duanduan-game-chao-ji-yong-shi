@@ -19,10 +19,14 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         } = initOptions
 
         const {
+            shouldAutoPickFighterByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights,
+            shouldManuallyPickFighters,
             gameRoleCandidates,
-            shouldNotAutoRoll,
             onFighterDecided,
         } = initOptions
+
+        const shouldNotAutoRoll = !!shouldManuallyPickFighters || (!!shouldAutoPickFighterByWeights && !shouldForceRollingEvenIfAutoPickingByWeights)
 
         if (typeof keyForStoppingRollingRoles !== 'string') {
             throw new TypeError('keyForStoppingRollingRoles 字符串值，且必须为单个字符。')
@@ -32,7 +36,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
         keyForStoppingRollingRoles = keyForStoppingRollingRoles.toUpperCase()
 
-        if (!shouldNotAutoRoll && (keyForPickingPrevCandidate === undefined || keyForPickingPrevCandidate === null)) {
+        if (!shouldManuallyPickFighters && (keyForPickingPrevCandidate === undefined || keyForPickingPrevCandidate === null)) {
             keyForPickingPrevCandidate = undefined
         } else {
             if (typeof keyForPickingPrevCandidate !== 'string') {
@@ -45,7 +49,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         }
 
 
-        if (!shouldNotAutoRoll && (keyForPickingNextCandidate === undefined || keyForPickingNextCandidate === null)) {
+        if (!shouldManuallyPickFighters && (keyForPickingNextCandidate === undefined || keyForPickingNextCandidate === null)) {
             keyForPickingNextCandidate = undefined
         } else {
             if (typeof keyForPickingNextCandidate !== 'string') {
@@ -67,33 +71,40 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             keyboardEngineKeyDownConfig: null,
 
             fighter: {
-                candidates: gameRoleCandidates,
-                arrayIndexOfCurrentCandidate: 0,
+                candidatesInOriginalOrder: gameRoleCandidates,
+                candidates: [],
+                arrayIndexOfCurrentCandidate: NaN,
                 decidedCandidate: null,
                 decidedRoleConfig: null,
             },
         }
 
         this.status = {
+            shouldAutoPickFighterByWeights: !!shouldAutoPickFighterByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights: !!shouldForceRollingEvenIfAutoPickingByWeights,
+            shouldManuallyPickFighters: !!shouldManuallyPickFighters,
+            shouldNotAutoRoll: shouldNotAutoRoll,
             isRollingRoles: false,
             rollingIntervalId: NaN,
             fighterHasDecided: false,
-            shouldNotAutoRoll: !!shouldNotAutoRoll,
         }
 
         this.events = {
             onFighterDecided,
         }
 
-        this.updateKeyboardEngineConfig = updateKeyboardEngineConfig.bind(this)
-        this.createKeyboardEngineConfig = this.updateKeyboardEngineConfig
+        this.updateKeyboardEngineConfig        = updateKeyboardEngineConfig       .bind(this)
+        this.createKeyboardEngineConfig        = this.updateKeyboardEngineConfig
 
-        this.startPickingFighter        = startPickingFighter       .bind(this)
-        this.startRollingRoles          = startRollingRoles         .bind(this)
-        this.stopRollingRoles           = stopRollingRoles          .bind(this)
-        this.pickOneCandidate           = pickOneCandidate          .bind(this)
-        this.pickOneCandidateRandomly   = pickOneCandidateRandomly  .bind(this)
-        this.decideFighter              = decideFighter             .bind(this)
+        this.startPickingFighter               = startPickingFighter              .bind(this)
+        this.startRollingRoles                 = startRollingRoles                .bind(this)
+        this.stopRollingRoles                  = stopRollingRoles                 .bind(this)
+        this.pickOneCandidate                  = pickOneCandidate                 .bind(this)
+        this.pickPrevCandidate                 = pickPrevCandidate                .bind(this)
+        this.pickNextCandidate                 = pickNextCandidate                .bind(this)
+        this.pickOneCandidateRandomlyByWeights = pickOneCandidateRandomlyByWeights.bind(this)
+        this.pickOneCandidateRandomly          = pickOneCandidateRandomly         .bind(this)
+        this.decideFighter                     = decideFighter                    .bind(this)
 
         _init.call(this)
 
@@ -103,9 +114,52 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
 
     function _init() {
+        _generateWeightedRandomizedCandidates.call(this)
         _createDOMs.call(this)
         this.createKeyboardEngineConfig()
-        this.pickOneCandidateRandomly()
+
+        if (this.status.shouldAutoPickFighterByWeights) {
+            this.pickOneCandidateRandomlyByWeights()
+
+            if (!this.status.shouldForceRollingEvenIfAutoPickingByWeights) {
+                this.el.root.classList.add('fighter-has-decided')
+            }
+        } else {
+            this.pickOneCandidateRandomly()
+        }
+    }
+
+    function _generateWeightedRandomizedCandidates() {
+        const originArray = this.data.fighter.candidatesInOriginalOrder
+        const _allRestCandidates = [ ...originArray ]
+        const randomizedCandidates = []
+        while (_allRestCandidates.length > 0) {
+            const pickingIndex = Math.floor(Math.random() * _allRestCandidates.length)
+            // console.log('picking', pickingIndex, 'between', 0, _allRestCandidates.length - 1)
+            randomizedCandidates.push(
+                _allRestCandidates.splice(pickingIndex, 1)[0]
+            )
+        }
+
+        let accumWeightPointSoFar = 0
+        randomizedCandidates.forEach(candidate => {
+            accumWeightPointSoFar += candidate.data.selectionWeightDuringAutoRolling
+            candidate.data.accumSelectionWeightPoint = accumWeightPointSoFar
+        })
+
+        const totalWeightingPoint = accumWeightPointSoFar
+        randomizedCandidates.forEach(candidate => {
+            candidate.data.normalizedSelectionWeight      = + (candidate.data.selectionWeightDuringAutoRolling / totalWeightingPoint).toFixed(4)
+            candidate.data.normalizedAccumSelectionWeight = + (candidate.data.accumSelectionWeightPoint        / totalWeightingPoint).toFixed(4)
+        })
+
+        const lastCandidate = randomizedCandidates[randomizedCandidates.length - 1]
+        lastCandidate.data.accumSelectionWeightPoint      = totalWeightingPoint
+        lastCandidate.data.normalizedAccumSelectionWeight = 1
+
+        // console.log(randomizedCandidates.map(c => [c.data.name, c.data.normalizedAccumSelectionWeight]))
+
+        this.data.fighter.candidates = randomizedCandidates
     }
     
     function _createDOMs() {
@@ -171,23 +225,32 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             keyForPickingNextCandidate,
         } = this.data
 
-        const keyboardEngineKeyDownConfig = {
-            [keyForStoppingRollingRoles]: this.stopRollingRoles,
+        const {
+            shouldManuallyPickFighters,
+        } = this.status
+
+        const keyboardEngineKeyDownConfig = {}
+
+        if (shouldManuallyPickFighters) {
+            keyboardEngineKeyDownConfig[keyForStoppingRollingRoles] = this.decideFighter
+        } else {
+            keyboardEngineKeyDownConfig[keyForStoppingRollingRoles] = this.stopRollingRoles
         }
+
         keyboardTipStoppingRollingRoles.innerText = keyForStoppingRollingRoles
 
-        if (keyForPickingPrevCandidate) {
+        if (shouldManuallyPickFighters && keyForPickingPrevCandidate) {
             keyboardTipPickPrevCandidate.innerText = keyForPickingPrevCandidate
             keyboardTipPickPrevCandidate.style.display = ''
-            // keyboardEngineKeyDownConfig[keyForPickingPrevCandidate] = someAction
+            keyboardEngineKeyDownConfig[keyForPickingPrevCandidate] = this.pickPrevCandidate
         } else {
             keyboardTipPickPrevCandidate.style.display = 'none'
         }
 
-        if (keyForPickingNextCandidate) {
+        if (shouldManuallyPickFighters && keyForPickingNextCandidate) {
             keyboardTipPickNextCandidate.innerText = keyForPickingNextCandidate
             keyboardTipPickNextCandidate.style.display = ''
-            // keyboardEngineKeyDownConfig[keyForPickingNextCandidate] = someAction
+            keyboardEngineKeyDownConfig[keyForPickingNextCandidate] = this.pickNextCandidate
         } else {
             keyboardTipPickNextCandidate.style.display = 'none'
         }
@@ -196,13 +259,32 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
     }
 
     function startPickingFighter() {
-        if (!this.data.keyboardEngineKeyDownConfig) {
-            throw new Error('尚未创建【按键引擎】的配置，无法进行人机交互。因此不应启动【战士选择】进程。')
+        const {
+            shouldAutoPickFighterByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights,
+            shouldNotAutoRoll,
+            shouldManuallyPickFighters,
+        } = this.status
+
+        if (shouldAutoPickFighterByWeights) {
+            /*
+                当考虑选择权重时，随机选择战士的动作没必要执行，仅执行一次即可。
+                而为了及时初始化，该唯一的一次选择战士的动作早在 _init 函数中就已经执行了。
+
+                下方的 decideFighter 必须在此处调用，不能提早到 _init 函数中，
+                因为过早调用该方法时，其余类（例如 Game 类）或许还没有完成初始化。
+            */
+            if (!shouldForceRollingEvenIfAutoPickingByWeights) {
+                this.decideFighter()
+                return
+            }
         }
 
-        if (this.status.shouldNotAutoRoll) {
-            console.warn('暂未实现手工选择战士的功能！')
-        } else {
+        if (!shouldNotAutoRoll) {
+            if (!this.data.keyboardEngineKeyDownConfig) {
+                throw new Error('尚未创建【按键引擎】的配置，无法进行人机交互。因此不应启动【战士选择】进程。')
+            }
+
             this.startRollingRoles()
         }
     }
@@ -216,11 +298,18 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         const { status } = this
         if (status.isRollingRoles) { return }
 
-        this.pickOneCandidateRandomly()
+        let pickingFunction
+        if (this.status.shouldAutoPickFighterByWeights) {
+            pickingFunction = this.pickOneCandidateRandomlyByWeights
+        } else {
+            pickingFunction = this.pickOneCandidateRandomly
+        }
+
+        pickingFunction()
 
         status.isRollingRoles = true
         status.rollingIntervalId = setInterval(() => {
-            this.pickOneCandidateRandomly()
+            pickingFunction()
         }, intervalInMilliseconds)
     }
 
@@ -256,6 +345,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             return 'rejected'
         }
 
+        // console.log(arrayOldIndex, arrayNewIndex)
+
         if (arrayOldIndex === arrayNewIndex) {
             return 'nothing-to-do'
         }
@@ -273,13 +364,57 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         return 'succeeded'
     }
 
-    function pickOneCandidateRandomly() {
-        let result
+    function _pickCandidateByIndexDelta(indexDelta) {
+        const {
+            fighter: {
+                candidates,
+                arrayIndexOfCurrentCandidate: arrayOldIndex,
+            },
+        } = this.data
 
+        const candidatesCount = candidates.length
+    
+        let arrayNewIndex = arrayOldIndex + indexDelta
+        while (arrayNewIndex < 0) {
+            arrayNewIndex += candidatesCount
+        }
+
+        arrayNewIndex = arrayNewIndex % candidatesCount
+
+        this.pickOneCandidate(arrayNewIndex)
+    }
+
+    function pickPrevCandidate() {
+        _pickCandidateByIndexDelta.call(this, -1)
+    }
+
+    function pickNextCandidate() {
+        _pickCandidateByIndexDelta.call(this, 1)
+    }
+
+    function pickOneCandidateRandomlyByWeights() {
+        const { candidates } = this.data.fighter
+
+        const randomPickingWeight = Math.random()
+        let matchedCandidateArrayIndex = 0
+
+        for (let i = 1; i < candidates.length; i++) {
+            if (randomPickingWeight <= candidates[i].data.normalizedAccumSelectionWeight) {
+                matchedCandidateArrayIndex = i
+                break
+            }
+        }
+
+        this.pickOneCandidate(matchedCandidateArrayIndex)
+    }
+
+    function pickOneCandidateRandomly() {
+        // 不考虑选择权重时，随机选择的战士不应该与上一次选择的结果相同
+        
+        const { candidates } = this.data.fighter
+        let result
         do {
-            result = this.pickOneCandidate(
-                randomPositiveIntegerLessThan(this.data.fighter.candidates.length)
-            )
+            result = this.pickOneCandidate(randomPositiveIntegerLessThan(candidates.length))
         } while (result !== 'succeeded' && result !== 'rejected')
     }
 

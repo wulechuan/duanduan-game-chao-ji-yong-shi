@@ -294,9 +294,9 @@
   animation:fighter-auto-disappear-popup 1s ease-out both;
 }
 .role .auto-disappear-popup.health-point-decrease .content{
-  font-size:1rem;
-  padding:0.25em 1em;
-  line-height:1.5;
+  font-size:1.3rem;
+  padding:0.25em 1.5em;
+  line-height:1.25;
   border-radius:0.5rem;
   border:0.2rem double #fff;
   color:#fff;

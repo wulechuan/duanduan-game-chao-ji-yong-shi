@@ -84,19 +84,29 @@ window.duanduanGameChaoJiYongShi = {
             data: {
                 allGameFighterCandidatesForBothPlayers,
                 allGameFightingStageConfigurations,
+                gameGlobalSettings,
             },
             classes: {
                 Game,
             },
         } = this
 
+        const {
+            maxRoundsToRun,
+            shouldAutoPickFightersByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights,
+            shouldManuallyPickFighters,
+        } = gameGlobalSettings
 
         const game = new Game(
             document.querySelector('#app'),
             {
                 allGameFighterCandidatesForBothPlayers,
                 allGameFightingStageConfigurations,
-                // maxRoundsToRun: 5,
+                maxRoundsToRun,
+                shouldAutoPickFightersByWeights,
+                shouldForceRollingEvenIfAutoPickingByWeights,
+                shouldManuallyPickFighters,
             }
         )
 
