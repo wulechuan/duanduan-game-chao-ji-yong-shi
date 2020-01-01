@@ -125,7 +125,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
                 this.el.root.classList.add('fighter-has-decided')
             }
         } else {
-            this.pickOneCandidateRandomly()
+            // this.pickOneCandidateRandomly()
+            this.pickOneCandidateRandomlyByWeights()
         }
     }
 
