@@ -309,7 +309,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const attackerAttackingRatioIdea = Math.random() * 0.364 + 0.6
         const attackerAttackingRatioActual = attackerAttackingRatioIdea * Math.max(0.319, attackerHealthPoint / attackerFullHealthPoint)
 
-        const absoluteAttackingBasePoint = Math.ceil(Math.random() * 79 + 90)
+        const absoluteAttackingBasePoint = Math.ceil(Math.random() * 51 + 79)
 
         const defencePoint = sufferer.data.defencingPower * suffererDefensiveRatioActual * roleAttackingPowerExtraRatio
         const attackPoint  = attacker.data.attackingPower * attackerAttackingRatioActual * roleDefencingPowerExtraRatio

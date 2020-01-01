@@ -118,19 +118,19 @@
   }
 }
 .role-candidates-slot{
-  width:400px;
-  height:400px;
+  width:23rem;
+  height:23rem;
   position:absolute;
   top:50%;
-  margin-top:-200px;
+  margin-top:-11.5rem;
   margin-left:100px;
   margin-right:100px;
 }
 .role-candidates-slot.player-1{
-  left:50px;
+  left:1rem;
 }
 .role-candidates-slot.player-2{
-  right:50px;
+  right:1rem;
 }
 .role-candidates-slot.fighter-has-decided .keyboard-tip{
   opacity:0.05;
@@ -138,28 +138,31 @@
 .role-candidates-slot .keyboard-tip{
   z-index:319;
   font-size:2rem;
-  width:3rem;
-  height:3rem;
-  line-height:2.85rem;
+  width:2.5rem;
+  height:2.5rem;
+  line-height:2.375rem;
   border-radius:0.75rem;
   opacity:1;
   transition:opacity 0.2s ease-out;
-  margin:-1.5rem -1.5rem;
+  margin:-1.25rem -1.25rem;
 }
 .role-candidates-slot .keyboard-tip.decision-maker{
   top:auto;
   bottom:0;
   left:50%;
+  margin-left:0;
+  margin-right:0;
+  transform:translateX(-50%);
 }
 .role-candidates-slot .keyboard-tip.pick-prev-candidate,
 .role-candidates-slot .keyboard-tip.pick-next-candidate{
-  top:50%;
+  top:80%;
 }
 .role-candidates-slot .keyboard-tip.pick-prev-candidate{
-  left:0;
+  left:30%;
 }
 .role-candidates-slot .keyboard-tip.pick-next-candidate{
-  right:0;
+  right:30%;
 }
 .role-candidates-slot .role-candidate{
   left:0;

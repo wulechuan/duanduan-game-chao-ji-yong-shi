@@ -1,5 +1,5 @@
 window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
-    maxRoundsToRun: 5,
+    maxRoundsToRun: 3,
 
     shouldManuallyPickFighters: true,
     shouldAutoPickFightersByWeights: true,
