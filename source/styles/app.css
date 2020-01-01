@@ -46,7 +46,17 @@
   font-size:6rem;
   margin-bottom:0.2rem;
 }
-.role{
+.keyboard-tip{
+  box-sizing:content-box;
+  text-align:center;
+  border:0.4rem double #000;
+  background-color:#fff;
+  position:absolute;
+}
+.role,
+.role .locator,
+.role .role-looks,
+.role-candidate{
   position:absolute;
 }
 .role-looks,
@@ -55,46 +65,9 @@
   background-size:contain;
   background-position:center;
 }
-.role .locator,
-.role .role-looks,
-.role-candidate{
-  position:absolute;
-}
 .player-2 .role-candidate,
 .player-2 .role-looks{
   transform:scaleX(-1);
-}
-.role{
-  top:50%;
-  z-index:5;
-}
-.role.player-1{
-  left:2rem;
-}
-.role.player-2{
-  right:32rem;
-}
-.role.is-attacking{
-  z-index:6;
-}
-.role.has-lost{
-  opacity:0.6;
-  filter:grayscale(0.8);
-}
-.role .locator{
-  top:0;
-  left:0;
-  width:10px;
-  height:10px;
-  transition-property:left top transform;
-  transition-timing-function:ease;
-  transition-duration:0.15s;
-}
-.role .role-looks{
-  width:30rem;
-  height:30rem;
-  left:0;
-  top:-15rem;
 }
 .role-picking-screen{
   background-image:linear-gradient(to right, rgba(0,0,0,0.9) 30%, transparent 44%, transparent 56%, rgba(0,0,0,0.9) 70%), url("../images/game-ui/挑选角色阶段的背景.webp");
@@ -163,19 +136,14 @@
   opacity:0.05;
 }
 .role-candidates-slot .keyboard-tip{
-  box-sizing:content-box;
+  z-index:319;
+  font-size:2rem;
   width:3rem;
   height:3rem;
-  line-height:2.7rem;
-  border-radius:0.5rem;
-  text-align:center;
+  line-height:2.85rem;
+  border-radius:0.75rem;
   opacity:1;
   transition:opacity 0.2s ease-out;
-  font-size:2rem;
-  z-index:319;
-  border:0.4rem double #000;
-  background-color:#fff;
-  position:absolute;
   margin:-1.5rem -1.5rem;
 }
 .role-candidates-slot .keyboard-tip.decision-maker{
@@ -208,11 +176,138 @@
   background-repeat:no-repeat;
   background-size:cover;
 }
+.fighters{
+  position:absolute;
+  --fighter-visual-box-height:30rem;
+  left:1rem;
+  right:1rem;
+  margin-top:7rem;
+  top:calc(var(--fighter-visual-box-height));
+  bottom:0.5rem;
+  overflow:visible;
+  width:auto;
+  height:auto;
+}
+.role{
+  top:auto;
+  bottom:0;
+}
+.role{
+  z-index:5;
+}
+.role.is-attacking{
+  z-index:6;
+}
+.role .origin,
+.role .locator,
+.role .role-looks{
+  position:absolute;
+  top:auto;
+  width:0;
+  height:0;
+  overflow:visible;
+}
+.role .origin{
+  bottom:4.5rem;
+}
+.role .locator{
+  bottom:0;
+  overflow:visible;
+  transition-property:top right bottom left transform;
+  transition-timing-function:ease;
+  transition-duration:0.15s;
+}
+.role .role-looks{
+  width:var(--fighter-visual-box-height);
+  height:var(--fighter-visual-box-height);
+  left:calc(var(--fighter-visual-box-height) / -2);
+  right:auto;
+  bottom:0;
+}
+.role .keyboard-tips{
+  position:absolute;
+  bottom:0;
+  width:13rem;
+  height:4.4rem;
+  display:flex;
+  flex-wrap:nowrap;
+  justify-content:space-between;
+  opacity:1;
+  transition:opaciy 0.3s ease-out;
+}
+.role.has-lost{
+  opacity:0.6;
+  filter:grayscale(0.8);
+}
+.role.has-lost .keyboard-tips{
+  opacity:0.1;
+}
+.role.has-won .keyboard-tips{
+  opacity:0.1;
+}
+.role .keyboard-tip-container{
+  flex:0 0;
+  position:relative;
+  min-width:3rem;
+  height:100%;
+}
+.role .keyboard-tip,
+.role .keyboard-tip-label{
+  text-align:center;
+  position:absolute;
+  margin:0 auto;
+  left:0;
+  right:0;
+}
+.role .keyboard-tip-label{
+  top:0;
+  bottom:auto;
+  font-size:0.8rem;
+  width:auto;
+  height:1.5rem;
+  line-height:1.5rem;
+  border-radius:0.25rem;
+  color:#fff;
+  background-color:rgba(0,0,0,0.87);
+}
+.role .keyboard-tip{
+  top:auto;
+  bottom:0;
+  font-size:1.3rem;
+  width:2rem;
+  height:2rem;
+  line-height:2rem;
+  border-radius:0.5rem;
+}
+.role.player-1{
+  left:1rem;
+  right:auto;
+}
+.role.player-1 .keyboard-tips{
+  left:0;
+  right:auto;
+}
+.role.player-1 .origin{
+  left:calc(var(--fighter-visual-box-height) / 2);
+  right:auto;
+}
+.role.player-2{
+  right:1rem;
+}
+.role.player-2 .keyboard-tips{
+  left:auto;
+  right:0;
+}
+.role.player-2 .origin{
+  left:auto;
+  right:calc(var(--fighter-visual-box-height) / 2);
+}
 .game-round-status-block{
   position:absolute;
   top:0;
   left:0;
   width:100%;
+  height:7rem;
   display:flex;
   background-image:linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
 }
@@ -398,9 +493,7 @@
   z-index:0;
 }
 .game-round .fighters{
-  position:relative;
   z-index:10;
-  height:100%;
 }
 .game-round .game-round-status-block{
   z-index:90;

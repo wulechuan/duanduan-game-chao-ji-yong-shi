@@ -45,22 +45,15 @@
 
 
     .keyboard-tip {
-        box-sizing content-box
-        width 3rem
-        height @width
-        line-height: @height * 0.9
-        border-radius: 0.5rem
-        text-align: center
-        opacity 1
-        transition opacity 0.2s ease-out
-
-        font-size: 2rem;
         z-index 319
 
-        border 0.4rem double black
-        background-color: white
-
-        position absolute
+        font-size: 2rem
+        width 3rem
+        height @width
+        line-height @height * 0.95
+        border-radius 0.75rem
+        opacity 1
+        transition opacity 0.2s ease-out
         margin (@width * -0.5) (@height * -0.5)
 
         &.decision-maker {

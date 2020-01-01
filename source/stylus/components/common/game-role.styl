@@ -1,4 +1,7 @@
-.role {
+.role,
+.role .locator,
+.role .role-looks,
+.role-candidate {
     position absolute
 }
 
@@ -9,62 +12,9 @@
     background-position center
 }
 
-.role .locator,
-.role .role-looks,
-.role-candidate {
-    position absolute
-}
-
-
 .player-2 {
     .role-candidate,
     .role-looks {
-        transform: scaleX(-1);
-    }
-}
-
-.role {
-    top: 50%;
-
-    z-index: 5;
-
-    
-    &.player-1 {
-        left: 2rem;
-    }
-
-    &.player-2 {
-        right: 32rem;
-    }
-
-    &.is-attacking {
-        z-index: 6;
-    }
-
-    &.has-lost {
-        opacity: 0.6;
-        filter: grayscale(0.8);
-    }
-
-    &.has-won {
-        // nothing yet
-    }
-
-
-    .locator {
-        top 0
-        left 0
-        width 10px
-        height 10px
-        transition-property: left top transform
-        transition-timing-function: ease
-        transition-duration: 0.15s
-    }
-
-    .role-looks {
-        width 30rem
-        height 30rem
-        left 0
-        top (@height / -2)
+        transform scaleX(-1)
     }
 }

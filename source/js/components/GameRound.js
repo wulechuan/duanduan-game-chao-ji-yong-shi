@@ -156,7 +156,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         console.log(`\n\n【游戏局 ${this.data.gameRoundNumber}】开始。\n\n\n`)
         this.status.isRunning = true
         _startKeyboardEngine.call(this)
-        _startJudgement.call(this)
+        _startJudgementInterval.call(this)
     }
 
     function _startKeyboardEngine() {
@@ -215,7 +215,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         keyboardEngine.start(keyboardEngineConfigForBothPlayers)
     }
 
-    function _startJudgement() {
+    function _startJudgementInterval() {
         const { status } = this
         if (!status.isRunning) { return }
         if (status.judgementIntervalId) { return }
@@ -224,7 +224,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         }, status.judgementInterval)
     }
 
-    function _stopJudgement() {
+    function _stopJudgementInterval() {
         const { status } = this
         if (!status.judgementIntervalId) { return }
         clearInterval(status.judgementIntervalId)
@@ -283,7 +283,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     }
 
     function _roundHasAResult() {
-        _stopJudgement.call(this)
+        _stopJudgementInterval.call(this)
 
         const fighters = this.data.fighters
         const [ fighter1, fighter2 ] = fighters.both

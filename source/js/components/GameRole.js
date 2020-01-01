@@ -22,10 +22,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             throw new TypeError('创建【游戏角色】时，必须指明其应隶属于哪个【游戏】。')
         }
 
-        if (game.status.isRunningOneRound) {
-            throw new Error('【游戏】已经开始。不能为已经开始的【游戏】创建【游戏角色】。')
-        }
-
         if (game.status.isOver) {
             throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏角色】。')
         }
@@ -124,6 +120,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             'role',
         ])
 
+        const originElement = createDOMWithClassNames('div', [
+            'origin',
+        ])
+
         const locatorElement = createDOMWithClassNames('div', [
             'locator',
         ])
@@ -137,13 +137,50 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         theLooksElement.style.backgroundImage = `url(${poses['default'].filePath})`
 
         locatorElement.appendChild(theLooksElement)
-        rootElement.appendChild(locatorElement)
+        originElement.appendChild(locatorElement)
+        rootElement.appendChild(originElement)
 
         this.el = {
             root: rootElement,
+            origin: originElement,
             locator: locatorElement,
             theLooks: theLooksElement,
         }
+
+
+        const keyboardTipsElement = createDOMWithClassNames('div', [
+            'keyboard-tips',
+        ])
+
+        rootElement.appendChild(keyboardTipsElement)
+
+        ;[
+            { keyLabel: '向左', elRefPropertyName: 'keyboardTipForMovingLeftwards' },
+            { keyLabel: '向右', elRefPropertyName: 'keyboardTipForMovingRightwards' },
+            { keyLabel: '攻击', elRefPropertyName: 'keyboardTipForAttack' },
+            { keyLabel: '防御', elRefPropertyName: 'keyboardTipForDefence' },
+        ].forEach(({ keyLabel, elRefPropertyName }) => {
+            const keyboardTipContainerElement = createDOMWithClassNames('div', [
+                'keyboard-tip-container',
+            ])
+
+            const keyboardTipElement = createDOMWithClassNames('div', [
+                'keyboard-tip',
+            ])
+
+            const keyboardTipLabelElement = createDOMWithClassNames('div', [
+                'keyboard-tip-label',
+            ])
+
+            keyboardTipLabelElement.innerText = keyLabel
+
+            keyboardTipContainerElement.appendChild(keyboardTipLabelElement)
+            keyboardTipContainerElement.appendChild(keyboardTipElement)
+
+            keyboardTipsElement.appendChild(keyboardTipContainerElement)
+
+            this.el[elRefPropertyName] = keyboardTipElement
+        })
     }
 
     function updateKeyboardEngineConfig(options) {
@@ -155,6 +192,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyForAttack,
             keyForDefence,
         } = options
+
+        const {
+            keyboardTipForMovingLeftwards:  keyboardTipForMovingLeftwardsElement,
+            keyboardTipForMovingRightwards: keyboardTipForMovingRightwardsElement,
+            keyboardTipForAttack:           keyboardTipForAttackElement,
+            keyboardTipForDefence:          keyboardTipForDefenceElement,
+        } = this.el
 
         const { data } = this
 
@@ -181,6 +225,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         data.keyboardEngineKeyDownConfig = keyboardEngineKeyDownConfig
         data.keyboardEngineKeyUpConfig   = keyboardEngineKeyUpConfig
+
+        keyboardTipForMovingLeftwardsElement .innerText = keyForMovingLeftwards
+        keyboardTipForMovingRightwardsElement.innerText = keyForMovingRightwards
+        keyboardTipForAttackElement          .innerText = keyForAttack
+        keyboardTipForDefenceElement         .innerText = keyForDefence
     }
 
     function joinGameRound(gameRound) {
@@ -191,6 +240,35 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
         this.joinedGameRound = gameRound
+    }
+
+    function setPoseTo(poseCSSClassNameToApply) {
+        const {
+            root: rootElement,
+            theLooks: theLooksElement,
+        } = this.el
+
+        const rootElementClassList = rootElement.classList
+
+        gameRoleAllPossiblePoseCSSClassNames.forEach(poseCSSClassName => {
+            if (poseCSSClassName !== poseCSSClassNameToApply && rootElementClassList.contains(poseCSSClassName)) {
+                rootElementClassList.remove(poseCSSClassName)
+            }
+        })
+
+        if (poseCSSClassNameToApply && !rootElementClassList.contains(poseCSSClassNameToApply)) {
+            rootElementClassList.add(poseCSSClassNameToApply)
+        }
+
+        const { poses } = this.data.images
+        const poseConfig = poses[poseCSSClassNameToApply]
+
+        if (poseConfig) {
+            // console.log(`className: "${poseCSSClassNameToApply}"; imageFilePath: "${poseConfig.filePath}"`)
+            theLooksElement.style.backgroundImage = `url(${poseConfig.filePath})`
+        } else if (!poseCSSClassNameToApply) {
+            theLooksElement.style.backgroundImage = `url(${poses.default.filePath})`
+        }
     }
 
     function _isNotTakingAnyAction() {
@@ -331,34 +409,5 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     function lose() {
         _stopAllPossibleActions.call(this)
         this.setPoseTo('has-lost')
-    }
-
-    function setPoseTo(poseCSSClassNameToApply) {
-        const {
-            root: rootElement,
-            theLooks: theLooksElement,
-        } = this.el
-
-        const rootElementClassList = rootElement.classList
-
-        gameRoleAllPossiblePoseCSSClassNames.forEach(poseCSSClassName => {
-            if (poseCSSClassName !== poseCSSClassNameToApply && rootElementClassList.contains(poseCSSClassName)) {
-                rootElementClassList.remove(poseCSSClassName)
-            }
-        })
-
-        if (poseCSSClassNameToApply && !rootElementClassList.contains(poseCSSClassNameToApply)) {
-            rootElementClassList.add(poseCSSClassNameToApply)
-        }
-
-        const { poses } = this.data.images
-        const poseConfig = poses[poseCSSClassNameToApply]
-        
-        if (poseConfig) {
-            // console.log(`className: "${poseCSSClassNameToApply}"; imageFilePath: "${poseConfig.filePath}"`)
-            theLooksElement.style.backgroundImage = `url(${poseConfig.filePath})`
-        } else if (!poseCSSClassNameToApply) {
-            theLooksElement.style.backgroundImage = `url(${poses.default.filePath})`
-        }
     }
 })();
