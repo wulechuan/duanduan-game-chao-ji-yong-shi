@@ -123,19 +123,32 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             },
         } = this.data
 
-        const rootElement = createDOMWithClassNames('div', [
+        const rootElement1 = createDOMWithClassNames('div', [
             `player-${playerId}`,
             'role',
         ])
 
-        const originElement = createDOMWithClassNames('div', [
+        const rootElement2 = createDOMWithClassNames('div', [
+            `player-${playerId}`,
+            'role',
+        ])
+
+        const originElement1 = createDOMWithClassNames('div', [
             'origin',
         ])
 
-        const locatorElement = createDOMWithClassNames('div', [
+        const originElement2 = createDOMWithClassNames('div', [
+            'origin',
+        ])
+
+        const locatorElement1 = createDOMWithClassNames('div', [
             'locator',
         ])
-        locatorElement.style.left = '0px'
+        const locatorElement2 = createDOMWithClassNames('div', [
+            'locator',
+        ])
+        locatorElement1.style.left = '0px'
+        locatorElement2.style.left = '0px'
 
         const theLooksElement = createDOMWithClassNames('div', [
             'role-looks',
@@ -154,15 +167,21 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         theLooksElement.style.backgroundImage = `url(${poses['default'].filePath})`
 
         theLooksElement.appendChild(effectElementOfDefencing)
-        locatorElement.appendChild(theLooksElement)
-        locatorElement.appendChild(popupsContainerElement)
-        originElement.appendChild(locatorElement)
-        rootElement.appendChild(originElement)
+        locatorElement1.appendChild(theLooksElement)
+        originElement1.appendChild(locatorElement1)
+        rootElement1.appendChild(originElement1)
+
+        locatorElement2.appendChild(popupsContainerElement)
+        originElement2.appendChild(locatorElement2)
+        rootElement2.appendChild(originElement2)
 
         this.el = {
-            root: rootElement,
-            origin: originElement,
-            locator: locatorElement,
+            root: rootElement1,
+            root2: rootElement2,
+            origin1: originElement1,
+            origin2: originElement2,
+            locator1: locatorElement1,
+            locator2: locatorElement2,
             popupsContainer: popupsContainerElement,
             theLooks: theLooksElement,
             effects: {
@@ -175,7 +194,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             'keyboard-tips',
         ])
 
-        rootElement.appendChild(keyboardTipsElement)
+        rootElement1.appendChild(keyboardTipsElement)
 
         ;[
             { keyLabel: '向左', elRefPropertyName: 'keyboardTipForMovingLeftwards' },
@@ -331,11 +350,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function _makeOneMovement(shouldMoveLeftwards) {
-        const locatorElementStyle = this.el.locator.style
-        const oldLeft = parseInt(locatorElementStyle.left)
+        const locator1ElementStyle = this.el.locator1.style
+        const locator2ElementStyle = this.el.locator2.style
+
+        const oldLeft = parseInt(locator1ElementStyle.left)
         const step = (Math.random() * 0.2 + 0.8) * this.status.movementDeltaPerInterval
         const newLeft = oldLeft + step * (shouldMoveLeftwards ? -1 : 1)
-        locatorElementStyle.left = `${newLeft}px`
+
+        locator1ElementStyle.left = `${newLeft}px`
+        locator2ElementStyle.left = `${newLeft}px`
     }
 
     function startMovingLeftwards() {

@@ -148,11 +148,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             'fighters',
         ])
 
-        this.data.fighters.both.forEach(f => bothFightersContainerElement.appendChild(f.el.root))
+        const bothFightersPopupsContainerElement = createDOMWithClassNames('div', [
+            'fighters-popups',
+        ])
+
+        this.data.fighters.both.forEach(fighter => {
+            bothFightersContainerElement      .appendChild(fighter.el.root)
+            bothFightersPopupsContainerElement.appendChild(fighter.el.root2)
+        })
 
         rootElement.appendChild(fightingStage.el.root)
         rootElement.appendChild(bothFightersContainerElement)
         rootElement.appendChild(statusBlock.el.root)
+        rootElement.appendChild(bothFightersPopupsContainerElement)
 
         this.el = {
             root: rootElement,
@@ -316,7 +324,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             shouldIgnoreFightersDistance,
         } = attackingDetails
 
-        console.log('shouldIgnoreFightersDistance', shouldIgnoreFightersDistance)
+        // console.log('shouldIgnoreFightersDistance', shouldIgnoreFightersDistance)
 
         const attackerArrayIndex = attackerPlayerId - 1
         const suffererArrayIndex = 1 - attackerArrayIndex
@@ -332,7 +340,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
          } = _getVisualWidthOfFightersAndDistanceBetweenThem.call(this)
 
          if (!shouldIgnoreFightersDistance && distance > visualWidth * 0.45) {
-            console.log(`距离太远，${attacker.logString} 发起的攻击无效。`)
+            // console.log(`距离太远，${attacker.logString} 发起的攻击无效。`)
             return
         }
 

@@ -179,10 +179,13 @@
   background-repeat:no-repeat;
   background-size:cover;
 }
-.fighters{
-  position:absolute;
+.game-round{
   --fighter-visual-box-width:30rem;
   --fighter-visual-box-height:30rem;
+}
+.fighters-popups,
+.fighters{
+  position:absolute;
   left:1rem;
   right:1rem;
   margin-top:7rem;
@@ -851,6 +854,9 @@
 }
 .game-round .game-round-status-block{
   z-index:90;
+}
+.game-round .fighters-popups{
+  z-index:120;
 }
 html{
   font-size:20px;
