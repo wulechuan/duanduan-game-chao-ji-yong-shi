@@ -316,6 +316,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             shouldIgnoreFightersDistance,
         } = attackingDetails
 
+        console.log('shouldIgnoreFightersDistance', shouldIgnoreFightersDistance)
+
         const attackerArrayIndex = attackerPlayerId - 1
         const suffererArrayIndex = 1 - attackerArrayIndex
 
@@ -330,13 +332,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
          } = _getVisualWidthOfFightersAndDistanceBetweenThem.call(this)
 
          if (!shouldIgnoreFightersDistance && distance > visualWidth * 0.45) {
-            // console.log(`距离太远，${attacker.logString} 发起的攻击无效。`)
+            console.log(`距离太远，${attacker.logString} 发起的攻击无效。`)
             return
         }
 
-        const _distanceRatio = 1 - distance / (visualWidth * 0.45)
-        const attackingEffectsRatioViaDistance = _distanceRatio * _distanceRatio * _distanceRatio
-
+        let attackingEffectsRatioViaDistance = 1
+        if (!shouldIgnoreFightersDistance) {
+            const _distanceRatio = 1 - distance / (visualWidth * 0.45)
+            attackingEffectsRatioViaDistance = _distanceRatio * _distanceRatio * _distanceRatio
+        }
 
 
 

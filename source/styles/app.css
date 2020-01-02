@@ -416,7 +416,8 @@
 .role .auto-disappear-popup.words .content{
   font-size:1rem;
   display:inline-block;
-  padding:0.5em 0.5em 0.5em 1em;
+  position:relative;
+  padding:0.5em 0.5em 0.5em 1.9rem;
   line-height:1.3;
   text-align:center;
   border-radius:0.5rem;
@@ -424,9 +425,24 @@
   color:#000;
   background-color:#fff;
 }
+.role .auto-disappear-popup.words .content .avatar{
+  width:3.6rem;
+  height:3.6rem;
+  border-radius:50%;
+  position:absolute;
+  left:0;
+  top:-2rem;
+  bottom:-2rem;
+  margin:auto -2.7rem;
+  border:0.15rem solid #fff;
+  background-color:#fff;
+  box-shadow:inset 0 0 0.2rem rgba(0,0,0,0.219), 0 0 0.5rem 0 rgba(0,0,0,0.51);
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center;
+}
 .role .auto-disappear-popup.words.winning-words,
 .role .auto-disappear-popup.words.last-words{
-  bottom:calc(var(--fighter-visual-box-height) * 0.66);
   left:calc(var(--fighter-visual-box-height) * -0.25);
   width:var(--fighter-visual-box-width);
 }
@@ -434,10 +450,16 @@
 .role .auto-disappear-popup.words.last-words .content{
   box-shadow:0 0 0.6rem rgba(0,0,0,0.79);
 }
+.role .auto-disappear-popup.words.winning-words{
+  bottom:calc(var(--fighter-visual-box-height) * 0.7);
+}
 .role .auto-disappear-popup.words.winning-words .content{
   color:#000;
   border-color:#342c19;
   background-color:#fc6;
+}
+.role .auto-disappear-popup.words.last-words{
+  bottom:calc(var(--fighter-visual-box-height) * 0.45);
 }
 .role .auto-disappear-popup.words.last-words .content{
   color:#fff;

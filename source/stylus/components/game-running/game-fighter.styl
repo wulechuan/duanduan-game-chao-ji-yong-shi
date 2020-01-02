@@ -120,7 +120,7 @@ roundStatusBarHeight = 7rem
                 animation-timing-function ease-out
                 animation-iteration-count infinite
                 animation-fill-mode both
-                
+
                 box-shadow inset 0 0 1rem rgba(red, 0.6) // in case animation is not supported
 
                 @keyframes fighter-defencing-effects {
@@ -294,7 +294,8 @@ roundStatusBarHeight = 7rem
                 font-size 1rem
 
                 display inline-block
-                padding 0.5em 0.5em 0.5em 1em // 标点符号在右侧留下的空白太多，所以 padding-right 酌情减少。
+                position relative
+                padding 0.5em 0.5em 0.5em 1.9rem // 标点符号在右侧留下的空白太多，所以 padding-right 酌情减少。
                 line-height 1.3
                 text-align center
 
@@ -303,12 +304,30 @@ roundStatusBarHeight = 7rem
 
                 color black
                 background-color white
+
+                .avatar {
+                    width  3.6rem
+                    height @width
+                    border-radius 50%
+
+                    position absolute
+                    left 0
+                    top -2rem
+                    bottom -2rem
+                    margin: auto (-0.75 * @width)
+                    border: 0.15rem solid white
+                    background-color: white
+                    box-shadow inset 0 0 0.2rem rgba(black, 0.219), 0 0 0.5rem 0 rgba(black, 0.51)
+
+                    background-size cover
+                    background-repeat no-repeat
+                    background-position center
+                }
             }
 
             &.winning-words,
             &.last-words {
-                bottom calc( var(--fighter-visual-box-height) *  0.66 )
-                left   calc( var(--fighter-visual-box-height) * -0.25 )
+                left  calc( var(--fighter-visual-box-height) * -0.25 )
                 width var(--fighter-visual-box-width)
 
                 // 下面一行是测试代码
@@ -319,16 +338,24 @@ roundStatusBarHeight = 7rem
                 }
             }
 
-            &.winning-words .content {
-                color black
-                border-color #342c19
-                background-color #fc6
+            &.winning-words {
+                bottom calc( var(--fighter-visual-box-height) *  0.7 )
+
+                .content {
+                    color black
+                    border-color #342c19
+                    background-color #fc6
+                }
             }
 
-            &.last-words .content {
-                color white
-                border-color #512
-                background-color #a23
+            &.last-words {
+                bottom calc( var(--fighter-visual-box-height) *  0.45 )
+
+                .content {
+                    color white
+                    border-color #512
+                    background-color #a23
+                }
             }
 
             @keyframes fighter-auto-disappear-popup-words {
@@ -388,7 +415,7 @@ roundStatusBarHeight = 7rem
             left auto
             right calc( var(--fighter-visual-box-width) / 2 )
         }
-        
+
         .words:not(.winning-words):not(.last-words) .content {
             color black
             border-color currentColor

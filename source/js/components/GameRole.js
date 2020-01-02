@@ -490,7 +490,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         createOneAutoDisappearPopup.call(this, {
             timingForDisappearing: 5100,
             rootElementExtraCSSClassNames: 'words',
-            content: words,
+            content: _createContentForWords.call(this, words),
         })
     }
 
@@ -532,6 +532,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         )
     }
 
+    function _createContentForWords(words) {
+        return [
+            '<div class="avatar"',
+            ` style="background-image: url('${this.data.images.avatar.filePath}');"`,
+            `></div>`,
+            `<span>${words}</span>`,
+        ].join('')
+    }
+
     function win() {
         _stopAllPossibleActions.call(this)
         this.setPoseTo('has-won')
@@ -551,7 +560,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         createOneAutoDisappearPopup.call(this, {
             timingForDisappearing: 5100,
             rootElementExtraCSSClassNames: 'words winning-words',
-            content: words,
+            content: _createContentForWords.call(this, words),
             noInlineCSSPositioning: true,
         })
     }
@@ -572,7 +581,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         createOneAutoDisappearPopup.call(this, {
             timingForDisappearing: 5100,
             rootElementExtraCSSClassNames: 'words last-words',
-            content: words,
+            content: _createContentForWords.call(this, words),
             noInlineCSSPositioning: true,
         })
         this.setPoseTo('has-lost')
