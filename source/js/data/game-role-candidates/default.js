@@ -76,7 +76,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
             typeIdInFilePathAndCSSClassName: '005',
             selectionWeightDuringAutoRolling: 300,
             fullHealthPoint: 10000,
-            attackingPower: 13000,
+            attackingPower: 33000,
             defencingPower: 14000,
             avatarFileName: 'avatar.png',
             fileNamesIndexingByCSSClassName: {

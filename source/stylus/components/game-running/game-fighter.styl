@@ -175,7 +175,7 @@ roundStatusBarHeight = 7rem
         overflow visible
 
         animation-name fighter-auto-disappear-popup
-        animation-timing-function ease-out
+        animation-timing-function ease-in-out
         animation-fill-mode both
 
         @keyframes fighter-auto-disappear-popup {
@@ -184,7 +184,7 @@ roundStatusBarHeight = 7rem
                 transform none
             }
 
-            30% {
+            30%, 75% {
                 opacity 1
             }
 
@@ -192,13 +192,9 @@ roundStatusBarHeight = 7rem
                 transform translateY(-100%)
             }
 
-            75% {
-                opacity 1
-            }
-
             100% {
                 opacity 0
-                transform translateY(-160%)
+                transform translateY(-190%)
             }
         }
 
@@ -213,7 +209,7 @@ roundStatusBarHeight = 7rem
                 line-height 1.3
 
                 border-radius 0.5rem
-                border 0.2rem double white
+                border 0.25rem double white
 
                 color white
                 background-color rgba(red, 0.79)
@@ -223,22 +219,53 @@ roundStatusBarHeight = 7rem
         &.words {
             z-index 19
 
+            text-align center
+
             width: 19rem
             height 2rem // 定高，为了动画的 translateY 一致
 
             animation-name fighter-auto-disappear-popup-words
-            animation-duration 4s
+            animation-duration 4.5s
 
             .content {
                 font-size 1rem
-                padding 0.5em 1em
+
+                display inline-block
+                padding 0.5em 0.5em 0.5em 1em // 标点符号在右侧留下的空白太多，所以 padding-right 酌情减少。
                 line-height 1.3
+                text-align center
 
                 border-radius 0.5rem
-                border 0.2rem double black
+                border 0.39rem double black
 
                 color black
                 background-color white
+            }
+
+            &.winning-words,
+            &.last-words {
+                bottom calc( var(--fighter-visual-box-height) *  0.66 )
+                left   calc( var(--fighter-visual-box-height) * -0.25 )
+                width var(--fighter-visual-box-width)
+
+                // 下面一行是测试代码
+                // background-color: blue
+
+                .content {
+                    box-shadow 0 0 0.6rem rgba(black, 0.79)
+                }
+            }
+
+            &.winning-words .content {
+                color black
+                border-color #342c19
+                background-color #fc6
+            }
+
+            &.last-words .content {
+                color white
+                border-color #512
+                background-color #a23
             }
 
             @keyframes fighter-auto-disappear-popup-words {
@@ -247,21 +274,17 @@ roundStatusBarHeight = 7rem
                     transform none
                 }
 
-                5% {
+                7%, 92% {
                     opacity 1
                 }
 
-                10%, 75% {
+                9%, 94% {
                     transform translateY(-100%)
-                }
-
-                96% {
-                    opacity 1
                 }
 
                 100% {
                     opacity 0
-                    transform translateY(-160%)
+                    transform translateY(-319%)
                 }
             }
         }

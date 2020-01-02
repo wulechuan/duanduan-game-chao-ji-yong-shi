@@ -316,7 +316,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         const desiredDecrease = Math.ceil(Math.max(0, attackPoint - defencePoint)) + absoluteAttackingBasePoint
 
-        console.log(`${attacker.logString}攻击生效。\n${sufferer.logString}因此应扣除`, desiredDecrease, '点血值。')
+        // console.log(`${attacker.logString}攻击生效。\n${sufferer.logString}因此应扣除`, desiredDecrease, '点血值。')
         sufferer.$suffer(desiredDecrease)
     }
 

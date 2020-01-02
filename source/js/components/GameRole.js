@@ -72,6 +72,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             isInDefencingMode: false,
 
             countOfContinuousWeakAttacksIvReceived: 0,
+            allowToDeSe: true,
+            minTimeSpanBetweenTwoDeSe: 5015, // milliseconds
         }
 
 
@@ -405,23 +407,43 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         })
 
 
+
         const isAWeakAttack = desiredHPDecrease < data.defencingPower * 0.2
         if (isAWeakAttack) {
             status.countOfContinuousWeakAttacksIvReceived ++
-
-            if (status.countOfContinuousWeakAttacksIvReceived >= 3 && newHP / data.fullHealthPoint >= 0.45) {
-                _deSe.call(this)
+            if (status.countOfContinuousWeakAttacksIvReceived >= 3) {
+                setTimeout(_deSe.bind(this), 79)
             }
         }
     }
 
     function _deSe() { // 嘚瑟
-        const { countOfContinuousWeakAttacksIvReceived } = this.status
+        const { status, data } = this
+        const {
+            countOfContinuousWeakAttacksIvReceived,
+            allowToDeSe,
+            minTimeSpanBetweenTwoDeSe,
+        } = status
+
+        if (!allowToDeSe) { return }
+
+        const realTimeHP = data.healthPoint
+        // console.log('准备嘚瑟了，此时的实际 HP 为' , realTimeHP)
+        if (realTimeHP / data.fullHealthPoint < 0.38) { return }
+
+
+        status.allowToDeSe = false
+        setTimeout(() => {
+            status.allowToDeSe = true
+        }, minTimeSpanBetweenTwoDeSe)
 
         const wordsCandidates = [
-            `你太弱了！连续攻击了我 ${countOfContinuousWeakAttacksIvReceived} 次，对我也没什么伤害！哈哈哈哈！`,
-            `使劲儿打呀，我的小绵羊！`,
-            `你就这点本事吗？哈哈哈哈！`,
+            `你太弱了！连续攻击了我 ${countOfContinuousWeakAttacksIvReceived} 次，<br>对我也没什么伤害！哈哈哈哈！`,
+            '使劲儿打呀，我的小绵羊！',
+            '你就这点本事吗？哈哈哈哈！',
+            '你是哪位“名师”指的出来的“高徒”？哈哈哈哈！',
+            '够了！别再给我挠痒痒了！',
+            '哼！没用的家伙！',
         ]
 
         const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
@@ -431,7 +453,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         console.log(`${this.logString}：“words”`)
 
         createOneAutoDisappearPopup.call(this, {
-            timingForDisappearing: 4000,
+            timingForDisappearing: 5100,
             rootElementExtraCSSClassNames: 'words',
             content: words,
         })
@@ -449,25 +471,27 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             timingForDisappearing,
             rootElementExtraCSSClassNames,
             content,
+            noInlineCSSPositioning,
         } = options
 
         const { AutoDisappearPopup } = classes
 
-        const rootElementLeftRatio   = (Math.random() * 0.5).toFixed(2)
-        const rootElementBottomRatio = (Math.random() * 0.5 + 0.32).toFixed(2)
+        const inlineCSSPositioning = {}
 
-        rootElementLeft   = `calc( var(--fighter-visual-box-width ) * ${rootElementLeftRatio})`
-        rootElementBottom = `calc( var(--fighter-visual-box-height) * ${rootElementBottomRatio})`
+        if (!noInlineCSSPositioning) {
+            const rootElementLeftRatio   = (Math.random() * 0.5 - 0.2).toFixed(2)
+            const rootElementBottomRatio = (Math.random() * 0.5 + 0.32).toFixed(2)
+    
+            inlineCSSPositioning.left   = `calc( var(--fighter-visual-box-width ) * ${rootElementLeftRatio})`
+            inlineCSSPositioning.bottom = `calc( var(--fighter-visual-box-height) * ${rootElementBottomRatio})`
+        }
 
         new AutoDisappearPopup(
             this.el.popupsContainer,
             {
                 timingForDisappearing,
                 rootElementExtraCSSClassNames,
-                rootElementStyle: {
-                    left:   rootElementLeft,
-                    bottom: rootElementBottom,
-                },
+                rootElementStyle: inlineCSSPositioning,
                 content,
             }
         )
@@ -476,10 +500,46 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     function win() {
         _stopAllPossibleActions.call(this)
         this.setPoseTo('has-won')
+
+        const wordsCandidates = [
+            '你真是弱爆了！',
+            '回去再练几年吧！',
+            '就你这水平还跟我较量？<br>哼！不自量力！',
+            '我是无敌的！',
+            '很可惜你今天遇到的是我！哼。',
+            '我这个人在战场上是从来不给敌人留情面的！',
+            '真想尝尝失败的滋味啊！哈哈哈哈！',
+        ]
+
+        const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
+
+        createOneAutoDisappearPopup.call(this, {
+            timingForDisappearing: 5100,
+            rootElementExtraCSSClassNames: 'words winning-words',
+            content: words,
+            noInlineCSSPositioning: true,
+        })
     }
 
     function lose() {
         _stopAllPossibleActions.call(this)
+
+        const wordsCandidates = [
+            '我一定会报仇的！',
+            '今日一战是我的耻辱！',
+            '君子报仇，十年不晚！',
+            '我要卧薪尝胆！',
+            '总有一天我会夺回荣耀！',
+        ]
+
+        const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
+
+        createOneAutoDisappearPopup.call(this, {
+            timingForDisappearing: 5100,
+            rootElementExtraCSSClassNames: 'words last-words',
+            content: words,
+            noInlineCSSPositioning: true,
+        })
         this.setPoseTo('has-lost')
     }
 })();
