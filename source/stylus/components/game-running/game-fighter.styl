@@ -126,7 +126,7 @@ roundStatusBarHeight = 7rem
                 @keyframes fighter-defencing-effects {
                     0% {
                         opacity 0;
-                        margin: 20%;
+                        margin: 25%;
                         box-shadow: inset 0 0 1.2rem 0 #515;
                     }
 
@@ -136,19 +136,19 @@ roundStatusBarHeight = 7rem
 
                     65%, 100% {
                         box-shadow: inset 0 0 1.8rem 0 #d8f;
-                        margin: 10%;
+                        margin: 15%;
                         opacity 0;
                     }
                 }
             }
 
             &::before {
-                margin 20% // in case animation is not supported
+                margin 25% // in case animation is not supported
                 animation-delay 0
             }
 
             &::after {
-                margin 18% // in case animation is not supported
+                margin 21% // in case animation is not supported
                 animation-delay (animationDuration / 3)
             }
         }
@@ -368,6 +368,12 @@ roundStatusBarHeight = 7rem
             left calc( var(--fighter-visual-box-width) / 2 )
             right auto
         }
+
+        .words:not(.winning-words):not(.last-words) .content {
+            color white
+            border-color currentColor
+            background-color black
+        }
     }
 
     &.player-2 {
@@ -381,6 +387,12 @@ roundStatusBarHeight = 7rem
         .origin {
             left auto
             right calc( var(--fighter-visual-box-width) / 2 )
+        }
+        
+        .words:not(.winning-words):not(.last-words) .content {
+            color black
+            border-color currentColor
+            background-color white
         }
     }
 }

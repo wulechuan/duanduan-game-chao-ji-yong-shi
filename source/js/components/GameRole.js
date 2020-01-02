@@ -62,7 +62,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.status = {
             isMovingLeftwards: false,
             isMovingRightwards: false,
-            movementDeltaPerInterval: 30, // pixels
+            movementDeltaPerInterval: 51, // pixels
             movementInterval: 200, // milliseconds
             movementIntervalId: NaN,
 
@@ -333,7 +333,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     function _makeOneMovement(shouldMoveLeftwards) {
         const locatorElementStyle = this.el.locator.style
         const oldLeft = parseInt(locatorElementStyle.left)
-        const newLeft = oldLeft + this.status.movementDeltaPerInterval * (shouldMoveLeftwards ? -1 : 1)
+        const step = (Math.random() * 0.2 + 0.8) * this.status.movementDeltaPerInterval
+        const newLeft = oldLeft + step * (shouldMoveLeftwards ? -1 : 1)
         locatorElementStyle.left = `${newLeft}px`
     }
 
@@ -381,7 +382,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
     function enterAttackMode() {
         if (_takeAnAction.call(this, 'isInAttackingMode', 'is-attacking')) {
-            this.joinedGameRound.acceptOneAttackFromPlayer(this.data.playerId)
+            this.joinedGameRound.acceptOneAttackFromPlayer({
+                attackerPlayerId: this.data.playerId,
+            })
 
             const { status } = this
             status.attackingPoseTimerId = setTimeout(() => {
@@ -435,7 +438,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             content: - actualHPDecrease,
         })
 
-        console.warn('缺少挨揍的姿态图片和相关的视图变化逻辑')
+        // TODO: console.warn('缺少挨揍的姿态图片和相关的视图变化逻辑')
         // if (!status.isInDefencingMode) {
         //     this.setPoseTo('is-suffering')
         // }

@@ -48,7 +48,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             judgementInterval: 66, // milliseconds
             judgementIntervalId: NaN,
 
-            fighterNewAttacksQueue: [],
+            fighterNewAttacksQueue: [
+                /* 
+                    {
+                        attackerPlayerId: number,
+                        shouldIgnoreFightersDistance: boolean,
+                    }
+                */
+            ],
         }
 
         this.start                     = start                    .bind(this)
@@ -200,8 +207,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             'ENTER': () => {
                 console.warn('临时代码！')
                 const attackerArrayIndex = Math.floor(Math.random() * 2)
-                for (let i = 0; i < 1000; i++) {
-                    this.acceptOneAttackFromPlayer(attackerArrayIndex + 1)
+                for (let i = 0; i < 515; i++) {
+                    this.acceptOneAttackFromPlayer({
+                        attackerPlayerId: attackerArrayIndex + 1,
+                        shouldIgnoreFightersDistance: true,
+                    })
                 }
             },
         }
@@ -219,8 +229,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         keyboardEngine.start(keyboardEngineConfigForBothPlayers)
     }
 
-    function acceptOneAttackFromPlayer(playerId) {
-        this.status.fighterNewAttacksQueue.push(playerId)
+    function acceptOneAttackFromPlayer(attackingDetails) {
+        this.status.fighterNewAttacksQueue.push(attackingDetails)
     }
 
     function _startJudgementInterval() {
@@ -247,9 +257,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         let eitherFighterLose = false
 
         while (arrayIndex < fighterNewAttacksQueue.length) {
-            const attackerPlayerId = fighterNewAttacksQueue[arrayIndex]
+            const attackingDetails = fighterNewAttacksQueue[arrayIndex]
 
-            _judgeOnce.call(this, attackerPlayerId)
+            _judgeOnce.call(this, attackingDetails)
 
             eitherFighterLose = _eitherFighterLose.call(this)
             if (eitherFighterLose) { break }
@@ -277,13 +287,58 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         return f1HP < epsilon || f2HP < epsilon
     }
 
-    function _judgeOnce(attackerPlayerId) {
+    function _getVisualWidthOfFightersAndDistanceBetweenThem() {
+        const [ f1, f2 ] = this.data.fighters.both
+
+        const [ f1TheLooks, f2TheLooks ] = [ f1.el.theLooks, f2.el.theLooks ]
+        // const [ f1Locator,  f2Locator ]  = [ f1.el.locator,  f2.el.locator ]
+        const fighterVisualBoxWidth = f1TheLooks.offsetWidth
+        const [
+            f1TheLooksLeft,
+            f2TheLooksLeft,
+        ] = [
+            f1TheLooks.getBoundingClientRect().left,
+            f2TheLooks.getBoundingClientRect().left,
+        ]
+
+        const distance = Math.abs(f1TheLooksLeft - f2TheLooksLeft)
+        // console.log('size:', fighterVisualBoxWidth, '\tdistance:', distance, '\tpositions:', f1TheLooksLeft, f2TheLooksLeft)
+
+        return {
+            visualWidth: fighterVisualBoxWidth,
+            distance,
+        }
+    }
+
+    function _judgeOnce(attackingDetails) {
+        const {
+            attackerPlayerId,
+            shouldIgnoreFightersDistance,
+        } = attackingDetails
+
         const attackerArrayIndex = attackerPlayerId - 1
         const suffererArrayIndex = 1 - attackerArrayIndex
 
         const bothFighters = this.data.fighters.both
         const attacker = bothFighters[attackerArrayIndex]
         const sufferer = bothFighters[suffererArrayIndex]
+
+
+        const {
+            distance,
+            visualWidth,
+         } = _getVisualWidthOfFightersAndDistanceBetweenThem.call(this)
+
+         if (!shouldIgnoreFightersDistance && distance > visualWidth * 0.45) {
+            // console.log(`距离太远，${attacker.logString} 发起的攻击无效。`)
+            return
+        }
+
+        const _distanceRatio = 1 - distance / (visualWidth * 0.45)
+        const attackingEffectsRatioViaDistance = _distanceRatio * _distanceRatio * _distanceRatio
+
+
+
 
         const attackerData = sufferer.data
         const attackerHealthPoint     = attackerData.healthPoint
@@ -309,15 +364,20 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const attackerAttackingRatioIdea = Math.random() * 0.364 + 0.6
         const attackerAttackingRatioActual = attackerAttackingRatioIdea * Math.max(0.319, attackerHealthPoint / attackerFullHealthPoint)
 
-        const absoluteAttackingBasePoint = Math.ceil(Math.random() * 51 + 79)
+        const absoluteAttackingBasePoint = Math.random() * 51 + 79
 
         const defencePoint = sufferer.data.defencingPower * suffererDefensiveRatioActual * roleAttackingPowerExtraRatio
         const attackPoint  = attacker.data.attackingPower * attackerAttackingRatioActual * roleDefencingPowerExtraRatio
 
-        const desiredDecrease = Math.ceil(Math.max(0, attackPoint - defencePoint)) + absoluteAttackingBasePoint
+        let desiredDecrease = Math.max(0, attackPoint - defencePoint) + absoluteAttackingBasePoint
+        desiredDecrease = Math.ceil(desiredDecrease * attackingEffectsRatioViaDistance)
 
-        // console.log(`${attacker.logString}攻击生效。\n${sufferer.logString}因此应扣除`, desiredDecrease, '点血值。')
-        sufferer.$suffer(desiredDecrease)
+        if (desiredDecrease > 0) {
+            // console.log(`${attacker.logString}攻击生效。\n${sufferer.logString}因此应扣除`, desiredDecrease, '点血值。')
+            sufferer.$suffer(desiredDecrease)
+        } else {
+            // console.log(`${attacker.logString} 发起的攻击太微弱，视为无效。`)
+        }
     }
 
     function _roundHasAResult() {
