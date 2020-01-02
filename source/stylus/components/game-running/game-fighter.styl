@@ -69,6 +69,8 @@ roundStatusBarHeight = 7rem
     }
 
     .popups {
+        z-index 100
+
         left calc( var(--fighter-visual-box-width) / -4 )
 
         // 以下是测试代码
@@ -296,7 +298,7 @@ roundStatusBarHeight = 7rem
                 display inline-block
                 position relative
                 padding 0.5em 0.5em 0.5em 1.9rem // 标点符号在右侧留下的空白太多，所以 padding-right 酌情减少。
-                line-height 1.3
+                line-height 1.33
                 text-align center
 
                 border-radius 0.5rem
@@ -304,25 +306,51 @@ roundStatusBarHeight = 7rem
 
                 color black
                 background-color white
+            }
 
-                .avatar {
-                    width  3.6rem
-                    height @width
-                    border-radius 50%
+            .player-id,
+            .avatar {
+                position absolute
+                margin: auto
+            }
 
-                    position absolute
-                    left 0
-                    top -2rem
-                    bottom -2rem
-                    margin: auto (-0.75 * @width)
-                    border: 0.15rem solid white
-                    background-color: white
-                    box-shadow inset 0 0 0.2rem rgba(black, 0.219), 0 0 0.5rem 0 rgba(black, 0.51)
+            .player-id {
+                z-index 2
 
-                    background-size cover
-                    background-repeat no-repeat
-                    background-position center
-                }
+                font-size 1.2rem
+
+                width 3.2rem
+                height 2.33rem
+                line-height @height
+
+                top -0.4rem
+                left (-1.5 * @width)
+                text-align left
+                padding 0 0 0 0.6rem
+
+                border-radius 0.6rem
+
+                border (- @top) double transparent
+            }
+
+            .avatar {
+                z-index 4
+
+                height 3.6rem
+                width @height
+
+                top -0.9rem
+                left (-0.75 * @width)
+
+                border-radius 50%
+
+                border: 0.15rem solid white
+                background-color: white
+                box-shadow inset 0 0 0.2rem rgba(black, 0.219), 0 0 0.5rem 0 rgba(black, 0.51)
+
+                background-size cover
+                background-repeat no-repeat
+                background-position center
             }
 
             &.winning-words,
@@ -334,7 +362,11 @@ roundStatusBarHeight = 7rem
                 // background-color: blue
 
                 .content {
-                    box-shadow 0 0 0.6rem rgba(black, 0.79)
+
+                    &,
+                    .player-id {
+                        box-shadow 0 0 0.6rem rgba(black, 0.79)
+                    }
                 }
             }
 
@@ -396,10 +428,19 @@ roundStatusBarHeight = 7rem
             right auto
         }
 
-        .words:not(.winning-words):not(.last-words) .content {
-            color white
-            border-color currentColor
-            background-color black
+        .words {
+
+            .player-id {
+                color white
+                border-color currentColor
+                background-color #911;
+            }
+
+            &:not(.winning-words):not(.last-words) .content {
+                color white
+                border-color currentColor
+                background-color black
+            }
         }
     }
 
@@ -416,10 +457,19 @@ roundStatusBarHeight = 7rem
             right calc( var(--fighter-visual-box-width) / 2 )
         }
 
-        .words:not(.winning-words):not(.last-words) .content {
-            color black
-            border-color currentColor
-            background-color white
+        .words {
+
+            .player-id {
+                color white
+                border-color currentColor
+                background-color #191
+            }
+
+            &:not(.winning-words):not(.last-words) .content {
+                color black
+                border-color currentColor
+                background-color white
+            }
         }
     }
 }

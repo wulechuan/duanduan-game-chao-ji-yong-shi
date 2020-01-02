@@ -534,6 +534,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
     function _createContentForWords(words) {
         return [
+            `<div class="player-id">${this.data.playerId}</div>`,
             '<div class="avatar"',
             ` style="background-image: url('${this.data.images.avatar.filePath}');"`,
             `></div>`,
