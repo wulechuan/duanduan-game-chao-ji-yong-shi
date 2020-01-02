@@ -294,16 +294,115 @@
 }
 .role .auto-disappear-popup{
   position:absolute;
-  animation:fighter-auto-disappear-popup 1s ease-out both;
+  overflow:visible;
+  animation-name:fighter-auto-disappear-popup;
+  animation-timing-function:ease-out;
+  animation-fill-mode:both;
+}
+.role .auto-disappear-popup.health-point-decrease{
+  z-index:3;
+  animation-duration:1s;
 }
 .role .auto-disappear-popup.health-point-decrease .content{
-  font-size:1.3rem;
-  padding:0.25em 1.5em;
-  line-height:1.25;
+  font-size:1.2rem;
+  padding:0.25em 1em;
+  line-height:1.3;
   border-radius:0.5rem;
   border:0.2rem double #fff;
   color:#fff;
   background-color:rgba(255,0,0,0.79);
+}
+.role .auto-disappear-popup.words{
+  z-index:19;
+  width:19rem;
+  height:2rem;
+  animation-name:fighter-auto-disappear-popup-words;
+  animation-duration:4s;
+}
+.role .auto-disappear-popup.words .content{
+  font-size:1rem;
+  padding:0.5em 1em;
+  line-height:1.3;
+  border-radius:0.5rem;
+  border:0.2rem double #000;
+  color:#000;
+  background-color:#fff;
+}
+@-moz-keyframes fighter-auto-disappear-popup-words{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  5%{
+    opacity:1;
+  }
+  10%, 75%{
+    transform:translateY(-100%);
+  }
+  96%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-160%);
+  }
+}
+@-webkit-keyframes fighter-auto-disappear-popup-words{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  5%{
+    opacity:1;
+  }
+  10%, 75%{
+    transform:translateY(-100%);
+  }
+  96%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-160%);
+  }
+}
+@-o-keyframes fighter-auto-disappear-popup-words{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  5%{
+    opacity:1;
+  }
+  10%, 75%{
+    transform:translateY(-100%);
+  }
+  96%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-160%);
+  }
+}
+@keyframes fighter-auto-disappear-popup-words{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  5%{
+    opacity:1;
+  }
+  10%, 75%{
+    transform:translateY(-100%);
+  }
+  96%{
+    opacity:1;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-160%);
+  }
 }
 @-moz-keyframes fighter-auto-disappear-popup{
   0%{

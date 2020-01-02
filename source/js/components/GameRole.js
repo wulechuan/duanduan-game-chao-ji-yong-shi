@@ -70,6 +70,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             attackingPoseTimerId: NaN,
 
             isInDefencingMode: false,
+
+            countOfContinuousWeakAttacksIvReceived: 0,
         }
 
 
@@ -387,8 +389,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function $suffer(desiredHPDecrease) {
-        const oldHP = this.data.healthPoint
+        const { status, data } = this
+
+        const oldHP = data.healthPoint
         const actualHPDecrease = Math.min(oldHP, desiredHPDecrease)
+
+        const newHP = oldHP - actualHPDecrease
+        this.data.healthPoint = newHP
+        // console.log(this.logString, '实际扣除', actualHPDecrease, '点血值，变为', newHP)
 
         createOneAutoDisappearPopup.call(this, {
             timingForDisappearing: 2000,
@@ -396,8 +404,37 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             content: - actualHPDecrease,
         })
 
-        // console.log(this.logString, '实际扣除', actualHPDecrease, '点血值。')
-        this.data.healthPoint = oldHP - actualHPDecrease
+
+        const isAWeakAttack = desiredHPDecrease < data.defencingPower * 0.2
+        if (isAWeakAttack) {
+            status.countOfContinuousWeakAttacksIvReceived ++
+
+            if (status.countOfContinuousWeakAttacksIvReceived >= 3 && newHP / data.fullHealthPoint >= 0.45) {
+                _deSe.call(this)
+            }
+        }
+    }
+
+    function _deSe() { // 嘚瑟
+        const { countOfContinuousWeakAttacksIvReceived } = this.status
+
+        const wordsCandidates = [
+            `你太弱了！连续攻击了我 ${countOfContinuousWeakAttacksIvReceived} 次，对我也没什么伤害！哈哈哈哈！`,
+            `使劲儿打呀，我的小绵羊！`,
+            `你就这点本事吗？哈哈哈哈！`,
+        ]
+
+        const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
+
+        this.status.countOfContinuousWeakAttacksIvReceived = 0
+
+        console.log(`${this.logString}：“words”`)
+
+        createOneAutoDisappearPopup.call(this, {
+            timingForDisappearing: 4000,
+            rootElementExtraCSSClassNames: 'words',
+            content: words,
+        })
     }
 
     function _stopAllPossibleActions() {
