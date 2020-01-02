@@ -473,7 +473,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             `你太弱了！连续攻击了我 ${countOfContinuousWeakAttacksIvReceived} 次，<br>对我也没什么伤害！哈哈哈哈！`,
             '使劲儿打呀，我的小绵羊！',
             '你就这点本事吗？哈哈哈哈！',
-            '你是哪位“名师”指的出来的“高徒”？哈哈哈哈！',
+            '你是哪位“名师”指的出来<br>的“高徒”？哈哈哈哈！',
             '够了！别再给我挠痒痒了！',
             '哼！没用的家伙！',
         ]
