@@ -1,6 +1,7 @@
 window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     const gameRoleAllPossiblePoseCSSClassNames = [
         'is-attacking',
+        'is-defencing',
         'is-suffering',
         'has-won',
         'has-lost',
@@ -82,6 +83,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         this.joinGameRound              = joinGameRound             .bind(this)
         this.setPoseTo                  = setPoseTo                 .bind(this)
+        this.showEffects                = showEffects               .bind(this)
 
         this.startMovingLeftwards       = startMovingLeftwards      .bind(this)
         this.startMovingRightwards      = startMovingRightwards     .bind(this)
@@ -108,6 +110,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     function _init(initOptions) {
         _createDOMs.call(this)
         this.createKeyboardEngineConfig(initOptions)
+        this.showEffects('')
+        this.setPoseTo('')
     }
 
     function _createDOMs() {
@@ -138,12 +142,18 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             // `role-candidate-${typeIdInFilePathAndCSSClassName}`,
         ])
 
+        const effectElementOfDefencing = createDOMWithClassNames('div', [
+            'effects',
+            'is-defencing',
+        ])
+
         const popupsContainerElement = createDOMWithClassNames('div', [
             'popups',
         ])
 
         theLooksElement.style.backgroundImage = `url(${poses['default'].filePath})`
 
+        theLooksElement.appendChild(effectElementOfDefencing)
         locatorElement.appendChild(theLooksElement)
         locatorElement.appendChild(popupsContainerElement)
         originElement.appendChild(locatorElement)
@@ -155,6 +165,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             locator: locatorElement,
             popupsContainer: popupsContainerElement,
             theLooks: theLooksElement,
+            effects: {
+                'is-defencing': effectElementOfDefencing,
+            },
         }
 
 
@@ -281,6 +294,20 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
     }
 
+    function showEffects(propertyNameOfEffectsToShow) {
+        const effectsElements = this.el.effects
+        const allPossibleEffectsNames = Object.keys(effectsElements)
+
+        allPossibleEffectsNames.forEach(effectsPropertyName => {
+            const el = effectsElements[effectsPropertyName]
+            if (effectsPropertyName === propertyNameOfEffectsToShow) {
+                el.style.display = ''
+            } else {
+                el.style.display = 'none'
+            }
+        })
+    }
+
     function _isNotTakingAnyAction() {
         const {
             isMovingLeftwards,
@@ -379,7 +406,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
     function enterDefenceMode() {
         if (_takeAnAction.call(this, 'isInDefencingMode', 'is-defencing')) {
-            // Nothing more.
+            this.showEffects('is-defencing')
+            this.setPoseTo('is-defencing')
         }
     }
 
@@ -387,6 +415,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const { status } = this
         if (!status.isInDefencingMode) { return }
         status.isInDefencingMode = false
+        this.showEffects('')
         this.setPoseTo('')
     }
 
@@ -406,7 +435,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             content: - actualHPDecrease,
         })
 
-
+        console.warn('缺少挨揍的姿态图片和相关的视图变化逻辑')
+        // if (!status.isInDefencingMode) {
+        //     this.setPoseTo('is-suffering')
+        // }
 
         const isAWeakAttack = desiredHPDecrease < data.defencingPower * 0.2
         if (isAWeakAttack) {

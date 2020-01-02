@@ -34,6 +34,7 @@ roundStatusBarHeight = 7rem
     .origin,
     .locator,
     .popups,
+    .effects,
     .role-looks {
         position absolute
         top auto
@@ -80,15 +81,77 @@ roundStatusBarHeight = 7rem
         pointer-events none
     }
 
+    .effects,
     .role-looks {
-        width       var(--fighter-visual-box-width)
-        height      var(--fighter-visual-box-height)
+        width  var(--fighter-visual-box-width)
+        height var(--fighter-visual-box-height)
+        right  auto
+        bottom 0
+    }
+
+    .role-looks {
         left   calc(var(--fighter-visual-box-width) / -2 )
         right  auto
         bottom 0
 
         // 以下是测试代码
         // background-color rgba(red, 0.45)
+    }
+
+    .effects {
+        left 0
+
+        &.is-defencing {
+
+            animationDuration = 1s
+
+            &::before,
+            &::after {
+                content ''
+                position absolute
+                top 0
+                left 0
+                right 0
+                bottom 0
+                border-radius 50%
+
+                animation-name fighter-defencing-effects
+                animation-duration animationDuration
+                animation-timing-function ease-out
+                animation-iteration-count infinite
+                animation-fill-mode both
+                
+                box-shadow inset 0 0 1rem rgba(red, 0.6) // in case animation is not supported
+
+                @keyframes fighter-defencing-effects {
+                    0% {
+                        opacity 0;
+                        margin: 20%;
+                        box-shadow: inset 0 0 1.2rem 0 #515;
+                    }
+
+                    16%, 51% {
+                        opacity 1;
+                    }
+
+                    65%, 100% {
+                        box-shadow: inset 0 0 1.8rem 0 #d8f;
+                        margin: 10%;
+                        opacity 0;
+                    }
+                }
+            }
+
+            &::before {
+                margin 20% // in case animation is not supported
+                animation-delay 0
+            }
+
+            &::after {
+                margin 18% // in case animation is not supported
+                animation-delay (animationDuration / 3)
+            }
+        }
     }
 
     .keyboard-tips {
