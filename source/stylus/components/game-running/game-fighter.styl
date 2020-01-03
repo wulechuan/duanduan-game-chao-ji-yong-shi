@@ -243,11 +243,11 @@ roundStatusBarHeight = 7rem
         position absolute
         overflow visible
 
-        animation-name fighter-auto-disappear-popup
+        animation-name fighter-auto-disappear-popup-default
         animation-timing-function ease-in-out
         animation-fill-mode both
 
-        @keyframes fighter-auto-disappear-popup {
+        @keyframes fighter-auto-disappear-popup-default {
             0% {
                 opacity 0
                 transform none
@@ -362,6 +362,9 @@ roundStatusBarHeight = 7rem
                 left  calc( var(--fighter-visual-box-height) * -0.25 )
                 width var(--fighter-visual-box-width)
 
+                animation-name fighter-auto-disappear-popup-ending-words
+                animation-duration 10s
+
                 // 下面一行是测试代码
                 // background-color: blue
 
@@ -405,6 +408,26 @@ roundStatusBarHeight = 7rem
                 }
 
                 9%, 94% {
+                    transform translateY(-100%)
+                }
+
+                100% {
+                    opacity 0
+                    transform translateY(-319%)
+                }
+            }
+
+            @keyframes fighter-auto-disappear-popup-ending-words {
+                0% {
+                    opacity 0
+                    transform none
+                }
+
+                3%, 96% {
+                    opacity 1
+                }
+
+                5%, 97.5% {
                     transform translateY(-100%)
                 }
 

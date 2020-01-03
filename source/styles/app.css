@@ -634,7 +634,7 @@
 .role .auto-disappear-popup{
   position:absolute;
   overflow:visible;
-  animation-name:fighter-auto-disappear-popup;
+  animation-name:fighter-auto-disappear-popup-default;
   animation-timing-function:ease-in-out;
   animation-fill-mode:both;
 }
@@ -707,6 +707,8 @@
 .role .auto-disappear-popup.words.last-words{
   left:calc(var(--fighter-visual-box-height) * -0.25);
   width:var(--fighter-visual-box-width);
+  animation-name:fighter-auto-disappear-popup-ending-words;
+  animation-duration:10s;
 }
 .role .auto-disappear-popup.words.winning-words .content,
 .role .auto-disappear-popup.words.last-words .content,
@@ -794,7 +796,71 @@
     transform:translateY(-319%);
   }
 }
-@-moz-keyframes fighter-auto-disappear-popup{
+@-moz-keyframes fighter-auto-disappear-popup-ending-words{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  3%, 96%{
+    opacity:1;
+  }
+  5%, 97.5%{
+    transform:translateY(-100%);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-319%);
+  }
+}
+@-webkit-keyframes fighter-auto-disappear-popup-ending-words{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  3%, 96%{
+    opacity:1;
+  }
+  5%, 97.5%{
+    transform:translateY(-100%);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-319%);
+  }
+}
+@-o-keyframes fighter-auto-disappear-popup-ending-words{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  3%, 96%{
+    opacity:1;
+  }
+  5%, 97.5%{
+    transform:translateY(-100%);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-319%);
+  }
+}
+@keyframes fighter-auto-disappear-popup-ending-words{
+  0%{
+    opacity:0;
+    transform:none;
+  }
+  3%, 96%{
+    opacity:1;
+  }
+  5%, 97.5%{
+    transform:translateY(-100%);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-319%);
+  }
+}
+@-moz-keyframes fighter-auto-disappear-popup-default{
   0%{
     opacity:0;
     transform:none;
@@ -810,7 +876,7 @@
     transform:translateY(-190%);
   }
 }
-@-webkit-keyframes fighter-auto-disappear-popup{
+@-webkit-keyframes fighter-auto-disappear-popup-default{
   0%{
     opacity:0;
     transform:none;
@@ -826,7 +892,7 @@
     transform:translateY(-190%);
   }
 }
-@-o-keyframes fighter-auto-disappear-popup{
+@-o-keyframes fighter-auto-disappear-popup-default{
   0%{
     opacity:0;
     transform:none;
@@ -842,7 +908,7 @@
     transform:translateY(-190%);
   }
 }
-@keyframes fighter-auto-disappear-popup{
+@keyframes fighter-auto-disappear-popup-default{
   0%{
     opacity:0;
     transform:none;

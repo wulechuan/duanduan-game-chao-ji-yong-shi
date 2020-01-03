@@ -600,7 +600,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
 
         createOneAutoDisappearPopup.call(this, {
-            timingForDisappearing: 5100,
+            timingForDisappearing: 12280,
             rootElementExtraCSSClassNames: 'words winning-words',
             content: _createContentForWords.call(this, words),
             noInlineCSSPositioning: true,
@@ -621,7 +621,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
 
         createOneAutoDisappearPopup.call(this, {
-            timingForDisappearing: 5100,
+            timingForDisappearing: 12280,
             rootElementExtraCSSClassNames: 'words last-words',
             content: _createContentForWords.call(this, words),
             noInlineCSSPositioning: true,
