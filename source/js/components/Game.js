@@ -137,6 +137,8 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     function end() {
         this.status.isOver = true
+
+        this.services.countDownOverlay.countDown(120, '游戏结束')
         console.log('游戏结束。')
     }
 })();
