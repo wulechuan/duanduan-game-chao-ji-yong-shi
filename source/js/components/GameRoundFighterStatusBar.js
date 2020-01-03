@@ -10,7 +10,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
     const { utils, classes } = app
     const { createDOMWithClassNames } = utils
 
-    
+
     return function GameRoundFighterStatusBar(fighter) {
         const { GameRole } = classes
 
@@ -40,7 +40,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
         _createDOMs.call(this)
         this.setFighterHPBar(100)
     }
-    
+
     function _createDOMs() {
         const {
             fighter,
@@ -66,16 +66,33 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
         ])
 
         const avatarElement = createDOMWithClassNames('div', [
-            'avatar',
+            'fighter-avatar',
         ])
+
+        const { playerId, name: fighterName } = fighter.data
+
+        const playerIdElement = createDOMWithClassNames('div', [
+            'player-id',
+            `player-${playerId}`,
+        ])
+        playerIdElement.innerText = playerId
+
+        const fighterNameElement = createDOMWithClassNames('div', [
+            'fighter-name',
+        ])
+        fighterNameElement.innerText = fighterName
 
         avatarElement.style.backgroundImage = `url(${fighterData.images.avatar.filePath})`
 
 
         hpBarElement.appendChild(hpElement)
         hpBarContainerElement.appendChild(hpBarElement)
-        rootElement.appendChild(avatarElement)
         rootElement.appendChild(hpBarContainerElement)
+
+        rootElement.appendChild(playerIdElement)
+        rootElement.appendChild(avatarElement)
+        rootElement.appendChild(fighterNameElement)
+
 
         this.el = {
             root: rootElement,
@@ -108,7 +125,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundFighterStatusBar = (function (
             fullHealthPoint,
             healthPoint,
         } = this.data.fighter.data
-        
+
         const percentage = healthPoint * 100 / fullHealthPoint
 
         // console.log('HP:', healthPoint, '/', fullHealthPoint)

@@ -5,6 +5,7 @@
     width 100%
     height 7rem
     display flex
+    align-items: center
     background-image linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent)
 
     .icon-versus {
@@ -22,23 +23,33 @@
 }
 
 .role-status-bar {
+    position relative
+
     flex-grow: 1;
     flex-shrink: 1;
-    display: flex;
-    margin: 1rem;
-    padding: 0 1rem;
-    align-items: center;
+    height: 5rem;
+    padding: 0;
+    margin: auto 1rem;
 
-    &.player-2 {
-        transform: scaleX(-1);
+    .fighter-avatar,
+    .fighter-name,
+    .player-id,
+    .hp-bar-container {
+        position absolute
+        margin auto
     }
 
+    .fighter-avatar,
+    .player-id,
+    .hp-bar-container {
+        top 0
+        bottom 0
+    }
 
-    .avatar {
+    .fighter-avatar {
         box-sizing: border-box
         width: 4rem;
         height: 4rem;
-        margin: 0.5rem;
         z-index: 10;
         background-color: #ccc;
         border-radius: 50%;
@@ -47,25 +58,49 @@
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
+        box-shadow: 0 0 0.4rem rgba(black, 0.51);
 
         &.role-candidate-001 {
-            background-image: url('../images/game-roles/role-001/avatar.png');
+            background-image: url('../images/game-roles/role-001/fighter-.png');
         }
 
         &.role-candidate-002 {
-            background-image: url('../images/game-roles/role-002/avatar.png');
+            background-image: url('../images/game-roles/role-002/fighter-.png');
         }
     }
 
+    barBorderRadii = 0.5rem
+
+    .player-id,
     .hp-bar-container {
-        flex-grow: 1;
-        flex-shrink: 1;
         box-sizing: border-box;
-        border: 1px solid white;
-        border-radius: 0.5rem;
+    }
+
+    .fighter-name {
+        padding: 0.25em 1em;
+        font-size: 1rem;
+        color: white;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        border-radius: 0 0 0.2rem 0.2rem;
+        background-color: rgba(black, 0.79);
+        top: 4rem;
+    }
+
+    .player-id {
+        font-size: 1.5rem;
+        border: 0.4rem double white;
+        display flex;
+        width: 3.8rem;
+        height: 3.2rem;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .hp-bar-container {
         height: 3rem;
-        position: relative;
-        /* background-color: white; */
+        border: 1px solid white;
+        
         backdrop-filter: blur(20px);
         box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.16);
 
@@ -75,33 +110,103 @@
             overflow: hidden;
             position: absolute;
             top: 0;
-            left: 0;
-            right: 0;
             bottom: 0;
             border-radius: 0.3rem;
+            background-color: rgba(black, 0.06)
+            box-shadow: inset 0 0 0.2rem 0 rgba(0, 0, 0, 0.15);
+        }
 
+        .hp {
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            transition-property: background-color, width, opacity;
+            transition-duration: 0.5s;
+            transition-timing-function: ease-out;
+            background-image: linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.15) 35% 65%, transparent);
 
-            .hp {
-                width: 100%;
-                height: 100%;
-                opacity: 0.9;
-                transition-property: background-color, width, opacity;
-                transition-duration: 0.5s;
-                transition-timing-function: ease-out;
-                background-image: linear-gradient(30deg, rgba(255, 255, 255, 0.8), transparent);
+            &.role-is-healthy {
+                background-color: greenyellow;
+            }
 
-                &.role-is-healthy {
-                    background-color: greenyellow;
-                }
+            &.role-is-wounded {
+                background-color: rgb(255, 211, 91);
+            }
 
-                &.role-is-wounded {
-                    background-color: rgb(255, 211, 91);
-                }
-
-                &.role-is-dying {
-                    background-color: red;
-                }
+            &.role-is-dying {
+                background-color: #800;
             }
         }
     }
+
+
+    .fighter-avatar,
+    .fighter-name,
+    .player-id {
+        position absolute
+        margin auto
+    }
+
+    
+    &.player-1 {
+
+        .player-id {
+            left: 1rem;
+            padding-right: 0.9rem;
+            border-radius: barBorderRadii 0 0 barBorderRadii;
+            color: white;
+            background-color: #911;
+        }
+
+        .hp-bar-container {
+            border-radius: 0 barBorderRadii barBorderRadii 0;
+            left: 6.5rem
+            right: 0
+
+            .hp-bar {
+                left: 1rem
+                right: 0
+            }
+        }
+
+        .fighter-avatar {
+            left: 3.3rem
+        }
+
+        .fighter-name {
+            left: 6rem;
+        }
+    }
+
+    &.player-2 {
+
+        .player-id {
+            right: 1rem;
+            padding-left: 0.9rem;
+            border-radius: 0 barBorderRadii barBorderRadii 0;
+            color: white;
+            background-color: #191;
+        }
+
+        .hp-bar-container {
+            border-radius: barBorderRadii 0 0 barBorderRadii;
+            left: 0
+            right: 6.5rem
+            
+            .hp-bar {
+                left: 0
+                right: 1rem
+                transform: scaleX(-1)
+            }
+        }
+        
+        .fighter-avatar {
+            right: 3.3rem
+        }
+        
+        .fighter-name {
+            right: 6rem;
+        }
+    }
+
 }
