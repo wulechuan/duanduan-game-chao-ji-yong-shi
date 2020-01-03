@@ -358,8 +358,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         const suffererData = sufferer.data
         const suffererFullHealthPoint = suffererData.fullHealthPoint
-        const suffererOldHealthPoint = suffererData.healthPoint
-        const suffererIsDefencing    = sufferer.status.isInDefencingMode
+        const suffererOldHealthPoint  = suffererData.healthPoint
+        const suffererIsDefencing     = sufferer.status.isActualDefencing
 
 
         const {

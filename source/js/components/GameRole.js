@@ -71,6 +71,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             attackingPoseTimerId: NaN,
 
             isInDefencingMode: false,
+            isActualDefencing: false,
+            continuousSuffersCountBeforeDisablingDefence: 5,
+
+            continuousSuffersCount: 0,
 
             countOfContinuousWeakAttacksIvReceived: 0,
             allowToDeSe: true,
@@ -432,6 +436,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
     function enterDefenceMode() {
         if (_takeAnAction.call(this, 'isInDefencingMode', 'is-defencing')) {
+            const { status } = this
+            status.isActualDefencing = true
+            status.continuousSuffersCount = 0
             this.showEffects('is-defencing')
             this.setPoseTo('is-defencing')
         }
@@ -441,6 +448,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const { status } = this
         if (!status.isInDefencingMode) { return }
         status.isInDefencingMode = false
+        status.isActualDefencing = true
+        status.continuousSuffersCount = 0
         this.showEffects('')
         this.setPoseTo('')
     }
@@ -453,7 +462,16 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         const newHP = oldHP - actualHPDecrease
         this.data.healthPoint = newHP
+
         // console.log(this.logString, '实际扣除', actualHPDecrease, '点血值，变为', newHP)
+
+        status.continuousSuffersCount ++
+
+        if (status.continuousSuffersCount >= status.continuousSuffersCountBeforeDisablingDefence) {
+            status.isActualDefencing = false            
+            this.showEffects('')
+        }
+
 
         createOneAutoDisappearPopup.call(this, {
             timingForDisappearing: 2000,
@@ -462,7 +480,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         })
 
         // TODO: console.warn('缺少挨揍的姿态图片和相关的视图变化逻辑')
-        // if (!status.isInDefencingMode) {
+        // if (!status.isActualDefencing) {
         //     this.setPoseTo('is-suffering')
         // }
 
