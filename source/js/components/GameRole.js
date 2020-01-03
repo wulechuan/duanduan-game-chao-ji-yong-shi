@@ -526,7 +526,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         this.status.countOfContinuousWeakAttacksIvReceived = 0
 
-        console.log(`${this.logString}：“words”`)
+        // console.log(`${this.logString}：“${words}”`)
 
         createOneAutoDisappearPopup.call(this, {
             timingForDisappearing: 5100,
