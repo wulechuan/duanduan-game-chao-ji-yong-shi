@@ -8,32 +8,99 @@
     padding 0
     width auto
     height auto
-    background-color rgba(black, 0.75)
 
-    .modal {
+    .modal,
+    .backdrop {
         position absolute
         top 0
         left 0
         right 0
         bottom 0
-        width 16rem
-        height 10rem
         margin auto
+        padding 0
+    }
+
+    .backdrop {
+        z-index 0
+
+        width auto
+        height auto
+        background-color black
+
+        animation count-down-overlay-backdrop-fading-out 3.2s ease-out forwards
+
+        @keyframes count-down-overlay-backdrop-fading-out {
+            0%,  30% { opacity: 0.9; }
+            36%, 63% { opacity: 0.6; }
+            69%, 96% { opacity: 0.3; }
+            100%     { opacity: 0;   }
+        }
+    }
+
+    .modal {
+        z-index 20
+
+        width 18rem
+        height 10rem
 
         display flex
+        flex-direction: column
         justify-content: center
         align-items: center
 
-        border: 0.4rem double black
         border-radius: 1rem
 
-        background-color: rgba(white, 1)
+        color: black
+        border: 0.36rem double white
+        background-color: rgba(black, 0.51)
         box-shadow: 0 0 1rem rgba(black, 0.219)
+
+        animation count-down-overlay-modal-enter 0.28s ease-out forwards
+    }
+
+    &.is-leaving {
+
+        .modal {
+            animation-name: count-down-overlay-modal-leave
+        }
+    }
+
+    @keyframes count-down-overlay-modal-enter {
+        0% {
+            opacity: 0;
+            transform: scale(0.1);
+        }
+        100% {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes count-down-overlay-modal-leave {
+        0% {
+            opacity: 1;
+            transform: none;
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-319%);
+        }
+    }
+
+    .info {
+        font-size: 2rem
+        font-weight: 600
+        letter-spacing: 0.1em
+        margin-top: 1rem
+        text-stroke: 1px white
+        -webkit-text-stroke: @text-stroke
     }
 
     .digit {
-        text-align: center
-        font-size: 6rem
-        margin-bottom: 0.2rem
+        font-size: 4.5rem
+        font-weight: 600
+        margin-bottom: 0.8rem
+        text-stroke: 2px white
+        -webkit-text-stroke: @text-stroke
     }
 }

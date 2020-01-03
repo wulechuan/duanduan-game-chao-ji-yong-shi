@@ -29,46 +29,71 @@ window.duanduanGameChaoJiYongShi.classes.CountDownOverlay = (function () {
             'count-down-overlay',
         ])
 
+        const backdropElement = createDOMWithClassNames('div', [
+            'backdrop',
+        ])
+
         const modalElement = createDOMWithClassNames('div', [
             'modal',
+        ])
+
+        const infoElement = createDOMWithClassNames('div', [
+            'info',
         ])
 
         const digitElement = createDOMWithClassNames('div', [
             'digit',
         ])
 
+        modalElement.appendChild(infoElement)
         modalElement.appendChild(digitElement)
+
+        rootElement.appendChild(backdropElement)
         rootElement.appendChild(modalElement)
         
         this.el = {
             root: rootElement,
+            info: infoElement,
             digit: digitElement,
         }
     }
 
-    function countDownOnce() {
+    function countDownOnce(timing) {
         return new Promise(resolve => {
             this.el.digit.innerText = this.remainedSeconds
             setTimeout(() => {
                 this.remainedSeconds--
                 resolve()
-            }, 1000)
+            }, timing || 1000)
         })
     }
 
-    async function countDown(secondsToCountDown) {
+    async function countDown(secondsToCountDown, info) {
         this.remainedSeconds = secondsToCountDown
 
         if (!(this.remainedSeconds > 0)) {
             return
         }
 
-        this.el.root.style.display = ''
+        const {
+            root: rootElement,
+            info: infoElement,
+        } = this.el
+
+        const rootElementStyle = rootElement.style
+
+        rootElementStyle.display = ''
+        infoElement.innerText = info
 
         while (this.remainedSeconds > 0) {
             await this.countDownOnce()
         }
 
-        this.el.root.style.display = 'none'
+        rootElement.classList.add('is-leaving')
+        await this.countDownOnce(320)
+
+        rootElementStyle.display = 'none'
+        infoElement.innerText = ' '
+        rootElement.classList.remove('is-leaving')
     }
 })();

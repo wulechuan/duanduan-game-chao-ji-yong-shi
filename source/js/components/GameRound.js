@@ -7,7 +7,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         createDOMWithClassNames,
     } = utils
 
-    return function GameRound(game, gameRoundNumber) {
+    return function GameRound(game, gameRoundNumber, roundsTotalCount) {
         const { Game } = classes
 
         if (!new.target) {
@@ -27,8 +27,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         this.subComponents = {}
 
+        const { chineseNumbers } = appData
+
+        const gameRoundCaption = `${chineseNumbers[roundsTotalCount]}局之${chineseNumbers[gameRoundNumber]}`
+
+        this.gameRoundCaption = gameRoundCaption
+
         this.data = {
             gameRoundNumber,
+            roundsTotalCount,
 
             fighters: {
                 both: null,

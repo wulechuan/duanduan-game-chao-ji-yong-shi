@@ -67,11 +67,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
     async function createAndStartNewRound() {
         const {
             countDownOverlay,
-            keyboardEngine,
         } = this.game.services
 
         _createNewRoundAndShowItUp.call(this)
-        await countDownOverlay.countDown(3)
+        const currentGameRoundCaption = this.game.data.gameRounds.current.gameRoundCaption
+        await countDownOverlay.countDown(3, currentGameRoundCaption)
         _startCurrentRound.call(this)
     }
 
@@ -91,12 +91,17 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         } = this.game.data
 
         const historicalGameRoundsCount = historicalGameRounds.length
-        
+
         const lastRunGameRound = historicalGameRounds[historicalGameRoundsCount - 1]
-        
+
         const displayingIndexOfNewGameRound = historicalGameRoundsCount + 1
 
-        const newGameRound = new GameRound(this.game, displayingIndexOfNewGameRound)
+        const newGameRound = new GameRound(
+            this.game,
+            displayingIndexOfNewGameRound,
+            this.game.data.gameRounds.maxRoundsToRun
+        )
+
         gameRounds.current = newGameRound
 
         this.el.root.appendChild(newGameRound.el.root)
@@ -145,7 +150,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         const shouldEndGame = historicalGameRounds.length >= gameRounds.maxRoundsToRun ||
             fighterRole1WonRounds.length >= minWinningRoundsPerPlayer ||
             fighterRole2WonRounds.length >= minWinningRoundsPerPlayer
-            
+
 
         if (shouldEndGame) {
             let finalWinnerRoleConfig

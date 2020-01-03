@@ -2,6 +2,8 @@ window.duanduanGameChaoJiYongShi = {
     classes: {}, // 各种构造函数统一存放于此。
 
     data: {
+        chineseNumbers: [ '〇', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十' ],
+
         // allGameRoleRawConfigurations: [],
         // allGameFightingStageRawConfigurations: [],
  

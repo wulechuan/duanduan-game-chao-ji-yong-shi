@@ -22,29 +22,192 @@
   padding:0;
   width:auto;
   height:auto;
-  background-color:rgba(0,0,0,0.75);
 }
-.count-down-overlay .modal{
+.count-down-overlay .modal,
+.count-down-overlay .backdrop{
   position:absolute;
   top:0;
   left:0;
   right:0;
   bottom:0;
-  width:16rem;
-  height:10rem;
   margin:auto;
+  padding:0;
+}
+.count-down-overlay .backdrop{
+  z-index:0;
+  width:auto;
+  height:auto;
+  background-color:#000;
+  animation:count-down-overlay-backdrop-fading-out 3.2s ease-out forwards;
+}
+@-moz-keyframes count-down-overlay-backdrop-fading-out{
+  0%, 30%{
+    opacity:0.9;
+  }
+  36%, 63%{
+    opacity:0.6;
+  }
+  69%, 96%{
+    opacity:0.3;
+  }
+  100%{
+    opacity:0;
+  }
+}
+@-webkit-keyframes count-down-overlay-backdrop-fading-out{
+  0%, 30%{
+    opacity:0.9;
+  }
+  36%, 63%{
+    opacity:0.6;
+  }
+  69%, 96%{
+    opacity:0.3;
+  }
+  100%{
+    opacity:0;
+  }
+}
+@-o-keyframes count-down-overlay-backdrop-fading-out{
+  0%, 30%{
+    opacity:0.9;
+  }
+  36%, 63%{
+    opacity:0.6;
+  }
+  69%, 96%{
+    opacity:0.3;
+  }
+  100%{
+    opacity:0;
+  }
+}
+@keyframes count-down-overlay-backdrop-fading-out{
+  0%, 30%{
+    opacity:0.9;
+  }
+  36%, 63%{
+    opacity:0.6;
+  }
+  69%, 96%{
+    opacity:0.3;
+  }
+  100%{
+    opacity:0;
+  }
+}
+.count-down-overlay .modal{
+  z-index:20;
+  width:18rem;
+  height:10rem;
   display:flex;
+  flex-direction:column;
   justify-content:center;
   align-items:center;
-  border:0.4rem double #000;
   border-radius:1rem;
-  background-color:#fff;
+  color:#000;
+  border:0.36rem double #fff;
+  background-color:rgba(0,0,0,0.51);
   box-shadow:0 0 1rem rgba(0,0,0,0.219);
+  animation:count-down-overlay-modal-enter 0.28s ease-out forwards;
+}
+.count-down-overlay.is-leaving .modal{
+  animation-name:count-down-overlay-modal-leave;
+}
+.count-down-overlay .info{
+  font-size:2rem;
+  font-weight:600;
+  letter-spacing:0.1em;
+  margin-top:1rem;
+  text-stroke:1px #fff;
+  -webkit-text-stroke:1px #fff;
 }
 .count-down-overlay .digit{
-  text-align:center;
-  font-size:6rem;
-  margin-bottom:0.2rem;
+  font-size:4.5rem;
+  font-weight:600;
+  margin-bottom:0.8rem;
+  text-stroke:2px #fff;
+  -webkit-text-stroke:2px #fff;
+}
+@-moz-keyframes count-down-overlay-modal-enter{
+  0%{
+    opacity:0;
+    transform:scale(0.1);
+  }
+  100%{
+    opacity:1;
+    transform:none;
+  }
+}
+@-webkit-keyframes count-down-overlay-modal-enter{
+  0%{
+    opacity:0;
+    transform:scale(0.1);
+  }
+  100%{
+    opacity:1;
+    transform:none;
+  }
+}
+@-o-keyframes count-down-overlay-modal-enter{
+  0%{
+    opacity:0;
+    transform:scale(0.1);
+  }
+  100%{
+    opacity:1;
+    transform:none;
+  }
+}
+@keyframes count-down-overlay-modal-enter{
+  0%{
+    opacity:0;
+    transform:scale(0.1);
+  }
+  100%{
+    opacity:1;
+    transform:none;
+  }
+}
+@-moz-keyframes count-down-overlay-modal-leave{
+  0%{
+    opacity:1;
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-319%);
+  }
+}
+@-webkit-keyframes count-down-overlay-modal-leave{
+  0%{
+    opacity:1;
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-319%);
+  }
+}
+@-o-keyframes count-down-overlay-modal-leave{
+  0%{
+    opacity:1;
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-319%);
+  }
+}
+@keyframes count-down-overlay-modal-leave{
+  0%{
+    opacity:1;
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-319%);
+  }
 }
 .keyboard-tip{
   box-sizing:content-box;
