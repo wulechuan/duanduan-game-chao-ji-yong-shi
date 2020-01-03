@@ -25,7 +25,7 @@
     width: 23rem
     height @width
     position absolute
-    top 50%
+    top 32%
     margin-top: -0.5 * @height
     margin-left: 100px
     margin-right: @margin-left
@@ -83,5 +83,111 @@
         left 0
         width: 100%
         height 100%
+
+        .role-looks {
+            position absolute
+            top 0
+            left 0
+            right 0
+            bottom 0
+        }
+
+        .specs {
+            position absolute
+
+            top 100%
+            margin 1rem auto
+
+            width auto
+        }
+
+        .spec {
+            position relative
+            width 100%
+            margin 1.8rem auto
+
+            .spec-label {
+                position absolute
+                top -1rem
+                bottom -1rem
+                margin auto -2rem
+
+                font-size 1rem
+                width 1.5rem
+                height 1.5rem
+                line-height 1.33
+
+                color white
+            }
+
+            .spec-value {
+                position absolute
+                margin auto 4px
+                font-size 0.9rem
+                line-height 1.2
+                color white
+            }
+
+            .spec-ratio-bar {
+                box-sizing border-box
+                display flex
+                width 100%
+                padding 3px
+                border 2px solid rgba(white, 0.319)
+                border-radius: 5px
+                background-color rgba(black, 0.19)
+            }
+
+            .spec-ratio-bar-scale {
+                height 0.5rem
+                border-radius: 2px
+            }
+
+            &.hp .spec-ratio-bar-scale {
+                background-color #f44
+            }
+
+            &.ap .spec-ratio-bar-scale {
+                background-color #4f5
+            }
+
+            &.dp .spec-ratio-bar-scale {
+                background-color #45f
+            }
+        }
+    }
+}
+
+.player-1 .role-candidate {
+
+    .specs {
+        left  22%
+        right 22%
+    }
+
+    .spec-ratio-bar  {
+        justify-content flex-start
+    }
+
+    .spec-value,
+    .spec-label {
+        left 0
+    }
+}
+
+.player-2 .role-candidate {
+
+    .specs {
+        left  22%
+        right 22%
+    }
+
+    .spec-ratio-bar  {
+        justify-content flex-end
+    }
+
+    .spec-value,
+    .spec-label {
+        right 0
     }
 }

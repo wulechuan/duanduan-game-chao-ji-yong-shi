@@ -35,6 +35,35 @@ window.duanduanGameChaoJiYongShi = {
             return dataTransformFunction(rawConfig, roleCommonConfiguration)
         })
 
+            
+        let maxHP = 0 // health
+        let maxAP = 0 // attack
+        let maxDP = 0 // defence
+
+        allGameRoleConfigurations.forEach(roleConfig => {
+            const {
+                fullHealthPoint,
+                attackingPower,
+                defencingPower,
+            } = roleConfig
+
+            maxHP = Math.max(maxHP, fullHealthPoint)
+            maxAP = Math.max(maxAP, attackingPower)
+            maxDP = Math.max(maxDP, defencingPower)
+        })
+
+        allGameRoleConfigurations.forEach(roleConfig => {
+            const {
+                fullHealthPoint,
+                attackingPower,
+                defencingPower,
+            } = roleConfig
+
+            roleConfig.healthPointRatio    = + Math.max(0.01, (fullHealthPoint / maxHP).toFixed(4))
+            roleConfig.attackingPowerRatio = + Math.max(0.01, (attackingPower  / maxAP).toFixed(4))
+            roleConfig.defencingPowerRatio = + Math.max(0.01, (defencingPower  / maxDP).toFixed(4))
+        })
+
         appData.allGameRoleConfigurations = allGameRoleConfigurations
 
         appData.allGameFighterCandidatesForBothPlayers = [

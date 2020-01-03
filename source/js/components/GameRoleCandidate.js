@@ -15,6 +15,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             fullHealthPoint,
             attackingPower,
             defencingPower,
+            healthPointRatio,
+            attackingPowerRatio,
+            defencingPowerRatio,
             images,
         } = roleConfig
 
@@ -28,6 +31,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             fullHealthPoint,
             attackingPower,
             defencingPower,
+            healthPointRatio,
+            attackingPowerRatio,
+            defencingPowerRatio,
             images,
         }
 
@@ -48,22 +54,83 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
         const {
             // playerId,
             // typeIdInFilePathAndCSSClassName,
+            fullHealthPoint,
+            attackingPower,
+            defencingPower,
+            healthPointRatio,
+            attackingPowerRatio,
+            defencingPowerRatio,
             images,
         } = this.data
 
         const defaultPose = images.poses['default']
 
         const rootElement = createDOMWithClassNames('div', [
-            // `player-${playerId}`,
             'role-candidate',
+            // `player-${playerId}`,
             // `role-candidate-${typeIdInFilePathAndCSSClassName}`,
         ])
 
-        rootElement.style.backgroundImage = `url(${defaultPose.filePath})`
+        const theLooksElement = createDOMWithClassNames('div', [
+            'role-looks',
+        ])
+        theLooksElement.style.backgroundImage = `url(${defaultPose.filePath})`
+
+        const specRatioBarsContainerElement = createDOMWithClassNames('div', [
+            'specs',
+        ])
+
+
+        const specDOMs = [
+            { label: 'HP', value: fullHealthPoint, scale: healthPointRatio    },
+            { label: 'AP', value: attackingPower,  scale: attackingPowerRatio },
+            { label: 'DP', value: defencingPower,  scale: defencingPowerRatio },
+        ].map(_createDOMsForOneSpecRatioBar)
+
+        specDOMs.forEach(dom => specRatioBarsContainerElement.appendChild(dom))
+
+        rootElement.appendChild(theLooksElement)
+        rootElement.appendChild(specRatioBarsContainerElement)
         
         this.el = {
             root: rootElement,
         }
+    }
+
+    function _createDOMsForOneSpecRatioBar(ratioSettings) {
+        const { label, value, scale } = ratioSettings
+
+        const specRootElement = createDOMWithClassNames('div', [
+            'spec',
+            label.toLowerCase(),
+        ])
+
+        const specRatioBarRootElement = createDOMWithClassNames('div', [
+            'spec-ratio-bar',
+        ])
+        const barScaleElement = createDOMWithClassNames('div', [
+            'spec-ratio-bar-scale',
+        ])
+        barScaleElement.style.width = `${scale * 100}%`
+
+
+        const barValueElement = createDOMWithClassNames('div', [
+            'spec-value',
+        ])
+        barValueElement.innerText = value
+        
+        const barLabelElement = createDOMWithClassNames('div', [
+            'spec-label',
+        ])
+        barLabelElement.innerText = label
+
+        specRatioBarRootElement.appendChild(barScaleElement)
+
+        specRootElement.appendChild(specRatioBarRootElement)
+        specRootElement.appendChild(barLabelElement)
+        specRootElement.appendChild(barValueElement)
+
+        return specRootElement
     }
 
     function showUp() {
