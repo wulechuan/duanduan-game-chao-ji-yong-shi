@@ -54,6 +54,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
         const {
             // playerId,
             // typeIdInFilePathAndCSSClassName,
+            name: fighterName,
             fullHealthPoint,
             attackingPower,
             defencingPower,
@@ -70,6 +71,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
             // `player-${playerId}`,
             // `role-candidate-${typeIdInFilePathAndCSSClassName}`,
         ])
+
+        const fighterNameElement = createDOMWithClassNames('div', [
+            'fighter-name',
+        ])
+        fighterNameElement.innerText = fighterName
 
         const theLooksElement = createDOMWithClassNames('div', [
             'role-looks',
@@ -90,6 +96,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoleCandidate = (function () {
         specDOMs.forEach(dom => specRatioBarsContainerElement.appendChild(dom))
 
         rootElement.appendChild(theLooksElement)
+        rootElement.appendChild(fighterNameElement)
         rootElement.appendChild(specRatioBarsContainerElement)
         
         this.el = {
