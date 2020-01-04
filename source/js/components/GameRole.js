@@ -42,6 +42,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             images,
         } = gameRoleConfig
 
+        // const {
+        //     initialPositionLeft,
+        // } = initOptions
+
         this.logString = `玩家 ${playerId} 的【游戏角色】“${name}”`
 
         this.subComponents = {}
@@ -64,7 +68,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.status = {
             isMovingLeftwards: false,
             isMovingRightwards: false,
-            movementDeltaPerInterval: 51, // pixels
+
+            movementDeltaPerInterval: 15, // % instead of px
+
             movementInterval: 200, // milliseconds
             movementIntervalId: NaN,
 
@@ -114,6 +120,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     function _init(initOptions) {
         _createKeyboardEngineConfig.call(this, initOptions)
         _createDOMs                .call(this)
+
+        const {
+            initialPositionLeft = '25%',
+        } = initOptions
+
+        this.el.locator1.style.left = initialPositionLeft
+        this.el.locator2.style.left = initialPositionLeft
+
         this.showEffects('')
         this.setPoseTo('')
     }
@@ -137,22 +151,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             'role',
         ])
 
-        const originElement1 = createDOMWithClassNames('div', [
-            'origin',
-        ])
-
-        const originElement2 = createDOMWithClassNames('div', [
-            'origin',
-        ])
-
         const locatorElement1 = createDOMWithClassNames('div', [
             'locator',
         ])
+
         const locatorElement2 = createDOMWithClassNames('div', [
             'locator',
         ])
-        locatorElement1.style.left = '0px'
-        locatorElement2.style.left = '0px'
 
         const theLooksElement = createDOMWithClassNames('div', [
             'role-looks',
@@ -171,19 +176,16 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         theLooksElement.style.backgroundImage = `url(${poses['default'].filePath})`
 
         theLooksElement.appendChild(effectElementOfDefencing)
-        locatorElement1.appendChild(theLooksElement)
-        originElement1.appendChild(locatorElement1)
-        rootElement1.appendChild(originElement1)
 
+        locatorElement1.appendChild(theLooksElement)
         locatorElement2.appendChild(popupsContainerElement)
-        originElement2.appendChild(locatorElement2)
-        rootElement2.appendChild(originElement2)
+        
+        rootElement1.appendChild(locatorElement1)
+        rootElement2.appendChild(locatorElement2)
 
         this.el = {
-            root: rootElement1,
+            root:  rootElement1,
             root2: rootElement2,
-            origin1: originElement1,
-            origin2: originElement2,
             locator1: locatorElement1,
             locator2: locatorElement2,
             popupsContainer: popupsContainerElement,
@@ -361,15 +363,23 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function _makeOneMovement(shouldMoveLeftwards) {
+        const {
+            movementDeltaPerInterval,
+        } = this.status
+
         const locator1ElementStyle = this.el.locator1.style
         const locator2ElementStyle = this.el.locator2.style
 
         const oldLeft = parseInt(locator1ElementStyle.left)
-        const step = (Math.random() * 0.2 + 0.8) * this.status.movementDeltaPerInterval
-        const newLeft = oldLeft + step * (shouldMoveLeftwards ? -1 : 1)
 
-        locator1ElementStyle.left = `${newLeft}px`
-        locator2ElementStyle.left = `${newLeft}px`
+        const step = (Math.random() * 0.2 + 0.8) * movementDeltaPerInterval
+        const desiredNewLeft = oldLeft + step * (shouldMoveLeftwards ? -1 : 1)
+
+        const decidedNewLeft = Math.min(100, Math.max(0, desiredNewLeft))
+        // console.log('oldLeft', oldLeft, 'desiredNewLeft', desiredNewLeft, 'decidedNewLeft', decidedNewLeft)
+
+        locator1ElementStyle.left = `${decidedNewLeft}%`
+        locator2ElementStyle.left = `${decidedNewLeft}%`
     }
 
     function startMovingLeftwards() {

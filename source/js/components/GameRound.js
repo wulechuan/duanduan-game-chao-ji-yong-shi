@@ -131,14 +131,16 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         fighters.both = [
             new GameRole(game, 1, palyer1PickedFighterRoleConfig, {
+                initialPositionLeft: '25%',
                 keyForMovingLeftwards:  player1KeyboardShortcuts.moveLeftwards,
                 keyForMovingRightwards: player1KeyboardShortcuts.moveRightwards,
                 keyForAttack:           player1KeyboardShortcuts.attack,
                 keyForDefence:          player1KeyboardShortcuts.defence,
                 keyForCheating:         player1KeyboardShortcuts.cheat,
             }),
-
+            
             new GameRole(game, 2, palyer2PickedFighterRoleConfig, {
+                initialPositionLeft: '75%',
                 keyForMovingLeftwards:  player2KeyboardShortcuts.moveLeftwards,
                 keyForMovingRightwards: player2KeyboardShortcuts.moveRightwards,
                 keyForAttack:           player2KeyboardShortcuts.attack,

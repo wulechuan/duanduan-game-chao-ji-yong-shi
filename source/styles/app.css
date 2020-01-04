@@ -160,6 +160,7 @@ article blockquote em{
 }
 .count-down-overlay .modal{
   z-index:20;
+  padding:0.5rem;
   width:18rem;
   height:10rem;
   display:flex;
@@ -305,6 +306,7 @@ article blockquote em{
 }
 .overlay-modal .modal{
   z-index:20;
+  padding:0.5rem;
   width:18rem;
   height:10rem;
   display:flex;
@@ -757,6 +759,9 @@ article blockquote em{
 .player-1 .role-candidate .spec-label{
   left:0;
 }
+.player-2 .role-candidate .role-looks{
+  filter:hue-rotate(120deg);
+}
 .player-2 .role-candidate .specs{
   left:22%;
   right:22%;
@@ -784,15 +789,20 @@ article blockquote em{
 }
 .fighters-popups,
 .fighters{
-  position:absolute;
-  left:1rem;
-  right:1rem;
   margin-top:7rem;
   top:calc(var(--fighter-visual-box-height));
   bottom:0.5rem;
-  overflow:visible;
+}
+.fighters-popups,
+.fighters,
+.fighters-popups .role,
+.fighters .role{
+  position:absolute;
+  left:0;
+  right:0;
   width:auto;
   height:auto;
+  overflow:visible;
 }
 .role{
   top:auto;
@@ -804,7 +814,6 @@ article blockquote em{
 .role.is-attacking{
   z-index:6;
 }
-.role .origin,
 .role .locator,
 .role .popups,
 .role .effects,
@@ -815,12 +824,9 @@ article blockquote em{
   height:0;
   overflow:visible;
 }
-.role .origin{
-  bottom:4.5rem;
-}
 .role .locator,
 .role .popups{
-  bottom:0;
+  bottom:4.5rem;
 }
 .role .locator{
   transition-property:top right bottom left transform;
@@ -1327,16 +1333,8 @@ article blockquote em{
     transform:translateY(-190%);
   }
 }
-.role.player-1{
-  left:1rem;
-  right:auto;
-}
 .role.player-1 .keyboard-tips{
   left:0;
-  right:auto;
-}
-.role.player-1 .origin{
-  left:calc(var(--fighter-visual-box-width) / 2);
   right:auto;
 }
 .role.player-1 .words .player-id{
@@ -1349,16 +1347,12 @@ article blockquote em{
   border-color:currentColor;
   background-color:#000;
 }
-.role.player-2{
-  right:1rem;
+.role.player-2 .role-looks{
+  filter:hue-rotate(120deg);
 }
 .role.player-2 .keyboard-tips{
   left:auto;
   right:0;
-}
-.role.player-2 .origin{
-  left:auto;
-  right:calc(var(--fighter-visual-box-width) / 2);
 }
 .role.player-2 .words .player-id{
   color:#fff;

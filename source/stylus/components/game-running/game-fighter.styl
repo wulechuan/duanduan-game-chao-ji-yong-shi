@@ -7,18 +7,21 @@ roundStatusBarHeight = 7rem
 
 .fighters-popups,
 .fighters {
-    position absolute // for z-index
-    left 1rem
-    right 1rem
+
+    &
+    .role {
+        position absolute
+        left 0
+        right 0
+        width auto
+        height auto
+        overflow visible
+    }
 
     margin-top: roundStatusBarHeight
+
     top calc( var(--fighter-visual-box-height) )
     bottom 0.5rem
-
-    overflow visible
-
-    width auto
-    height auto
 }
 
 .role {
@@ -35,7 +38,6 @@ roundStatusBarHeight = 7rem
 
     // -----------------------------
 
-    .origin,
     .locator,
     .popups,
     .effects,
@@ -47,18 +49,9 @@ roundStatusBarHeight = 7rem
         overflow visible
     }
 
-    .origin {
-        bottom 4.5rem
-
-        // 以下是测试代码
-        // background-color blue
-        // width 20px
-        // height 20px
-    }
-
     .locator,
     .popups {
-        bottom 0
+        bottom 4.5rem
     }
 
     .locator {
@@ -425,16 +418,9 @@ roundStatusBarHeight = 7rem
     // -----------------------------
 
     &.player-1 {
-        left 1rem
-        right auto
 
         .keyboard-tips {
             left 0
-            right auto
-        }
-
-        .origin {
-            left calc( var(--fighter-visual-box-width) / 2 )
             right auto
         }
 
@@ -455,16 +441,14 @@ roundStatusBarHeight = 7rem
     }
 
     &.player-2 {
-        right 1rem
+
+        .role-looks {
+            filter: hue-rotate(120deg);
+        }
 
         .keyboard-tips {
             left auto
             right 0
-        }
-
-        .origin {
-            left auto
-            right calc( var(--fighter-visual-box-width) / 2 )
         }
 
         .words {
