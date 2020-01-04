@@ -30,7 +30,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         const { chineseNumbers } = appData
 
-        const gameRoundCaption = `${chineseNumbers[roundsTotalCount]}局之${chineseNumbers[gameRoundNumber]}`
+        let gameRoundCaption
+
+        if (roundsTotalCount === 1) {
+            gameRoundCaption = `唯一之局`
+        } else {
+            gameRoundCaption = `${chineseNumbers[roundsTotalCount]}局之${chineseNumbers[gameRoundNumber]}`
+        }
 
         this.gameRoundCaption = gameRoundCaption
 
@@ -42,10 +48,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 both: null,
                 winner: null,
                 loser: null,
-                winnerRoleConfig: null,
-                loserRoleConfig: null,
-                winnerArrayIndex: NaN,
-                loserArrayIndex: NaN,
+                winnerPlayerId: NaN,
             },
         }
 
@@ -501,25 +504,23 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const f2HP = fighter2.data.healthPoint
 
         console.warn('暂未考虑双方同时阵亡的细则', f1HP, f2HP)
-        let winner, loser, winnerArrayIndex, loserArrayIndex
+        let winner
+        let loser
+        let winnerPlayerId = NaN
+
         if (f1HP < f2HP) {
+            winnerPlayerId = 2
             winner = fighter2
             loser  = fighter1
-            winnerArrayIndex = 1
-            loserArrayIndex  = 0
         } else {
+            winnerPlayerId = 1
             winner = fighter1
             loser  = fighter2
-            winnerArrayIndex = 0
-            loserArrayIndex  = 1
         }
 
         fighters.winner = winner
         fighters.loser  = loser
-        fighters.winnerRoleConfig = winner.roleConfig
-        fighters.loserRoleConfig  = loser.roleConfig
-        fighters.winnerArrayIndex = winnerArrayIndex
-        fighters.loserArrayIndex  = loserArrayIndex
+        fighters.winnerPlayerId   = winnerPlayerId
 
         winner.win()
         loser.lose()

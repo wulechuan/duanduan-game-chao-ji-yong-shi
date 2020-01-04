@@ -28,7 +28,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 both: [],
                 finalWinnerRoleConfig: null,
                 finalLoserRoleConfig: null,
-                winningPlayerId: NaN,
+                finalWinnerPlayerId: NaN,
             },
             gameRounds: {
                 minWinningRoundsPerPlayer: NaN,
@@ -185,20 +185,28 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         const {
             finalWinnerRoleConfig,
-            winningPlayerId,
+            finalWinnerPlayerId,
         } = this.data.pickedFighterRoleConfigurations
 
-        // console.log(finalWinnerRoleConfig, winningPlayerId)
+        // console.log(finalWinnerRoleConfig, finalWinnerPlayerId)
 
-        const winnerDesc = `玩家 ${winningPlayerId} 的【${finalWinnerRoleConfig.name}】`
+        const isDrawGame = isNaN(finalWinnerPlayerId)
+        
+        let resultDesc
 
-        console.log('游戏结束。', winnerDesc)
+        if (isDrawGame) {
+            resultDesc = `平局`
+        } else {
+            resultDesc = `玩家 ${finalWinnerPlayerId} 的【${finalWinnerRoleConfig.name}】`
+        }
+
+        console.log('游戏结束。', resultDesc)
 
         this.services.modals.overlayModalOfGameOverAnnouncement.showUp({
             contentHTML: [
                 '<p>',
                 '<span class="label">胜利者：</span>',
-                `<span class="detail">${winnerDesc}</span>`,
+                `<span class="detail">${resultDesc}</span>`,
                 '</p>',
             ].join(''),
         })
