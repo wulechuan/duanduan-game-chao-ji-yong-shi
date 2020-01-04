@@ -1,5 +1,6 @@
 window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
-    maxRoundsToRun: 3,
+    maxRoundsToRun: 3 - 2,
+    allowToCheat: true,
 
     shouldManuallyPickFighters: true,
     shouldAutoPickFightersByWeights: true,
@@ -20,8 +21,6 @@ window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
     */
     roleAttackingPowerExtraRatio: 0.36,
     roleDefencingPowerExtraRatio: 0.36,
-
-    allowToCheat: false,
 
     gameIntro: {
         titleHTML: [

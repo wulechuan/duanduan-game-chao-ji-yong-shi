@@ -57,12 +57,13 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
     function _init(initOptions) {
-        _createKeyboardEngine       .call(this)
-        _createGameIntro            .call(this)
-        _createCountDownOverlay     .call(this)
-        _createFightersPickingScreen.call(this, initOptions)
-        _createRunningScreen        .call(this, initOptions)
-        _queryAndSetupMoreDOMs      .call(this)
+        _createKeyboardEngine         .call(this)
+        _createGameIntro              .call(this)
+        _createOverlayModalForGameOver.call(this)
+        _createCountDownOverlay       .call(this)
+        _createFightersPickingScreen  .call(this, initOptions)
+        _createRunningScreen          .call(this, initOptions)
+        _queryAndSetupMoreDOMs        .call(this)
     }
 
     function _createKeyboardEngine() {
@@ -75,6 +76,15 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.services.modals.overlayModalOfGameIntro = new OverlayModal({
             ...appData.gameGlobalSettings.gameIntro,
             modalSize: 'huge',
+            cssClassNames: [ 'game-intro' ],
+        })
+    }
+
+    function _createOverlayModalForGameOver() {
+        const { OverlayModal } = classes
+        this.services.modals.overlayModalOfGameOverAnnouncement = new OverlayModal({
+            titleHTML: '游戏结束',
+            cssClassNames: [ 'game-over-announcement' ],
         })
     }
 
@@ -109,14 +119,16 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             countDownOverlay,
             modals: {
                 overlayModalOfGameIntro,
+                overlayModalOfGameOverAnnouncement,
             },
         } = this.services
 
         const rootElement = this.el.root
-        rootElement.appendChild(fightersPickingScreen  .el.root)
-        rootElement.appendChild(gameRunningScreen      .el.root)
-        rootElement.appendChild(countDownOverlay       .el.root)
-        rootElement.appendChild(overlayModalOfGameIntro.el.root)
+        rootElement.appendChild(fightersPickingScreen             .el.root)
+        rootElement.appendChild(gameRunningScreen                 .el.root)
+        rootElement.appendChild(countDownOverlay                  .el.root)
+        rootElement.appendChild(overlayModalOfGameIntro           .el.root)
+        rootElement.appendChild(overlayModalOfGameOverAnnouncement.el.root)
     }
 
 
@@ -171,7 +183,24 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     function end() {
         this.status.isOver = true
 
-        this.services.countDownOverlay.countDown(120, '游戏结束')
-        console.log('游戏结束。')
+        const {
+            finalWinnerRoleConfig,
+            winningPlayerId,
+        } = this.data.pickedFighterRoleConfigurations
+
+        // console.log(finalWinnerRoleConfig, winningPlayerId)
+
+        const winnerDesc = `玩家 ${winningPlayerId} 的【${finalWinnerRoleConfig.name}】`
+
+        console.log('游戏结束。', winnerDesc)
+
+        this.services.modals.overlayModalOfGameOverAnnouncement.showUp({
+            contentHTML: [
+                '<p>',
+                '<span class="label">胜利者：</span>',
+                `<span class="detail">${winnerDesc}</span>`,
+                '</p>',
+            ].join(''),
+        })
     }
 })();
