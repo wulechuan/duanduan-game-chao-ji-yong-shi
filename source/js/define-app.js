@@ -6,13 +6,13 @@ window.duanduanGameChaoJiYongShi = {
 
         // allGameRoleRawConfigurations: [],
         // allGameFightingStageRawConfigurations: [],
- 
+
         // allGameRoleConfigurations: [],
         // allGameFightingStageConfigurations: [],
- 
+
         // allGameFighterCandidatesForBothPlayers: [],
         // allGameFightingStageCandidates: [],
- 
+
         // game: null,
     },
 
@@ -28,7 +28,15 @@ window.duanduanGameChaoJiYongShi = {
         const rawConfigurations = await this.fetchGameRoleRawConfigurations()
 
         const appData = this.data
-        const dataTransformFunction = appData.allGameRoleConfigurationTransformFunction
+
+        const {
+            gameGlobalSettings: {
+                enableFairMode,
+            },
+            allGameRoleConfigurationTransformFunction,
+        } = appData
+
+        const dataTransformFunction = allGameRoleConfigurationTransformFunction
         const {
             common: roleCommonConfiguration,
         } = rawConfigurations
@@ -37,7 +45,28 @@ window.duanduanGameChaoJiYongShi = {
             return dataTransformFunction(rawConfig, roleCommonConfiguration)
         })
 
-            
+        if (enableFairMode) {
+            appData.gameGlobalSettings.allowToCheat = false
+
+            const fairHealthPointBase  = 24
+            const fairAttackPointBase  = 15
+            const fairDefencePointBase = 10
+
+            const randomNumberAround = function (base, span) {
+                const halfSapn = span / 2
+                const min = 1 - halfSapn 
+                const int = Math.ceil((Math.random() * span + min) * base) 
+                const fra = Math.random() > 0.5 ? 0.5 : 0
+                return int + fra
+            }
+
+            allGameRoleConfigurations.forEach(roleConfig => {
+                roleConfig.fullHealthPoint = randomNumberAround(fairHealthPointBase,  0.3) * 1000
+                roleConfig.attackingPower  = randomNumberAround(fairAttackPointBase,  0.4) * 1000
+                roleConfig.defencingPower  = randomNumberAround(fairDefencePointBase, 0.4) * 1000
+            })
+        }
+
         let maxHP = 0 // health
         let maxAP = 0 // attack
         let maxDP = 0 // defence
@@ -93,8 +122,12 @@ window.duanduanGameChaoJiYongShi = {
         const rawConfigurations = await this.fetchGameFightingStageRawConfigurations()
 
         const appData = this.data
-        const dataTransformFunction = appData.allGameFightingStageConfigurationTransformFunction
-        
+        const {
+            allGameFightingStageConfigurationTransformFunction,
+        } = appData
+
+        const dataTransformFunction = allGameFightingStageConfigurationTransformFunction
+
         const {
             common: stageCommonConfigurations,
         } = rawConfigurations

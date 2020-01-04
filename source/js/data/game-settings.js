@@ -2,6 +2,14 @@ window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
     maxRoundsToRun: 3,
     allowToCheat: false,
 
+
+    /*
+        所谓“公平模式”，角色的体力、攻击、防御等属性是自动计算的，而不采用角色定义中的原始值。
+        同时， allowToCheat 恒视为 false，即，不允许使用作弊功能。
+    */
+    enableFairMode: true,
+
+
     shouldManuallyPickFighters: true,
     shouldAutoPickFightersByWeights: true,
     shouldForceRollingEvenIfAutoPickingByWeights: false,
