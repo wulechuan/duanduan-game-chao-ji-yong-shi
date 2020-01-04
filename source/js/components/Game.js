@@ -1,6 +1,6 @@
 window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     const app = window.duanduanGameChaoJiYongShi
-    const { classes } = app
+    const { classes, data: appData } = app
 
     return function Game(rootElement, initOptions) {
         if (!new.target) {
@@ -19,7 +19,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             parts: {},
         }
 
-        this.services = {}
+        this.services = { modals: {} }
 
         this.data = {
             allGameFighterCandidatesForBothPlayers,
@@ -58,6 +58,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     function _init(initOptions) {
         _createKeyboardEngine       .call(this)
+        _createGameIntro            .call(this)
         _createCountDownOverlay     .call(this)
         _createFightersPickingScreen.call(this, initOptions)
         _createRunningScreen        .call(this, initOptions)
@@ -69,6 +70,14 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.services.keyboardEngine = new KeyboardEngine()
     }
 
+    function _createGameIntro() {
+        const { OverlayModal } = classes
+        this.services.modals.overlayModalOfGameIntro = new OverlayModal({
+            ...appData.gameGlobalSettings.gameIntro,
+            modalSize: 'huge',
+        })
+    }
+
     function _createCountDownOverlay() {
         const { CountDownOverlay } = classes
         this.services.countDownOverlay = new CountDownOverlay()
@@ -77,7 +86,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     function _createFightersPickingScreen(initOptions) {
         const { GameFightersPickingScreen } = classes
         const fightersPickingScreen = new GameFightersPickingScreen(this, initOptions)
-        
+
         // this.data.pickedFighterRoleConfigurations.both = fightersPickingScreen.data.pickedFighterRoleConfigurations
         this.subComponents.uiScreens.fightersPickingScreen = fightersPickingScreen
     }
@@ -98,12 +107,16 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         const {
             countDownOverlay,
+            modals: {
+                overlayModalOfGameIntro,
+            },
         } = this.services
 
         const rootElement = this.el.root
-        rootElement.appendChild(fightersPickingScreen.el.root)
-        rootElement.appendChild(gameRunningScreen    .el.root)
-        rootElement.appendChild(countDownOverlay     .el.root)
+        rootElement.appendChild(fightersPickingScreen  .el.root)
+        rootElement.appendChild(gameRunningScreen      .el.root)
+        rootElement.appendChild(countDownOverlay       .el.root)
+        rootElement.appendChild(overlayModalOfGameIntro.el.root)
     }
 
 
@@ -114,9 +127,24 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 gameRunningScreen,
             },
         } = this.subComponents
-        
+
         gameRunningScreen.hide()
-        fightersPickingScreen.showUp()
+
+        const {
+            keyboardEngine,
+            modals: { overlayModalOfGameIntro },
+        } = this.services
+
+        overlayModalOfGameIntro.showUp()
+        keyboardEngine.start({
+            keyUp: {
+                'ENTER': () => {
+                    overlayModalOfGameIntro.leaveAndHide()
+                    keyboardEngine.stop()
+                    fightersPickingScreen.showUp()
+                },
+            },
+        })
     }
 
     function start() {

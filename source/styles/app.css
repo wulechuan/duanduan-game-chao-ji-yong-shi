@@ -1,3 +1,22 @@
+article{
+  line-height:1.6;
+}
+article hr{
+  margin:1rem auto;
+  border:0 solid transparent;
+  height:1px;
+  background-image:linear-gradient(to right, transparent 2%, #ddd 30% 70%, transparent 98%);
+}
+article .center{
+  text-align:center;
+}
+article blockquote{
+  margin:0;
+}
+article blockquote em{
+  font-weight:600;
+  font-size:120%;
+}
 .ui-screen{
   position:fixed;
   top:0;
@@ -273,6 +292,38 @@
   text-stroke:0.5px rgba(255,255,255,0.87);
   -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
 }
+.overlay-modal .modal.huge{
+  box-sizing:border-box;
+  width:80%;
+  height:80%;
+  max-width:900px;
+  max-height:750px;
+  padding:1rem 0.5rem;
+  border-radius:0.5rem;
+  border:0.3rem solid #000;
+  background-color:#fff;
+  box-shadow:0 0 0 0.3rem #fff;
+}
+.overlay-modal .modal.huge .title{
+  font-size:1.6rem;
+  font-weight:500;
+  letter-spacing:0.1em;
+  text-stroke:0;
+  -webkit-text-stroke:0;
+  margin:0.5rem auto;
+}
+.overlay-modal .modal.huge .content{
+  overflow:auto;
+  padding:0.25rem 1rem 2.75rem 1rem;
+  margin:0.5rem auto;
+  font-size:0.9rem;
+  font-weight:normal;
+  text-stroke:0;
+  -webkit-text-stroke:0;
+}
+.overlay-modal.is-leaving .modal.huge{
+  animation-name:overlay-modal-huge-modal-leave;
+}
 @-moz-keyframes overlay-modal-backdrop-fading-out{
   0%{
     opacity:1;
@@ -383,6 +434,62 @@
   100%{
     opacity:0;
     transform:translateY(-319%);
+  }
+}
+@-moz-keyframes overlay-modal-huge-modal-leave{
+  0%{
+    opacity:1;
+    transform:none;
+  }
+  67%{
+    opacity:0.7;
+    transform:scale(0.79);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-102%);
+  }
+}
+@-webkit-keyframes overlay-modal-huge-modal-leave{
+  0%{
+    opacity:1;
+    transform:none;
+  }
+  67%{
+    opacity:0.7;
+    transform:scale(0.79);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-102%);
+  }
+}
+@-o-keyframes overlay-modal-huge-modal-leave{
+  0%{
+    opacity:1;
+    transform:none;
+  }
+  67%{
+    opacity:0.7;
+    transform:scale(0.79);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-102%);
+  }
+}
+@keyframes overlay-modal-huge-modal-leave{
+  0%{
+    opacity:1;
+    transform:none;
+  }
+  67%{
+    opacity:0.7;
+    transform:scale(0.79);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-102%);
   }
 }
 .keyboard-tip{

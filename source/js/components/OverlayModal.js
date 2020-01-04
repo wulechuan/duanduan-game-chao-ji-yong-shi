@@ -10,11 +10,13 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         const {
             titleHTML,
             contentHTML,
+            modalSize,
         } = initOptions
 
         this.data = {
             titleHTML,
             contentHTML,
+            modalSize,
         }
 
         this.showUp       = showUp      .bind(this)
@@ -56,7 +58,10 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         const {
             titleHTML,
             contentHTML,
+            modalSize,
         } = this.data
+
+        if (modalSize === 'huge') { modalElement.classList.add('huge') }
 
         titleElement  .innerHTML = titleHTML
         contentElement.innerHTML = contentHTML
