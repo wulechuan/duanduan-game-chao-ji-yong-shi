@@ -700,88 +700,155 @@
   right:0;
   bottom:0;
   border-radius:50%;
-  animation-name:fighter-defencing-effects;
   animation-duration:1.5s;
   animation-timing-function:linear;
   animation-iteration-count:infinite;
   animation-fill-mode:both;
   box-shadow:inset 0 0 1rem var(--effect-of-defencing-color-1);
 }
-@-moz-keyframes fighter-defencing-effects{
-  0%, 35%{
-    opacity:0;
-    margin:30%;
-    background-color:var(--effect-of-defencing-color-1);
-    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
-  }
-  51%, 81%{
-    opacity:1;
-  }
-  96%, 100%{
-    background-color:transparent;
-    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
-    margin:5%;
-    opacity:0;
-  }
-}
-@-webkit-keyframes fighter-defencing-effects{
-  0%, 35%{
-    opacity:0;
-    margin:30%;
-    background-color:var(--effect-of-defencing-color-1);
-    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
-  }
-  51%, 81%{
-    opacity:1;
-  }
-  96%, 100%{
-    background-color:transparent;
-    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
-    margin:5%;
-    opacity:0;
-  }
-}
-@-o-keyframes fighter-defencing-effects{
-  0%, 35%{
-    opacity:0;
-    margin:30%;
-    background-color:var(--effect-of-defencing-color-1);
-    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
-  }
-  51%, 81%{
-    opacity:1;
-  }
-  96%, 100%{
-    background-color:transparent;
-    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
-    margin:5%;
-    opacity:0;
-  }
-}
-@keyframes fighter-defencing-effects{
-  0%, 35%{
-    opacity:0;
-    margin:30%;
-    background-color:var(--effect-of-defencing-color-1);
-    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
-  }
-  51%, 81%{
-    opacity:1;
-  }
-  96%, 100%{
-    background-color:transparent;
-    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
-    margin:5%;
-    opacity:0;
-  }
-}
 .role .effects.is-defencing::before{
   margin:25%;
-  animation-delay:0;
+  animation-name:fighter-defencing-effects-1;
+}
+@-moz-keyframes fighter-defencing-effects-1{
+  0%, 35%{
+    opacity:0;
+    margin:30%;
+    background-color:var(--effect-of-defencing-color-1);
+    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+  }
+  51%, 81%{
+    opacity:1;
+  }
+  96%, 100%{
+    background-color:transparent;
+    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+    margin:5%;
+    opacity:0;
+  }
+}
+@-webkit-keyframes fighter-defencing-effects-1{
+  0%, 35%{
+    opacity:0;
+    margin:30%;
+    background-color:var(--effect-of-defencing-color-1);
+    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+  }
+  51%, 81%{
+    opacity:1;
+  }
+  96%, 100%{
+    background-color:transparent;
+    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+    margin:5%;
+    opacity:0;
+  }
+}
+@-o-keyframes fighter-defencing-effects-1{
+  0%, 35%{
+    opacity:0;
+    margin:30%;
+    background-color:var(--effect-of-defencing-color-1);
+    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+  }
+  51%, 81%{
+    opacity:1;
+  }
+  96%, 100%{
+    background-color:transparent;
+    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+    margin:5%;
+    opacity:0;
+  }
+}
+@keyframes fighter-defencing-effects-1{
+  0%, 35%{
+    opacity:0;
+    margin:30%;
+    background-color:var(--effect-of-defencing-color-1);
+    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+  }
+  51%, 81%{
+    opacity:1;
+  }
+  96%, 100%{
+    background-color:transparent;
+    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+    margin:5%;
+    opacity:0;
+  }
 }
 .role .effects.is-defencing::after{
   margin:21%;
-  animation-delay:0.5s;
+  animation-name:fighter-defencing-effects-2;
+}
+@-moz-keyframes fighter-defencing-effects-2{
+  0%{
+    opacity:0;
+    margin:30%;
+    background-color:var(--effect-of-defencing-color-1);
+    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+  }
+  16%, 49%{
+    opacity:1;
+  }
+  61%, 100%{
+    background-color:transparent;
+    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+    margin:5%;
+    opacity:0;
+  }
+}
+@-webkit-keyframes fighter-defencing-effects-2{
+  0%{
+    opacity:0;
+    margin:30%;
+    background-color:var(--effect-of-defencing-color-1);
+    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+  }
+  16%, 49%{
+    opacity:1;
+  }
+  61%, 100%{
+    background-color:transparent;
+    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+    margin:5%;
+    opacity:0;
+  }
+}
+@-o-keyframes fighter-defencing-effects-2{
+  0%{
+    opacity:0;
+    margin:30%;
+    background-color:var(--effect-of-defencing-color-1);
+    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+  }
+  16%, 49%{
+    opacity:1;
+  }
+  61%, 100%{
+    background-color:transparent;
+    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+    margin:5%;
+    opacity:0;
+  }
+}
+@keyframes fighter-defencing-effects-2{
+  0%{
+    opacity:0;
+    margin:30%;
+    background-color:var(--effect-of-defencing-color-1);
+    box-shadow:inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+  }
+  16%, 49%{
+    opacity:1;
+  }
+  61%, 100%{
+    background-color:transparent;
+    box-shadow:inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+    margin:5%;
+    opacity:0;
+  }
 }
 .role .keyboard-tips{
   position:absolute;

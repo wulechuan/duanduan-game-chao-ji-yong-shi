@@ -123,19 +123,24 @@ roundStatusBarHeight = 7rem
                 bottom 0
                 border-radius 50%
 
-                animation-name fighter-defencing-effects
                 animation-duration animationDuration
                 animation-timing-function linear
                 animation-iteration-count infinite
                 animation-fill-mode both
 
                 box-shadow inset 0 0 1rem var(--effect-of-defencing-color-1);// in case animation is not supported
+            }
 
-                @keyframes fighter-defencing-effects {
+            &::before {
+                margin 25% // in case animation is not supported
+                // animation-delay 0
+                animation-name fighter-defencing-effects-1
+
+                @keyframes fighter-defencing-effects-1 {
                     0%, 35% {
                         opacity 0;
                         margin: 30%;
-                        background-color: var(--effect-of-defencing-color-1);
+                        background-color:              var(--effect-of-defencing-color-1);
                         box-shadow: inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
                     }
 
@@ -152,14 +157,30 @@ roundStatusBarHeight = 7rem
                 }
             }
 
-            &::before {
-                margin 25% // in case animation is not supported
-                animation-delay 0
-            }
-
             &::after {
                 margin 21% // in case animation is not supported
-                animation-delay (animationDuration / 3)
+                // animation-delay (animationDuration / 3)
+                animation-name fighter-defencing-effects-2
+
+                @keyframes fighter-defencing-effects-2 {
+                    0% {
+                        opacity 0;
+                        margin: 30%;
+                        background-color:              var(--effect-of-defencing-color-1);
+                        box-shadow: inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
+                    }
+
+                    16%, 49% {
+                        opacity 1;
+                    }
+
+                    61%, 100% {
+                        background-color: transparent;
+                        box-shadow: inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+                        margin: 5%;
+                        opacity 0;
+                    }
+                }
             }
         }
     }
