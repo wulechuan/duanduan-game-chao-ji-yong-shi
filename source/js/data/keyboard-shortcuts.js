@@ -23,6 +23,7 @@ window.duanduanGameChaoJiYongShi.data.keyboardShortcuts = {
             moveRightwards: 'X',
             attack:         'S',
             defence:        'A',
+            cheat:          '`',
         },
 
         player2: {
@@ -30,6 +31,7 @@ window.duanduanGameChaoJiYongShi.data.keyboardShortcuts = {
             moveRightwards: '/',
             attack:         ';',
             defence:        '\'',
+            cheat:          'BACKSPACE',
         },
     },
 }

@@ -100,6 +100,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         this.win                        = win                       .bind(this)
         this.lose                       = lose                      .bind(this)
+        this.cheat                      = cheat                     .bind(this)
 
         this.$suffer                    = $suffer                   .bind(this)
 
@@ -237,6 +238,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyForMovingRightwards,
             keyForAttack,
             keyForDefence,
+            keyForCheating,
         } = options
 
         const {
@@ -253,6 +255,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyForMovingRightwards,
             keyForAttack,
             keyForDefence,
+            keyForCheating,
         }
 
         const keyboardEngineKeyDownConfig = {
@@ -260,6 +263,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             [keyForMovingRightwards]: this.startMovingRightwards,
             [keyForAttack]:           this.enterAttackMode,
             [keyForDefence]:          this.enterDefenceMode,
+            [keyForCheating]:         this.cheat,
         }
 
         const keyboardEngineKeyUpConfig = {
@@ -286,6 +290,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
         this.joinedGameRound = gameRound
+    }
+
+    function cheat() {
+        const cheatingAttacksCount = Math.floor(Math.random() * 515)
+        this.joinedGameRound.cheatedBy(this, cheatingAttacksCount)
     }
 
     function setPoseTo(poseCSSClassNameToApply) {

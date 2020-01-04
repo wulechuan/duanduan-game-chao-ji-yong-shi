@@ -46,7 +46,7 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
         matchedAction && matchedAction()
     }
 
-    function start(keyRawRegistries) {
+    function start(keyRawRegistries, requester) {
         function processOneTypeOfEventRegisters(rawReg) {
             if (!rawReg || typeof rawReg !== 'object') { return }
 
@@ -121,6 +121,8 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
         }
 
         this.status.isRunning = true
+        let currentServiceInfo = !requester ? '' : `服务于“${requester}”。`
+        console.log('按键侦听引擎已经启动。', currentServiceInfo)
     }
 
     function stop() {

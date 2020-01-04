@@ -26,6 +26,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.gameRoundsRunner = game.subComponents.parts.gameRoundsRunner
 
         this.subComponents = {}
+        this.services = { modals: {} }
 
         const { chineseNumbers } = appData
 
@@ -50,6 +51,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         this.status = {
             isRunning: false,
+            isPaused: false,
             isOver: false,
 
             judgementInterval: 66, // milliseconds
@@ -67,6 +69,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         this.start                     = start                    .bind(this)
         this.end                       = end                      .bind(this)
+        this.togglePauseAndResume      = togglePauseAndResume     .bind(this)
+        this.cheatedBy                 = cheatedBy                .bind(this)
         this.showUp                    = showUp                   .bind(this)
         this.leaveAndHide              = leaveAndHide             .bind(this)
         this.acceptOneAttackFromPlayer = acceptOneAttackFromPlayer.bind(this)
@@ -80,11 +84,22 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
     function _init() {
+        _createOverlayModals        .call(this)
         _createFighters             .call(this)
         _createFightingStageRandomly.call(this)
         _createGameRoundStatusBlock .call(this)
         _createMoreDOMs             .call(this)
         this.el.root.style.display = 'none'
+    }
+
+    function _createOverlayModals() {
+        const { OverlayModal } = classes
+        this.services.modals.overlayModalForPausing = new OverlayModal({
+            titleHTML: '游戏已经暂停',
+            contentHTML: [
+                '<p>&nbsp;&nbsp;按 “Y” 键可继续游戏。</p>',
+            ].join(''),
+        })
     }
 
     function _createFighters() {
@@ -108,6 +123,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 keyForMovingRightwards: player1KeyboardShortcuts.moveRightwards,
                 keyForAttack:           player1KeyboardShortcuts.attack,
                 keyForDefence:          player1KeyboardShortcuts.defence,
+                keyForCheating:         player1KeyboardShortcuts.cheat,
             }),
 
             new GameRole(game, 2, palyer2PickedFighterRoleConfig, {
@@ -115,6 +131,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 keyForMovingRightwards: player2KeyboardShortcuts.moveRightwards,
                 keyForAttack:           player2KeyboardShortcuts.attack,
                 keyForDefence:          player2KeyboardShortcuts.defence,
+                keyForCheating:         player2KeyboardShortcuts.cheat,
             }),
         ]
 
@@ -169,6 +186,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         rootElement.appendChild(statusBlock.el.root)
         rootElement.appendChild(bothFightersPopupsContainerElement)
 
+        const allModals = this.services.modals
+
+        Object.keys(allModals).forEach(modalKey => {
+            rootElement.appendChild(allModals[modalKey].el.root)
+        })
+
         this.el = {
             root: rootElement,
         }
@@ -177,13 +200,43 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
 
-    function _cheatBy(attacker) {
-        console.warn(`${attacker.logString}作弊了！`)
-        for (let i = 0; i < 515; i++) {
+    function cheatedBy(attacker, cheatingAttacksCount) {
+        console.log(`${attacker.logString}作弊了！“魔法”攻击`, cheatingAttacksCount, '次')
+
+        for (let i = 0; i < cheatingAttacksCount; i++) {
             this.acceptOneAttackFromPlayer({
                 attackerPlayerId: attacker.data.playerId,
                 shouldIgnoreFightersDistance: true,
             })
+        }
+    }
+
+    async function togglePauseAndResume() {
+        const { status } = this
+
+        const {
+            keyboardEngineFullConfig,
+            keyboardEngineConfigWhenThisGameRoundIsPaused,
+        } = this.data
+
+        const {
+            keyboardEngine,
+        } = this.game.services
+
+        const {
+            overlayModalForPausing,
+        } = this.services.modals
+
+        status.isPaused = !status.isPaused
+
+        if (status.isPaused) {
+            overlayModalForPausing.showUp()
+            _stopJudgementInterval.call(this)
+            keyboardEngine.start(keyboardEngineConfigWhenThisGameRoundIsPaused, '游戏局的暂停模式')
+        } else {
+            await overlayModalForPausing.leaveAndHide()
+            _startJudgementInterval.call(this)
+            keyboardEngine.start(keyboardEngineFullConfig, '游戏局的正常模式')
         }
     }
 
@@ -229,11 +282,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         })
 
         const globalKewDown = {
-            '`':         () => { _cheatBy.call(this, bothFighters[0]) },
-            'BACKSPACE': () => { _cheatBy.call(this, bothFighters[1]) },
+            'Y': this.togglePauseAndResume,
         }
 
-        keyboardEngineConfigForBothPlayers = {
+        const keyboardEngineFullConfig = {
             keyDown: {
                 ...keyDownOfBothFighters,
                 ...globalKewDown,
@@ -243,7 +295,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             }
         }
 
-        keyboardEngine.start(keyboardEngineConfigForBothPlayers)
+        this.data.keyboardEngineFullConfig = keyboardEngineFullConfig
+
+        this.data.keyboardEngineConfigWhenThisGameRoundIsPaused = {
+            keyDown: {
+                ...globalKewDown,
+            },
+        }
+
+        keyboardEngine.start(keyboardEngineFullConfig, '游戏局的正常模式')
     }
 
     function acceptOneAttackFromPlayer(attackingDetails) {
@@ -268,7 +328,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
     function _processAllQueuedAttacks() {
         const { status } = this
-        const { fighterNewAttacksQueue } = status
+        const { isPaused, fighterNewAttacksQueue } = status
+
+        if (isPaused) { return }
 
         let arrayIndex = 0
         let eitherFighterLose = false

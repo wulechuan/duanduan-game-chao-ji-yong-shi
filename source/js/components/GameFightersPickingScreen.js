@@ -149,7 +149,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         // console.log(keyboardEngineConfigForBothPlayers)
         
         fighterPickers.forEach(fighterPicker => fighterPicker.startPickingFighter())
-        this.game.services.keyboardEngine.start(keyboardEngineConfigForBothPlayers)
+        this.game.services.keyboardEngine.start(keyboardEngineConfigForBothPlayers, '角色选择界面')
     }
 
     function onEitherFighterDecided(playerId, decidedFighterRoleConfig) {
