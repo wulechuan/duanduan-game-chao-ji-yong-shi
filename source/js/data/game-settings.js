@@ -1,6 +1,6 @@
 window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
-    maxRoundsToRun: 3 - 2,
-    allowToCheat: true,
+    maxRoundsToRun: 3,
+    allowToCheat: false,
 
     shouldManuallyPickFighters: true,
     shouldAutoPickFightersByWeights: true,

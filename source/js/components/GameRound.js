@@ -33,7 +33,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         let gameRoundCaption
 
         if (roundsTotalCount === 1) {
-            gameRoundCaption = `唯一之局`
+            gameRoundCaption = '唯一之局'
+        } else if (roundsTotalCount === gameRoundNumber) {
+            gameRoundCaption = '决战之局'
         } else {
             gameRoundCaption = `${chineseNumbers[roundsTotalCount]}局之${chineseNumbers[gameRoundNumber]}`
         }
