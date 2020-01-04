@@ -7,8 +7,11 @@ article hr{
   height:1px;
   background-image:linear-gradient(to right, transparent 2%, #ddd 30% 70%, transparent 98%);
 }
-article .center{
+article .align-center{
   text-align:center;
+}
+article .align-right{
+  text-align:right;
 }
 article blockquote{
   margin:0;
@@ -559,6 +562,9 @@ article blockquote em{
 }
 .player-2 .role-looks{
   transform:scaleX(-1);
+}
+.overlay-modal.game-intro .modal .content{
+  padding-bottom:2rem;
 }
 .overlay-modal.game-over-announcement .modal{
   padding:1rem 1rem;
