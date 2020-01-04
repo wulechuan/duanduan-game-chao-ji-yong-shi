@@ -51,6 +51,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 winner: null,
                 loser: null,
                 winnerPlayerId: NaN,
+                isDrawGameRound: false,
             },
         }
 
@@ -73,7 +74,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         }
 
         this.start                     = start                    .bind(this)
-        this.end                       = end                      .bind(this)
         this.togglePauseAndResume      = togglePauseAndResume     .bind(this)
         this.cheatedBy                 = cheatedBy                .bind(this)
         this.showUp                    = showUp                   .bind(this)
@@ -100,11 +100,17 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
     function _createOverlayModals() {
         const { OverlayModal } = classes
+
         this.services.modals.overlayModalForPausing = new OverlayModal({
             titleHTML: '游戏已经暂停',
             contentHTML: [
                 '<p>&nbsp;&nbsp;按 “Y” 键可继续游戏。</p>',
             ].join(''),
+        })
+
+        this.services.modals.overlayModalForResultAnnouncement = new OverlayModal({
+            titleHTML: `${this.gameRoundCaption}结束`,
+            cssClassNames: [ 'game-round-result-announcement' ],
         })
     }
 
@@ -207,7 +213,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         rootElement.appendChild(statusBlock  .el.root)
 
         keyboardHintsContainerElement.appendChild(keyboardHintForPausingGameRound.el.root)
-        
+
         rootElement.appendChild(keyboardHintsContainerElement)
 
         rootElement.appendChild(bothFightersContainerElement)
@@ -218,7 +224,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         Object.keys(allModals).forEach(modalKey => {
             rootElement.appendChild(allModals[modalKey].el.root)
         })
-
 
         this.el = {
             root: rootElement,
@@ -533,30 +538,57 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     function _ending() {
         this.status.isRunning = false
         this.status.isOver = true
-
         this.el.root.classList.add('is-over')
-
         _annouceResult.call(this)
     }
 
-    function end() {
+    async function _realEnd() {
         this.game.services.keyboardEngine.stop()
-        console.log(`【游戏局 ${this.data.gameRoundNumber}】结束。\n\n\n`)
+        await this.services.modals.overlayModalForResultAnnouncement.leaveAndHide()
         this.gameRoundsRunner.endCurrentRound()
     }
 
     function _annouceResult() {
-        const { winner, loser } = this.data.fighters
-        console.log(
-            '\n胜者：', winner.logString,
-            '\n败者：',  loser.logString,
-            '\n\n'
-        )
+        const { winner, isDrawGameRound } = this.data.fighters
+
+        const realEndOfThisGameRound = _realEnd.bind(this)
 
         this.game.services.keyboardEngine.start({
             keyDown: {
-                'ENTER': this.end,
+                'ENTER':  realEndOfThisGameRound,
+                ' ':      realEndOfThisGameRound,
+                'ESCAPE': realEndOfThisGameRound,
             },
+        })
+
+
+
+
+        let resultDescHTML
+        let gameRoundDesc = `【游戏局 ${this.data.gameRoundNumber}】`
+
+        if (isDrawGameRound) {
+            console.log(`${gameRoundDesc}结束。\n平局。\n\n\n`)
+            resultDescHTML = '<p>平局<p>'
+        } else {
+            const winnerDesc = winner.logString
+            console.log(`${gameRoundDesc}结束。\n胜利者：${winnerDesc}。\n\n\n`)
+            resultDescHTML = [
+                '<p>',
+                '<span class="label">胜利者：</span>',
+                '<span class="detail">',
+                winnerDesc,
+                '</span>',
+                '</p>',
+            ].join('')
+        }
+
+        const {
+            overlayModalForResultAnnouncement,
+        } = this.services.modals
+
+        overlayModalForResultAnnouncement.showUp({
+            contentHTML: resultDescHTML,
         })
     }
 

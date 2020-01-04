@@ -42,7 +42,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
 
         this.createAndStartNewRound = createAndStartNewRound.bind(this)
         this.endCurrentRound        = endCurrentRound       .bind(this)
-        this.end                    = end                   .bind(this)
 
         _init.call(this)
 
@@ -73,11 +72,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         const currentGameRoundCaption = this.game.data.gameRounds.current.gameRoundCaption
         await countDownOverlay.countDown(3, currentGameRoundCaption)
         _startCurrentRound.call(this)
-    }
-
-    function end() {
-        this.status.isOver = true
-        this.game.end()
     }
 
     function _createNewRoundAndShowItUp() {
@@ -119,12 +113,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
     }
 
     function endCurrentRound() {
-        const { gameRounds, pickedFighterRoleConfigurations } = this.game.data
+        const { gameRounds } = this.game.data
 
         this.status.isRunningOneRound = false
 
         const {
-            minWinningRoundsPerPlayer,
             history: historicalGameRounds,
             current: currentGameRound,
         } = gameRounds
@@ -133,24 +126,40 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
             throw new ReferenceError('还没有开始过任何游戏局！')
         }
 
-
         historicalGameRounds.push(currentGameRound)
         gameRounds.current = null
 
-        const fighterRole1WonRounds = historicalGameRounds.filter(
+        _evaluateGameStatusAfterOneRoundEnds.call(this)
+    }
+
+    function _evaluateGameStatusAfterOneRoundEnds() {
+        const { gameRounds, pickedFighterRoleConfigurations } = this.game.data
+
+        this.status.isRunningOneRound = false
+
+        const {
+            minWinningRoundsPerPlayer,
+            history: historicalGameRounds,
+        } = gameRounds
+
+        const player1WonRounds = historicalGameRounds.filter(
             gameRound => gameRound.data.fighters.winnerPlayerId === 1
         )
 
-        const fighterRole2WonRounds = historicalGameRounds.filter(
+        const player2WonRounds = historicalGameRounds.filter(
             gameRound => gameRound.data.fighters.winnerPlayerId === 2
         )
 
-        const shouldEndGame = historicalGameRounds.length >= gameRounds.maxRoundsToRun ||
-            fighterRole1WonRounds.length >= minWinningRoundsPerPlayer ||
-            fighterRole2WonRounds.length >= minWinningRoundsPerPlayer
+        const player1WonRoundsCount = player1WonRounds.length
+        const player2WonRoundsCount = player2WonRounds.length
+        const totalRunRoundsCount = historicalGameRounds.length
 
-        // console.log('Player1:', fighterRole1WonRounds.length, '局胜')
-        // console.log('Player2:', fighterRole2WonRounds.length, '局胜')
+        const shouldEndGame = totalRunRoundsCount >= gameRounds.maxRoundsToRun ||
+            player1WonRoundsCount >= minWinningRoundsPerPlayer ||
+            player2WonRoundsCount >= minWinningRoundsPerPlayer
+
+        // console.log('Player1:', player1WonRoundsCount, '局胜')
+        // console.log('Player2:', player2WonRoundsCount, '局胜')
         // console.log('应该结束整个游戏？', shouldEndGame)
 
         const [ fighterRoleConfig1, fighterRoleConfig2 ] = pickedFighterRoleConfigurations.both
@@ -158,29 +167,44 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         if (shouldEndGame) {
             let finalWinnerRoleConfig
             let finalLoserRoleConfig
-            let finalWinnerPlayerId = 0
+            let finalWinnerPlayerId
+            let winnerWonRoundsCount
+            let winnerLostRoundsCount
 
-            if (fighterRole1WonRounds.length > fighterRole2WonRounds.length) {
+            if (player1WonRoundsCount > player2WonRoundsCount) {
                 finalWinnerRoleConfig = fighterRoleConfig1
                 finalLoserRoleConfig  = fighterRoleConfig2
-                finalWinnerPlayerId = 1
-            } else if (fighterRole1WonRounds.length < fighterRole2WonRounds.length)  {
+                finalWinnerPlayerId   = 1
+                winnerWonRoundsCount  = player1WonRoundsCount
+                winnerLostRoundsCount = totalRunRoundsCount - player1WonRoundsCount
+            } else if (player1WonRoundsCount < player2WonRoundsCount)  {
                 finalWinnerRoleConfig = fighterRoleConfig2
                 finalLoserRoleConfig  = fighterRoleConfig1
-                finalWinnerPlayerId = 2
+                finalWinnerPlayerId   = 2
+                winnerWonRoundsCount  = player2WonRoundsCount
+                winnerLostRoundsCount = totalRunRoundsCount - player2WonRoundsCount
             } else {
                 finalWinnerRoleConfig = null
                 finalLoserRoleConfig  = null
-                finalWinnerPlayerId = NaN
+                finalWinnerPlayerId   = NaN
+                winnerWonRoundsCount  = NaN
+                winnerLostRoundsCount = NaN
             }
 
             pickedFighterRoleConfigurations.finalWinnerRoleConfig = finalWinnerRoleConfig
             pickedFighterRoleConfigurations.finalLoserRoleConfig  = finalLoserRoleConfig
             pickedFighterRoleConfigurations.finalWinnerPlayerId   = finalWinnerPlayerId
+            pickedFighterRoleConfigurations.winnerWonRoundsCount  = winnerWonRoundsCount
+            pickedFighterRoleConfigurations.winnerLostRoundsCount = winnerLostRoundsCount
 
-            this.end()
+            _end.call(this)
         } else {
             this.createAndStartNewRound()
         }
+    }
+
+    function _end() {
+        this.status.isOver = true
+        this.game.end()
     }
 })();

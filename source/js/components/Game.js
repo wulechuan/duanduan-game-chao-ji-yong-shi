@@ -186,29 +186,41 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         const {
             finalWinnerRoleConfig,
             finalWinnerPlayerId,
+            winnerWonRoundsCount,
+            winnerLostRoundsCount,
         } = this.data.pickedFighterRoleConfigurations
 
         // console.log(finalWinnerRoleConfig, finalWinnerPlayerId)
 
         const isDrawGame = isNaN(finalWinnerPlayerId)
         
-        let resultDesc
+        let resultDescHTML
 
         if (isDrawGame) {
-            resultDesc = `平局`
+
+            console.log('游戏结束。平局。')
+            resultDescHTML = '<p>平局<p>'
+
         } else {
-            resultDesc = `玩家 ${finalWinnerPlayerId} 的【${finalWinnerRoleConfig.name}】`
-        }
 
-        console.log('游戏结束。', resultDesc)
+            const winnerDesc = `玩家 ${finalWinnerPlayerId} 的【${finalWinnerRoleConfig.name}】`
+            console.log(`游戏结束。胜利者：${winnerDesc}。`, '其胜', winnerWonRoundsCount, '局；', '负', winnerLostRoundsCount, '局。')
 
-        this.services.modals.overlayModalOfGameOverAnnouncement.showUp({
-            contentHTML: [
+            resultDescHTML = [
                 '<p>',
                 '<span class="label">胜利者：</span>',
-                `<span class="detail">${resultDesc}</span>`,
+                '<span class="detail">',
+                winnerDesc,
+                '</span>',
                 '</p>',
-            ].join(''),
+                '<p>',
+                `其胜 ${winnerWonRoundsCount} 局；负 ${winnerLostRoundsCount} 局。`,
+                '</p>',
+            ].join('')
+        }
+
+        this.services.modals.overlayModalOfGameOverAnnouncement.showUp({
+            contentHTML: resultDescHTML,
         })
     }
 })();

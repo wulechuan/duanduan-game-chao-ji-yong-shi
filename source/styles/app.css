@@ -559,8 +559,12 @@ article blockquote em{
   transform:scaleX(-1);
 }
 .overlay-modal.game-over-announcement .modal{
+  padding:1rem 1rem;
   max-width:80%;
   width:32rem;
+}
+.overlay-modal.game-over-announcement .modal .content{
+  text-align:center;
 }
 .role-picking-screen{
   background-image:linear-gradient(to right, rgba(0,0,0,0.9) 30%, transparent 44%, transparent 56%, rgba(0,0,0,0.9) 70%), url("../images/game-ui/挑选角色阶段的背景.webp");
@@ -1670,6 +1674,9 @@ article blockquote em{
   width:4rem;
   bottom:0;
   margin-left:-2rem;
+}
+.game-round .overlay-modal.game-round-result-announcement .modal{
+  width:32rem;
 }
 html{
   font-size:20px;
