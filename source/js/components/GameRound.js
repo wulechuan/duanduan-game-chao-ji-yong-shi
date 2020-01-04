@@ -58,7 +58,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             judgementIntervalId: NaN,
 
             fighterNewAttacksQueue: [
-                /* 
+                /*
                     {
                         attackerPlayerId: number,
                         shouldIgnoreFightersDistance: boolean,
@@ -201,6 +201,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
     function cheatedBy(attacker, cheatingAttacksCount) {
+        if (!appData.gameGlobalSettings.allowToCheat) {
+            console.log(`听着，${attacker.logString}，你不准作弊！`)
+            return
+        }
+
         console.log(`${attacker.logString}作弊了！“魔法”攻击`, cheatingAttacksCount, '次')
 
         for (let i = 0; i < cheatingAttacksCount; i++) {
