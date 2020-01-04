@@ -108,8 +108,10 @@ roundStatusBarHeight = 7rem
         left 0
 
         &.is-defencing {
+            --effect-of-defencing-color-1: #62c7
+            --effect-of-defencing-color-2: #a8e5
 
-            animationDuration = 1s
+            animationDuration = 1.5s
 
             &::before,
             &::after {
@@ -123,26 +125,28 @@ roundStatusBarHeight = 7rem
 
                 animation-name fighter-defencing-effects
                 animation-duration animationDuration
-                animation-timing-function ease-out
+                animation-timing-function linear
                 animation-iteration-count infinite
                 animation-fill-mode both
 
-                box-shadow inset 0 0 1rem rgba(red, 0.6) // in case animation is not supported
+                box-shadow inset 0 0 1rem var(--effect-of-defencing-color-1);// in case animation is not supported
 
                 @keyframes fighter-defencing-effects {
-                    0% {
+                    0%, 35% {
                         opacity 0;
-                        margin: 25%;
-                        box-shadow: inset 0 0 1.2rem 0 #515;
+                        margin: 30%;
+                        background-color: var(--effect-of-defencing-color-1);
+                        box-shadow: inset 0 0 1.2rem 0 var(--effect-of-defencing-color-1);
                     }
 
-                    16%, 51% {
+                    51%, 81% {
                         opacity 1;
                     }
 
-                    65%, 100% {
-                        box-shadow: inset 0 0 1.8rem 0 #d8f;
-                        margin: 15%;
+                    96%, 100% {
+                        background-color: transparent;
+                        box-shadow: inset 0 0 1.8rem 0 var(--effect-of-defencing-color-2);
+                        margin: 5%;
                         opacity 0;
                     }
                 }

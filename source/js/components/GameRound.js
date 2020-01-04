@@ -177,6 +177,16 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
 
+    function _cheatBy(attacker) {
+        console.warn(`${attacker.logString}作弊了！`)
+        for (let i = 0; i < 515; i++) {
+            this.acceptOneAttackFromPlayer({
+                attackerPlayerId: attacker.data.playerId,
+                shouldIgnoreFightersDistance: true,
+            })
+        }
+    }
+
     function start() {
         console.log(`\n\n【游戏局 ${this.data.gameRoundNumber}】开始。\n\n\n`)
         this.status.isRunning = true
@@ -219,16 +229,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         })
 
         const globalKewDown = {
-            'ENTER': () => {
-                console.warn('临时代码！')
-                const attackerArrayIndex = Math.floor(Math.random() * 2)
-                for (let i = 0; i < 515; i++) {
-                    this.acceptOneAttackFromPlayer({
-                        attackerPlayerId: attackerArrayIndex + 1,
-                        shouldIgnoreFightersDistance: true,
-                    })
-                }
-            },
+            '`':         () => { _cheatBy.call(this, bothFighters[0]) },
+            'BACKSPACE': () => { _cheatBy.call(this, bothFighters[1]) },
         }
 
         keyboardEngineConfigForBothPlayers = {
