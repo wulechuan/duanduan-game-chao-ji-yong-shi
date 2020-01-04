@@ -135,16 +135,21 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             modals: { overlayModalOfGameIntro },
         } = this.services
 
+        const closeGameIntroAndStartGame = () => {
+            overlayModalOfGameIntro.leaveAndHide()
+            keyboardEngine.stop()
+            fightersPickingScreen.showUp()
+        }
+
         overlayModalOfGameIntro.showUp()
         keyboardEngine.start({
             keyUp: {
-                'ENTER': () => {
-                    overlayModalOfGameIntro.leaveAndHide()
-                    keyboardEngine.stop()
-                    fightersPickingScreen.showUp()
-                },
+                'ENTER':  closeGameIntroAndStartGame,
+                ' ':      closeGameIntroAndStartGame,
+                'ESCAPE': closeGameIntroAndStartGame,
             },
         })
+
     }
 
     function start() {
