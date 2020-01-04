@@ -537,10 +537,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         _ending.call(this)
     }
 
-    function _ending() {
+    async function _ending() {
         this.status.isRunning = false
         this.status.isOver = true
         this.el.root.classList.add('is-over')
+
+        // 等待片刻，令玩家欣赏胜利者的宣言和失败者的遗言。
+        await new Promise(resolve => setTimeout(resolve, 4000))
+
         _annouceResult.call(this)
     }
 

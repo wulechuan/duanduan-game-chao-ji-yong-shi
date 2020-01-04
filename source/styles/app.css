@@ -766,6 +766,7 @@ article blockquote em{
   left:0;
 }
 .player-2 .role-candidate .role-looks{
+  -webkit-filter:hue-rotate(120deg);
   filter:hue-rotate(120deg);
 }
 .player-2 .role-candidate .specs{
@@ -1354,6 +1355,7 @@ article blockquote em{
   background-color:#000;
 }
 .role.player-2 .role-looks{
+  -webkit-filter:hue-rotate(120deg);
   filter:hue-rotate(120deg);
 }
 .role.player-2 .keyboard-tips{
@@ -1364,6 +1366,10 @@ article blockquote em{
   color:#fff;
   border-color:currentColor;
   background-color:#191;
+}
+.role.player-2 .words .avatar{
+  -webkit-filter:hue-rotate(120deg);
+  filter:hue-rotate(120deg);
 }
 .role.player-2 .words:not(.winning-words):not(.last-words) .content{
   color:#000;
@@ -1541,6 +1547,8 @@ article blockquote em{
 }
 .role-status-bar.player-2 .fighter-avatar{
   right:3.3rem;
+  -webkit-filter:hue-rotate(120deg);
+  filter:hue-rotate(120deg);
 }
 .role-status-bar.player-2 .fighter-name{
   right:6rem;

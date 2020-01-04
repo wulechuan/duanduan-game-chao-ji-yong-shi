@@ -443,6 +443,7 @@ roundStatusBarHeight = 7rem
     &.player-2 {
 
         .role-looks {
+            -webkit-filter: hue-rotate(120deg);
             filter: hue-rotate(120deg);
         }
 
@@ -457,6 +458,11 @@ roundStatusBarHeight = 7rem
                 color white
                 border-color currentColor
                 background-color #191
+            }
+
+            .avatar {
+                -webkit-filter: hue-rotate(120deg);
+                filter: hue-rotate(120deg);
             }
 
             &:not(.winning-words):not(.last-words) .content {
