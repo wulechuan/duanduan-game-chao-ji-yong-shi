@@ -17,6 +17,49 @@ article blockquote em{
   font-weight:600;
   font-size:120%;
 }
+.keyboard-tip-container{
+  flex:0 0;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+  position:relative;
+  min-width:3em;
+  height:4.5em;
+}
+.keyboard-tip-container.label-lays-below-hint{
+  flex-direction:column-reverse;
+}
+.keyboard-tip,
+.keyboard-tip-label{
+  text-align:center;
+}
+.keyboard-tip-label{
+  top:0;
+  bottom:auto;
+  font-size:0.8em;
+  padding:0.2em 0.5em;
+  width:auto;
+  height:1.5em;
+  line-height:1.5;
+  border-radius:0.25em;
+  color:#fff;
+  background-color:rgba(0,0,0,0.87);
+}
+.keyboard-tip{
+  font-size:1.2em;
+  box-sizing:border-box;
+  border:0.25em double #000;
+  padding:0 0.35em;
+  min-width:2.2em;
+  height:2.2em;
+  line-height:1.65;
+  border-radius:0.3em;
+  top:auto;
+  bottom:0;
+  text-align:center;
+  background-color:#fff;
+}
 .ui-screen{
   position:fixed;
   top:0;
@@ -492,13 +535,6 @@ article blockquote em{
     transform:translateY(-102%);
   }
 }
-.keyboard-tip{
-  box-sizing:content-box;
-  text-align:center;
-  border:0.4rem double #000;
-  background-color:#fff;
-  position:absolute;
-}
 .role,
 .role .locator,
 .role .role-looks,
@@ -577,37 +613,40 @@ article blockquote em{
 .role-candidates-slot.player-2{
   right:1rem;
 }
-.role-candidates-slot.fighter-has-decided .keyboard-tip{
+.role-candidates-slot.fighter-has-decided .keyboard-tip-container{
   opacity:0.05;
 }
-.role-candidates-slot .keyboard-tip{
+.role-candidates-slot .keyboard-tips{
   z-index:319;
-  font-size:2rem;
-  width:2.5rem;
-  height:2.5rem;
-  line-height:2.375rem;
-  border-radius:0.75rem;
-  opacity:1;
-  transition:opacity 0.2s ease-out;
-  margin:-1.25rem -1.25rem;
+  position:absolute;
+  top:100%;
+  bottom:-1.5rem;
+  left:0;
+  right:0;
 }
-.role-candidates-slot .keyboard-tip.decision-maker{
+.role-candidates-slot .keyboard-tip-container{
+  font-size:1.1rem;
+  position:absolute;
   top:auto;
+}
+.role-candidates-slot .keyboard-tip-container.decision-maker{
   bottom:0;
   left:50%;
   margin-left:0;
   margin-right:0;
   transform:translateX(-50%);
 }
-.role-candidates-slot .keyboard-tip.pick-prev-candidate,
-.role-candidates-slot .keyboard-tip.pick-next-candidate{
-  top:80%;
+.role-candidates-slot .keyboard-tip-container.pick-prev-candidate,
+.role-candidates-slot .keyboard-tip-container.pick-next-candidate{
+  bottom:100%;
+  margin:0 20%;
 }
-.role-candidates-slot .keyboard-tip.pick-prev-candidate{
-  left:30%;
+.role-candidates-slot .keyboard-tip-container.pick-prev-candidate{
+  left:0;
 }
-.role-candidates-slot .keyboard-tip.pick-next-candidate{
-  right:30%;
+.role-candidates-slot .keyboard-tip-container.pick-next-candidate{
+  left:auto;
+  right:0;
 }
 .role-candidates-slot .role-candidate{
   left:0;
@@ -659,7 +698,7 @@ article blockquote em{
   font-size:1rem;
   width:1.5rem;
   height:1.5rem;
-  line-height:1.33;
+  line-height:1.45rem;
   color:#fff;
 }
 .role-candidates-slot .role-candidate .spec .spec-value{
@@ -676,7 +715,7 @@ article blockquote em{
   padding:3px;
   border:2px solid rgba(255,255,255,0.319);
   border-radius:5px;
-  background-color:rgba(0,0,0,0.19);
+  background-color:rgba(0,0,0,0.51);
 }
 .role-candidates-slot .role-candidate .spec .spec-ratio-bar-scale{
   height:0.5rem;
@@ -958,10 +997,10 @@ article blockquote em{
   }
 }
 .role .keyboard-tips{
+  font-size:1rem;
   position:absolute;
   bottom:0;
-  width:13rem;
-  height:4.4rem;
+  width:13em;
   display:flex;
   flex-wrap:nowrap;
   justify-content:space-between;
@@ -977,40 +1016,6 @@ article blockquote em{
 }
 .role.has-won .keyboard-tips{
   opacity:0.1;
-}
-.role .keyboard-tip-container{
-  flex:0 0;
-  position:relative;
-  min-width:3rem;
-  height:100%;
-}
-.role .keyboard-tip,
-.role .keyboard-tip-label{
-  text-align:center;
-  position:absolute;
-  margin:0 auto;
-  left:0;
-  right:0;
-}
-.role .keyboard-tip-label{
-  top:0;
-  bottom:auto;
-  font-size:0.8rem;
-  width:auto;
-  height:1.5rem;
-  line-height:1.5rem;
-  border-radius:0.25rem;
-  color:#fff;
-  background-color:rgba(0,0,0,0.87);
-}
-.role .keyboard-tip{
-  top:auto;
-  bottom:0;
-  font-size:1.3rem;
-  width:2rem;
-  height:2rem;
-  line-height:2rem;
-  border-radius:0.5rem;
 }
 .role .auto-disappear-popup{
   position:absolute;
@@ -1620,6 +1625,9 @@ article blockquote em{
     opacity:0;
   }
 }
+.game-round.is-over .keyboard-hints{
+  opacity:0.05;
+}
 .game-round .fighting-stage{
   z-index:0;
 }
@@ -1631,6 +1639,25 @@ article blockquote em{
 }
 .game-round .fighters-popups{
   z-index:120;
+}
+.game-round .keyboard-hints{
+  z-index:200;
+}
+.game-round .keyboard-hints{
+  position:absolute;
+  top:auto;
+  bottom:0.5rem;
+  left:0;
+  right:0;
+  width:0;
+  height:0;
+  margin:auto;
+}
+.game-round .keyboard-hints .keyboard-tip-container{
+  position:absolute;
+  width:4rem;
+  bottom:0;
+  margin-left:-2rem;
 }
 html{
   font-size:20px;

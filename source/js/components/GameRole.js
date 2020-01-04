@@ -44,6 +44,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         this.logString = `玩家 ${playerId} 的【游戏角色】“${name}”`
 
+        this.subComponents = {}
+
         this.data = {
             playerId,
             name,
@@ -82,27 +84,24 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
 
-        this.updateKeyboardEngineConfig = updateKeyboardEngineConfig.bind(this)
-        this.createKeyboardEngineConfig = this.updateKeyboardEngineConfig
+        this.joinGameRound         = joinGameRound        .bind(this)
+        this.setPoseTo             = setPoseTo            .bind(this)
+        this.showEffects           = showEffects          .bind(this)
 
-        this.joinGameRound              = joinGameRound             .bind(this)
-        this.setPoseTo                  = setPoseTo                 .bind(this)
-        this.showEffects                = showEffects               .bind(this)
+        this.startMovingLeftwards  = startMovingLeftwards .bind(this)
+        this.startMovingRightwards = startMovingRightwards.bind(this)
+        this.stopMovingLeftwards   = stopMovingLeftwards  .bind(this)
+        this.stopMovingRightwards  = stopMovingRightwards .bind(this)
+        this.enterAttackMode       = enterAttackMode      .bind(this)
+        this.quitAttackMode        = quitAttackMode       .bind(this)
+        this.enterDefenceMode      = enterDefenceMode     .bind(this)
+        this.quitDefenceMode       = quitDefenceMode      .bind(this)
 
-        this.startMovingLeftwards       = startMovingLeftwards      .bind(this)
-        this.startMovingRightwards      = startMovingRightwards     .bind(this)
-        this.stopMovingLeftwards        = stopMovingLeftwards       .bind(this)
-        this.stopMovingRightwards       = stopMovingRightwards      .bind(this)
-        this.enterAttackMode            = enterAttackMode           .bind(this)
-        this.quitAttackMode             = quitAttackMode            .bind(this)
-        this.enterDefenceMode           = enterDefenceMode          .bind(this)
-        this.quitDefenceMode            = quitDefenceMode           .bind(this)
+        this.win                   = win                  .bind(this)
+        this.lose                  = lose                 .bind(this)
+        this.cheat                 = cheat                .bind(this)
 
-        this.win                        = win                       .bind(this)
-        this.lose                       = lose                      .bind(this)
-        this.cheat                      = cheat                     .bind(this)
-
-        this.$suffer                    = $suffer                   .bind(this)
+        this.$suffer               = $suffer              .bind(this)
 
 
         _init.call(this, initOptions)
@@ -113,8 +112,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
     function _init(initOptions) {
-        _createDOMs.call(this)
-        this.createKeyboardEngineConfig(initOptions)
+        _createKeyboardEngineConfig.call(this, initOptions)
+        _createDOMs                .call(this)
         this.showEffects('')
         this.setPoseTo('')
     }
@@ -201,36 +200,20 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         rootElement1.appendChild(keyboardTipsElement)
 
-        ;[
-            { keyLabel: '向左', elRefPropertyName: 'keyboardTipForMovingLeftwards' },
-            { keyLabel: '向右', elRefPropertyName: 'keyboardTipForMovingRightwards' },
-            { keyLabel: '攻击', elRefPropertyName: 'keyboardTipForAttack' },
-            { keyLabel: '防御', elRefPropertyName: 'keyboardTipForDefence' },
-        ].forEach(({ keyLabel, elRefPropertyName }) => {
-            const keyboardTipContainerElement = createDOMWithClassNames('div', [
-                'keyboard-tip-container',
-            ])
+        const {
+            keyboardHintForMovingLeftwards,
+            keyboardHintForMovingRightwards,
+            keyboardHintForAttack,
+            keyboardHintForDefence,
+        } = this.subComponents
 
-            const keyboardTipElement = createDOMWithClassNames('div', [
-                'keyboard-tip',
-            ])
-
-            const keyboardTipLabelElement = createDOMWithClassNames('div', [
-                'keyboard-tip-label',
-            ])
-
-            keyboardTipLabelElement.innerText = keyLabel
-
-            keyboardTipContainerElement.appendChild(keyboardTipLabelElement)
-            keyboardTipContainerElement.appendChild(keyboardTipElement)
-
-            keyboardTipsElement.appendChild(keyboardTipContainerElement)
-
-            this.el[elRefPropertyName] = keyboardTipElement
-        })
+        keyboardTipsElement.appendChild(keyboardHintForMovingLeftwards.el.root)
+        keyboardTipsElement.appendChild(keyboardHintForMovingRightwards.el.root)
+        keyboardTipsElement.appendChild(keyboardHintForAttack.el.root)
+        keyboardTipsElement.appendChild(keyboardHintForDefence.el.root)
     }
 
-    function updateKeyboardEngineConfig(options) {
+    function _createKeyboardEngineConfig(options) {
         if (!options || typeof options !== 'object') { return }
 
         const {
@@ -241,12 +224,32 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyForCheating,
         } = options
 
-        const {
-            keyboardTipForMovingLeftwards:  keyboardTipForMovingLeftwardsElement,
-            keyboardTipForMovingRightwards: keyboardTipForMovingRightwardsElement,
-            keyboardTipForAttack:           keyboardTipForAttackElement,
-            keyboardTipForDefence:          keyboardTipForDefenceElement,
-        } = this.el
+        const { KeyboardHint } = classes
+
+        const keyboardHintForMovingLeftwards = new KeyboardHint({
+            keyName: keyForMovingLeftwards,
+            keyDescription: '向左',
+        })
+
+        const keyboardHintForMovingRightwards = new KeyboardHint({
+            keyName: keyForMovingRightwards,
+            keyDescription: '向右',
+        })
+
+        const keyboardHintForAttack = new KeyboardHint({
+            keyName: keyForAttack,
+            keyDescription: '进攻',
+        })
+
+        const keyboardHintForDefence = new KeyboardHint({
+            keyName: keyForDefence,
+            keyDescription: '防御',
+        })
+
+        this.subComponents.keyboardHintForMovingLeftwards = keyboardHintForMovingLeftwards
+        this.subComponents.keyboardHintForMovingRightwards = keyboardHintForMovingRightwards
+        this.subComponents.keyboardHintForAttack = keyboardHintForAttack
+        this.subComponents.keyboardHintForDefence = keyboardHintForDefence
 
         const { data } = this
 
@@ -275,11 +278,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         data.keyboardEngineKeyDownConfig = keyboardEngineKeyDownConfig
         data.keyboardEngineKeyUpConfig   = keyboardEngineKeyUpConfig
-
-        keyboardTipForMovingLeftwardsElement .innerText = keyForMovingLeftwards
-        keyboardTipForMovingRightwardsElement.innerText = keyForMovingRightwards
-        keyboardTipForAttackElement          .innerText = keyForAttack
-        keyboardTipForDefenceElement         .innerText = keyForDefence
     }
 
     function joinGameRound(gameRound) {

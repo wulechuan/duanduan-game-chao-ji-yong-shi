@@ -79,7 +79,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         this.subComponents.fighterPickers = [
             new GameFighterPicker(1, {
                 gameRoleCandidates: candidatesForPlayer1,
-                keyForStoppingRollingRoles: player1KeyboardShortcuts.stopRolling,
+                keyForAcceptingFighter:     player1KeyboardShortcuts.acceptCandidate,
                 keyForPickingPrevCandidate: player1KeyboardShortcuts.prevCandidate,
                 keyForPickingNextCandidate: player1KeyboardShortcuts.nextCandidate,
                 // shouldNotAutoRoll: false,
@@ -91,7 +91,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
 
             new GameFighterPicker(2, {
                 gameRoleCandidates: candidatesForPlayer2,
-                keyForStoppingRollingRoles: player2KeyboardShortcuts.stopRolling,
+                keyForAcceptingFighter:     player2KeyboardShortcuts.acceptCandidate,
                 keyForPickingPrevCandidate: player2KeyboardShortcuts.prevCandidate,
                 keyForPickingNextCandidate: player2KeyboardShortcuts.nextCandidate,
                 // shouldNotAutoRoll: false,

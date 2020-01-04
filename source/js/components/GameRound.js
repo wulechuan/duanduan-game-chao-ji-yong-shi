@@ -88,6 +88,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         _createFighters             .call(this)
         _createFightingStageRandomly.call(this)
         _createGameRoundStatusBlock .call(this)
+        _createShortcutKeyHints     .call(this)
         _createMoreDOMs             .call(this)
         this.el.root.style.display = 'none'
     }
@@ -154,12 +155,24 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.subComponents.statusBlock = new GameRoundStatusBlock(this)
     }
 
+    function _createShortcutKeyHints() {
+        const { KeyboardHint } = classes
+
+        const keyboardHintForPausingGameRound = new KeyboardHint({
+            keyName: 'Y',
+            keyDescription: '暂停游戏',
+        })
+
+        this.subComponents.keyboardHintForPausingGameRound = keyboardHintForPausingGameRound
+    }
+
     function _createMoreDOMs() {
         const { gameRoundNumber } = this.data
 
         const {
             fightingStage,
             statusBlock,
+            keyboardHintForPausingGameRound,
         } = this.subComponents
 
 
@@ -172,6 +185,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             'fighters',
         ])
 
+        const keyboardHintsContainerElement = createDOMWithClassNames('div', [
+            'keyboard-hints',
+        ])
+
         const bothFightersPopupsContainerElement = createDOMWithClassNames('div', [
             'fighters-popups',
         ])
@@ -182,8 +199,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         })
 
         rootElement.appendChild(fightingStage.el.root)
+        rootElement.appendChild(statusBlock  .el.root)
+
+        keyboardHintsContainerElement.appendChild(keyboardHintForPausingGameRound.el.root)
+        
+        rootElement.appendChild(keyboardHintsContainerElement)
+
         rootElement.appendChild(bothFightersContainerElement)
-        rootElement.appendChild(statusBlock.el.root)
         rootElement.appendChild(bothFightersPopupsContainerElement)
 
         const allModals = this.services.modals
@@ -191,6 +213,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         Object.keys(allModals).forEach(modalKey => {
             rootElement.appendChild(allModals[modalKey].el.root)
         })
+
 
         this.el = {
             root: rootElement,
@@ -507,6 +530,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     function _ending() {
         this.status.isRunning = false
         this.status.isOver = true
+
+        this.el.root.classList.add('is-over')
 
         _annouceResult.call(this)
     }
