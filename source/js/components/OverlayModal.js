@@ -208,6 +208,10 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
     }
 
     async function leaveAndHide() {
+        const { status } = this
+
+        if (!status.isShowing || status.isLeaving) { return }
+
         const {
             root:            rootElement,
             countDownNumber: countDownNumberElement,
@@ -215,7 +219,7 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         } = this.el
 
         rootElement.classList.add('is-leaving')
-        this.status.isLeaving = true
+        status.isLeaving = true
 
         await _timing(320)
 
@@ -225,7 +229,7 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         countDownNumberElement.innerText = ''
         countDownTipElement   .innerHTML = ''
         
-        this.status.isLeaving = false
-        this.status.isShowing = false
+        status.isLeaving = false
+        status.isShowing = false
     }
 })();

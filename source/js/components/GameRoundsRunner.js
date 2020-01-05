@@ -37,11 +37,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         this.status = {
             isRunningOneRound: false,
             isOver: false,
+            noMoreGameRoundsNeeded: false,
         }
 
 
-        this.createAndStartNewRound = createAndStartNewRound.bind(this)
-        this.endCurrentRound        = endCurrentRound       .bind(this)
+        this.createAndStartNewRound                       = createAndStartNewRound                      .bind(this)
+        this.evaluateGameStatusJustBeforeOneGameRoundEnds = evaluateGameStatusJustBeforeOneGameRoundEnds.bind(this)
+        this.endCurrentRound                              = endCurrentRound                             .bind(this)
 
         _init.call(this)
 
@@ -111,60 +113,44 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         this.status.isRunningOneRound = true
         this.game.data.gameRounds.current.start()
     }
-
-    function endCurrentRound() {
-        const { gameRounds } = this.game.data
-
-        this.status.isRunningOneRound = false
-
-        const {
-            history: historicalGameRounds,
-            current: currentGameRound,
-        } = gameRounds
-
-        if (!currentGameRound) {
-            throw new ReferenceError('还没有开始过任何游戏局！')
-        }
-
-        historicalGameRounds.push(currentGameRound)
-        gameRounds.current = null
-
-        _evaluateGameStatusAfterOneRoundEnds.call(this)
-    }
-
-    function _evaluateGameStatusAfterOneRoundEnds() {
+    
+    function _evaluateGameStatusJustBeforeOneGameRoundEnds() {
         const { gameRounds, pickedFighterRoleConfigurations } = this.game.data
-
-        this.status.isRunningOneRound = false
 
         const {
             minWinningRoundsPerPlayer,
             history: historicalGameRounds,
+            current: currentGameRound,
         } = gameRounds
 
-        const player1WonRounds = historicalGameRounds.filter(
+        const allGameRoundsSoFar = [
+            ...historicalGameRounds,
+            currentGameRound,
+        ]
+
+        const player1WonRounds = allGameRoundsSoFar.filter(
             gameRound => gameRound.data.fighters.winnerPlayerId === 1
         )
 
-        const player2WonRounds = historicalGameRounds.filter(
+        const player2WonRounds = allGameRoundsSoFar.filter(
             gameRound => gameRound.data.fighters.winnerPlayerId === 2
         )
 
         const player1WonRoundsCount = player1WonRounds.length
         const player2WonRoundsCount = player2WonRounds.length
-        const totalRunRoundsCount = historicalGameRounds.length
+        const totalRunRoundsCount = allGameRoundsSoFar.length
 
-        const shouldEndGame = totalRunRoundsCount >= gameRounds.maxRoundsToRun ||
+        const noMoreGameRoundsNeeded = totalRunRoundsCount >= gameRounds.maxRoundsToRun ||
             player1WonRoundsCount >= minWinningRoundsPerPlayer ||
             player2WonRoundsCount >= minWinningRoundsPerPlayer
 
         // console.log('Player1:', player1WonRoundsCount, '局胜')
         // console.log('Player2:', player2WonRoundsCount, '局胜')
-        // console.log('应该结束整个游戏？', shouldEndGame)
+        // console.log('应该结束整个游戏？', noMoreGameRoundsNeeded)
 
         const [ fighterRoleConfig1, fighterRoleConfig2 ] = pickedFighterRoleConfigurations.both
 
-        if (shouldEndGame) {
+        if (noMoreGameRoundsNeeded) {
             let finalWinnerRoleConfig
             let finalLoserRoleConfig
             let finalWinnerPlayerId
@@ -196,7 +182,40 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
             pickedFighterRoleConfigurations.finalWinnerPlayerId   = finalWinnerPlayerId
             pickedFighterRoleConfigurations.winnerWonRoundsCount  = winnerWonRoundsCount
             pickedFighterRoleConfigurations.winnerLostRoundsCount = winnerLostRoundsCount
+        }
 
+        this.status.noMoreGameRoundsNeeded = noMoreGameRoundsNeeded
+    }
+
+    function evaluateGameStatusJustBeforeOneGameRoundEnds() {
+        if (!this.game.data.gameRounds.current) {
+            throw new ReferenceError('还没有开始过任何游戏局！')
+        }
+
+        _evaluateGameStatusJustBeforeOneGameRoundEnds.call(this)
+
+        return this.status.noMoreGameRoundsNeeded
+    }
+
+    function endCurrentRound() {
+        const { status } = this
+        const { gameRounds } = this.game.data
+
+        status.isRunningOneRound = false
+
+        const {
+            history: historicalGameRounds,
+            current: currentGameRound,
+        } = gameRounds
+
+        if (!currentGameRound) {
+            throw new ReferenceError('还没有开始过任何游戏局！')
+        }
+
+        historicalGameRounds.push(currentGameRound)
+        gameRounds.current = null
+
+        if (status.noMoreGameRoundsNeeded) {
             _end.call(this)
         } else {
             this.createAndStartNewRound()

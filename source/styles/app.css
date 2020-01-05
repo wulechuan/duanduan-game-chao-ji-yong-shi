@@ -316,7 +316,7 @@ article blockquote em{
   max-width:80%;
   max-height:80%;
   width:16rem;
-  height:10rem;
+  height:12rem;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -340,7 +340,7 @@ article blockquote em{
   font-size:2rem;
   font-weight:600;
   letter-spacing:0.1em;
-  margin:1rem 0 0 0;
+  margin:1.5rem 0 0 0;
   text-stroke:1px #fff;
   -webkit-text-stroke:1px #fff;
 }
@@ -593,7 +593,7 @@ article blockquote em{
 .overlay-modal.game-over-announcement .modal{
   padding:1rem 1rem;
   width:25rem;
-  height:12rem;
+  height:14rem;
 }
 .overlay-modal.game-over-announcement .modal .content{
   text-align:center;

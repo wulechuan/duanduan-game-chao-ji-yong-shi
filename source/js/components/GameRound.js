@@ -31,10 +31,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const { chineseNumbers } = appData
 
         let gameRoundCaption
+        const isLastRoundOfGame = roundsTotalCount === gameRoundNumber
 
         if (roundsTotalCount === 1) {
             gameRoundCaption = '唯一之局'
-        } else if (roundsTotalCount === gameRoundNumber) {
+        } else if (isLastRoundOfGame) {
             gameRoundCaption = '决战之局'
         } else {
             gameRoundCaption = `${chineseNumbers[roundsTotalCount]}局之${chineseNumbers[gameRoundNumber]}`
@@ -56,9 +57,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         }
 
         this.status = {
+            isLastRoundOfGame,
+
             isRunning: false,
             isPaused: false,
             isOver: false,
+            hasCompletedEnded: false,
 
             judgementInterval: 66, // milliseconds
             judgementIntervalId: NaN,
@@ -138,7 +142,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 keyForDefence:          player1KeyboardShortcuts.defence,
                 keyForCheating:         player1KeyboardShortcuts.cheat,
             }),
-            
+
             new GameRole(game, 2, palyer2PickedFighterRoleConfig, {
                 initialPositionLeft: '75%',
                 keyForMovingLeftwards:  player2KeyboardShortcuts.moveLeftwards,
@@ -541,38 +545,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         _ending.call(this)
     }
 
-    async function _ending() {
-        this.status.isRunning = false
-        this.status.isOver = true
-        this.el.root.classList.add('is-over')
+    async function _annouceResult() {
+        const noMoreGameRoundsNeeded = this.gameRoundsRunner.evaluateGameStatusJustBeforeOneGameRoundEnds()
 
-        // 等待片刻，令玩家欣赏胜利者的宣言和失败者的遗言。
-        await new Promise(resolve => setTimeout(resolve, 4000))
-
-        _annouceResult.call(this)
-    }
-
-    async function _realEnd() {
-        this.game.services.keyboardEngine.stop()
-        await this.services.modals.overlayModalForResultAnnouncement.leaveAndHide()
-        this.gameRoundsRunner.endCurrentRound()
-    }
-
-    function _annouceResult() {
         const { winner, isDrawGameRound } = this.data.fighters
-
-        const realEndOfThisGameRound = _realEnd.bind(this)
-
-        this.game.services.keyboardEngine.start({
-            keyDown: {
-                'ENTER':  realEndOfThisGameRound,
-                ' ':      realEndOfThisGameRound,
-                'ESCAPE': realEndOfThisGameRound,
-            },
-        }, '游戏局结果报告对话框')
-
-
-
 
         let resultDescHTML
         let gameRoundDesc = `【游戏局 ${this.data.gameRoundNumber}】`
@@ -597,13 +573,46 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         // 因此，有必要在弹框时，彻底禁止胜利者可能在进行的活动。确保清除各种可能的 interval。
         winner.stopAllPossibleActions()
 
-        const {
-            overlayModalForResultAnnouncement,
-        } = this.services.modals
 
-        overlayModalForResultAnnouncement.showUp({
+        const realEndOfThisGameRound = _realEnd.bind(this)
+
+        this.game.services.keyboardEngine.start({
+            keyDown: {
+                'ENTER':  realEndOfThisGameRound,
+                ' ':      realEndOfThisGameRound,
+                'ESCAPE': realEndOfThisGameRound,
+            },
+        }, '游戏局结果报告对话框')
+
+        await this.services.modals.overlayModalForResultAnnouncement.showUp({
             contentHTML: resultDescHTML,
+            countDown: {
+                seconds: 10,
+                tipHTML: noMoreGameRoundsNeeded ? '准备结束游戏' : '准备进入下一局',
+            },
         })
+
+        realEndOfThisGameRound()
+    }
+
+    async function _ending() {
+        this.status.isRunning = false
+        this.status.isOver = true
+        this.el.root.classList.add('is-over')
+
+        // 等待片刻，令玩家欣赏胜利者的宣言和失败者的遗言。
+        await new Promise(resolve => setTimeout(resolve, 4000))
+
+        await _annouceResult.call(this)
+    }
+
+    async function _realEnd() {
+        if (this.status.hasCompletedEnded) { return }
+        this.status.hasCompletedEnded = true
+
+        this.game.services.keyboardEngine.stop()
+        await this.services.modals.overlayModalForResultAnnouncement.leaveAndHide()
+        this.gameRoundsRunner.endCurrentRound()
     }
 
     function showUp() {
