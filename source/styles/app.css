@@ -1,6 +1,9 @@
 article{
   line-height:1.6;
 }
+article p{
+  margin:0.5em auto;
+}
 article hr{
   margin:1rem auto;
   border:0 solid transparent;
@@ -348,10 +351,6 @@ article blockquote em{
   text-stroke:0.5px rgba(255,255,255,0.87);
   -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
 }
-.overlay-modal .content p{
-  line-height:1.5;
-  margin:0.2em;
-}
 .overlay-modal .count-down{
   font-size:1rem;
   height:2em;
@@ -371,6 +370,10 @@ article blockquote em{
   width:1em;
   padding:0;
   text-align:center;
+}
+.overlay-modal .modal:not(.huge) .content p{
+  line-height:1.6;
+  margin:0.2em;
 }
 .overlay-modal .modal.huge{
   box-sizing:border-box;
@@ -1521,7 +1524,7 @@ article blockquote em{
   transition-property:background-color, width, opacity;
   transition-duration:0.5s;
   transition-timing-function:ease-out;
-  background-image:linear-gradient(90deg, transparent, rgba(255,255,255,0.25) 45% 55%, transparent);
+  background-image:linear-gradient(51deg, transparent, rgba(255,255,255,0.25) 40% 60%, transparent);
 }
 .role-status-bar .hp-bar-container .hp.role-is-healthy{
   background-color:#adff2f;
@@ -1531,7 +1534,6 @@ article blockquote em{
 }
 .role-status-bar .hp-bar-container .hp.role-is-dying{
   background-color:#800;
-  background-image:linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 50%, transparent);
 }
 .role-status-bar .fighter-avatar,
 .role-status-bar .fighter-name,
@@ -1761,4 +1763,10 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
+}
+#info-when-no-more-games article{
+  text-align:center;
+  font-size:1.2rem;
+  font-weight:500;
+  letter-spacing:0.2em;
 }

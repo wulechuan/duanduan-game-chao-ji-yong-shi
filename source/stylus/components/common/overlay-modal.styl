@@ -114,11 +114,6 @@
         margin: 1rem 0
         text-stroke: 0.5px rgba(white, 0.87)
         -webkit-text-stroke: @text-stroke
-
-        p {
-            line-height: 1.5
-            margin: 0.2em
-        }
     }
 
     .count-down {
@@ -148,6 +143,13 @@
     }
 
 
+    .modal:not(.huge) {
+        
+        .content p {
+            line-height: 1.6
+            margin: 0.2em
+        }
+    }
 
     .modal.huge {
         box-sizing: border-box

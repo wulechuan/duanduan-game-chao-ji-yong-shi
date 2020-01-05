@@ -270,16 +270,18 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         const theLastModal = this.services.modals.overlayModalOfGameOverAnnouncement
 
-        this.services.keyboardEngine.start({
-            keyDown: {
-                '*': theLastModal.leaveAndHide,
-            },
-        })
-        
+        setTimeout(() => {
+            this.services.keyboardEngine.start({
+                keyDown: {
+                    '*': theLastModal.leaveAndHide,
+                },
+            })
+        }, 3000)
+
         await theLastModal.showUp({
             contentHTML: resultDescHTML,
             countDown: {
-                seconds: 10,
+                seconds: 30,
                 tipHTML: '<span>即将游戏退出<span>',
             },
         })
@@ -287,7 +289,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.services.keyboardEngine.destroy()
 
         _logGameLastReport.call(this)
-        
+
         this.destroy()
 
         if (typeof afterGameDestroyed === 'function') {
