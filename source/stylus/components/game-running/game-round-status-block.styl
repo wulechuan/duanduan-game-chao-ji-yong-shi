@@ -69,7 +69,8 @@
         }
     }
 
-    barBorderRadii = 0.5rem
+    barBorderRadii = 0.4rem
+    barInnerBorderRadii = 0.2rem
 
     .player-id,
     .hp-bar-container {
@@ -112,7 +113,7 @@
             position: absolute;
             top: 0;
             bottom: 0;
-            border-radius: 0.3rem;
+            border-radius: barInnerBorderRadii;
             background-color: rgba(black, 0.06)
             box-shadow: inset 0 0 0.2rem 0 rgba(0, 0, 0, 0.15);
         }
@@ -124,7 +125,7 @@
             transition-property: background-color, width, opacity;
             transition-duration: 0.5s;
             transition-timing-function: ease-out;
-            background-image: linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.15) 35% 65%, transparent);
+            background-image: linear-gradient(90deg, transparent, rgba(white, 0.25) 45% 55%, transparent);
 
             &.role-is-healthy {
                 background-color: greenyellow;
@@ -136,6 +137,7 @@
 
             &.role-is-dying {
                 background-color: #800;
+                background-image: linear-gradient(90deg, transparent, rgba(white, 0.15) 50%, transparent);
             }
         }
     }

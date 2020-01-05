@@ -1,5 +1,7 @@
 window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     const gameRoleAllPossiblePoseCSSClassNames = [
+        'is-moving-leftwards',
+        'is-moving-rightwards',
         'is-attacking',
         'is-defencing',
         'is-suffering',
@@ -66,6 +68,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
         this.status = {
+            isFacingLeftwards: false,
+
             hasLost: false, // 输了自己所加入的那一局
 
             isMovingLeftwards: false,
@@ -93,6 +97,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
         this.joinGameRound         = joinGameRound        .bind(this)
+        this.faceLeftwards         = faceLeftwards        .bind(this)
+        this.faceRightwards        = faceRightwards       .bind(this)
         this.setPoseTo             = setPoseTo            .bind(this)
         this.showEffects           = showEffects          .bind(this)
 
@@ -299,6 +305,18 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.joinedGameRound.cheatedBy(this, cheatingAttacksCount)
     }
 
+    function faceLeftwards() {
+        if (this.status.isFacingLeftwards) { return }
+        this.status.isFacingLeftwards = true
+        this.el.root.classList.add('should-face-leftwards')
+    }
+
+    function faceRightwards() {
+        if (!this.status.isFacingLeftwards) { return }
+        this.status.isFacingLeftwards = false
+        this.el.root.classList.remove('should-face-leftwards')
+    }
+
     function setPoseTo(poseCSSClassNameToApply) {
         if (this.status.hasLost && poseCSSClassNameToApply !== 'has-lost') { return }
 
@@ -391,11 +409,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         if (_takeAnAction.call(this, 'isMovingLeftwards', 'is-moving-leftwards')) {
             const { status } = this
 
-            _makeOneMovement.call(this, true)
-
-            status.movementIntervalId = setInterval(() => {
+            if (!status.isFacingLeftwards) {
+                this.faceLeftwards()
+            } else {
                 _makeOneMovement.call(this, true)
-            }, status.movementInterval)
+    
+                status.movementIntervalId = setInterval(() => {
+                    _makeOneMovement.call(this, true)
+                }, status.movementInterval)
+            }
         }
     }
 
@@ -412,11 +434,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         if (_takeAnAction.call(this, 'isMovingRightwards', 'is-moving-rightwards')) {
             const { status } = this
 
-            _makeOneMovement.call(this, false)
-
-            status.movementIntervalId = setInterval(() => {
+            if (status.isFacingLeftwards) {
+                this.faceRightwards()
+            } else {
                 _makeOneMovement.call(this, false)
-            }, status.movementInterval)
+    
+                status.movementIntervalId = setInterval(() => {
+                    _makeOneMovement.call(this, false)
+                }, status.movementInterval)
+            }
         }
     }
 

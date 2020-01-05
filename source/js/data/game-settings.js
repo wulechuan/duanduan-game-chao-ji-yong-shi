@@ -5,7 +5,7 @@ window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
 
     /*
         所谓“公平模式”，角色的体力、攻击、防御等属性是自动计算的，而不采用角色定义中的原始值。
-        同时， allowToCheat 恒视为 false，即，不允许使用作弊功能。
+        同时， allowToCheat 恒视为 false ，即，不允许使用作弊功能。
     */
     enableFairMode: true,
 
@@ -27,8 +27,8 @@ window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
             2、 期初本游戏故意遵照《机甲英雄》这款商业游戏
                的各个角色的各种数值，那些数值原本如此。
     */
-    roleAttackingPowerExtraRatio: 0.36,
-    roleDefencingPowerExtraRatio: 0.36,
+    roleAttackingPowerExtraRatio: 0.37,
+    roleDefencingPowerExtraRatio: 0.37,
 
     gameIntro: {
         titleHTML: [

@@ -150,6 +150,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         ]
 
         fighters.both.forEach(fighter => fighter.joinGameRound(this))
+
+        fighters.both[1].faceLeftwards()
     }
 
     function _createFightingStageRandomly() {
@@ -425,6 +427,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         return {
             visualWidth: fighterVisualBoxWidth,
+            // f1TheLooksLeft,
+            // f2TheLooksLeft,
             distance,
         }
     }
@@ -448,9 +452,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const {
             distance,
             visualWidth,
-         } = _getVisualWidthOfFightersAndDistanceBetweenThem.call(this)
+        } = _getVisualWidthOfFightersAndDistanceBetweenThem.call(this)
 
-         if (!shouldIgnoreFightersDistance && distance > visualWidth * 0.45) {
+        if (!shouldIgnoreFightersDistance && distance > visualWidth * 0.45) {
             // console.log(`距离太远，${attacker.logString} 发起的攻击无效。`)
             return
         }

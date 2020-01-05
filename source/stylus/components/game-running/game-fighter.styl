@@ -97,6 +97,13 @@ roundStatusBarHeight = 7rem
         // background-color rgba(red, 0.45)
     }
 
+    &.should-face-leftwards {
+
+        .role-looks {
+            transform: scaleX(-1)
+        }
+    }
+
     .effects {
         left 0
 
@@ -183,6 +190,7 @@ roundStatusBarHeight = 7rem
         position absolute
         bottom 0
         width 13em
+        margin 0 2rem
         display flex
         flex-wrap nowrap
         justify-content space-between
@@ -483,4 +491,3 @@ roundStatusBarHeight = 7rem
         }
     }
 }
-
