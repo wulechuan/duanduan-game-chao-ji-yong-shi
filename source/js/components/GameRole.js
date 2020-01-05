@@ -69,7 +69,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             isMovingLeftwards: false,
             isMovingRightwards: false,
 
-            movementDeltaPerInterval: 15, // % instead of px
+            movementDeltaPerInterval: 10, // % instead of px
 
             movementInterval: 200, // milliseconds
             movementIntervalId: NaN,

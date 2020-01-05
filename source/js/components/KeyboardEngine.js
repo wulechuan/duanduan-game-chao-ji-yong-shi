@@ -4,6 +4,10 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
             throw new Error('必须使用 new 运算符来调用 KeyboardEngine 构造函数。')
         }
 
+        this.el = {
+            eventHostElement: document,
+        }
+
         this.data = {
             keyRegistries: null,
         }
@@ -23,24 +27,39 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
 
         this.eventListenerForKeyDown = function (event) {
             // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
-            thisKeyboardEngine.eventHandlerForKeyDown(event.key)
-        }
+            event.stopPropagation()
 
+            const { key } = event
+            // console.log('按键引擎监测到键被按下：', key)
+
+            if (!key.match(/^F\d{1,2}$/)) {
+                event.preventDefault() // 火狐浏览器必须使用这一句。
+                thisKeyboardEngine.eventHandlerForKeyDown(key)
+            }
+
+        }
+        
         this.eventListenerForKeyUp = function (event) {
             // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
-            thisKeyboardEngine.eventHandlerForKeyUp(event.key)
+            event.stopPropagation()
+
+            const { key } = event
+            // console.log('按键引擎监测到键被松开：', key)
+
+            if (!key.match(/^F\d{1,2}$/)) {
+                event.preventDefault() // 火狐浏览器必须使用这一句。
+                thisKeyboardEngine.eventHandlerForKeyUp(event.key)
+            }
         }
     }
 
     function eventHandlerForKeyDown(key) {
-        // console.log('按键引擎监测到键被按下：', key)
         const upperCaseKey = key.toUpperCase()
         const matchedAction = this.data.keyRegistries.keyDown[upperCaseKey]
         matchedAction && matchedAction()
     }
 
     function eventHandlerForKeyUp(key) {
-        // console.log('按键引擎监测到键被松开：', key)
         const upperCaseKey = key.toUpperCase()
         const matchedAction = this.data.keyRegistries.keyUp[upperCaseKey]
         matchedAction && matchedAction()
@@ -108,16 +127,20 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
         this.stop()
 
         const {
+            eventHostElement,
+        } = this.el
+
+        const {
             keyDown,
             keyUp,
         } = this.data.keyRegistries
 
         if (keyDown) {
-            window.addEventListener('keydown', this.eventListenerForKeyDown)
+            eventHostElement.addEventListener('keydown', this.eventListenerForKeyDown)
         }
 
         if (keyUp) {
-            window.addEventListener('keyup', this.eventListenerForKeyUp)
+            eventHostElement.addEventListener('keyup', this.eventListenerForKeyUp)
         }
 
         this.status.isRunning = true
@@ -127,8 +150,13 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
 
     function stop() {
         if (this.status.isRunning) {
-            window.removeEventListener('keydown', this.eventListenerForKeyDown)
-            window.removeEventListener('keyup',   this.eventListenerForKeyUp)
+            const {
+                eventHostElement,
+            } = this.el
+
+            eventHostElement.removeEventListener('keydown', this.eventListenerForKeyDown)
+            eventHostElement.removeEventListener('keyup',   this.eventListenerForKeyUp)
+
             this.status.isRunning = false
             console.log('按键侦听引擎已经停止。')
         }
