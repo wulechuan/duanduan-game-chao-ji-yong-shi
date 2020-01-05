@@ -37,7 +37,10 @@
 
         padding: 0.5rem
 
-        width 18rem
+        max-width  80%
+        max-height 80%
+
+        width 16rem
         height 10rem
 
         display flex
@@ -100,7 +103,7 @@
         font-size: 2rem
         font-weight: 600
         letter-spacing: 0.1em
-        margin-top: 1rem
+        margin: 1rem 0 0 0
         text-stroke: 1px white
         -webkit-text-stroke: @text-stroke
     }
@@ -108,19 +111,48 @@
     .content {
         font-size: 1.2rem
         font-weight: 600
-        margin-bottom: 0.8rem
+        margin: 1rem 0
         text-stroke: 0.5px rgba(white, 0.87)
         -webkit-text-stroke: @text-stroke
+
+        p {
+            line-height: 1.5
+            margin: 0.2em
+        }
+    }
+
+    .count-down {
+        font-size: 1rem
+        height 2em
+        font-weight: 400
+        margin: 0 0 1rem 0
+        color white
+        // text-stroke: 0.5px rgba(white, 0.87)
+        // -webkit-text-stroke: @text-stroke
+
+        display flex
+        justify-content: space-around
+        align-items: center
+
+        .count-down-tip {
+            margin-left: 0
+            margin-right: 0.5em
+        }
+
+        .count-down-number {
+            font-size: 150%
+            width: 1em
+            padding: 0
+            text-align: center
+        }
     }
 
 
 
     .modal.huge {
         box-sizing: border-box
-        width: 80%
-        height: 80%
-        max-width: 900px
-        max-height: 750px
+        width: 900px
+        height: 750px
         padding: 1rem 0.5rem
         border-radius: 0.5rem
         border: 0.3rem solid black;

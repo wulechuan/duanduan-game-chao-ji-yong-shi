@@ -6,7 +6,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
         {
             name: '破坏者',
             typeIdInFilePathAndCSSClassName: '001',
-            selectionWeightDuringAutoRolling: 219,
+            selectionWeightWhileAutoPicking: 219,
             fullHealthPoint: 169000,
             attackingPower: 159000,
             defencingPower: 99000,
@@ -23,7 +23,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
         {
             name: '锯霸哥布林',
             typeIdInFilePathAndCSSClassName: '002',
-            selectionWeightDuringAutoRolling: 319,
+            selectionWeightWhileAutoPicking: 319,
             fullHealthPoint: 52000,
             attackingPower: 35000,
             defencingPower: 120000,
@@ -40,7 +40,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
         {
             name: '雷神索尔',
             typeIdInFilePathAndCSSClassName: '003',
-            selectionWeightDuringAutoRolling: 51,
+            selectionWeightWhileAutoPicking: 51,
             fullHealthPoint: 380000,
             attackingPower: 270000,
             defencingPower: 160000,
@@ -57,7 +57,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
         {
             name: '火神',
             typeIdInFilePathAndCSSClassName: '004',
-            selectionWeightDuringAutoRolling: 79,
+            selectionWeightWhileAutoPicking: 79,
             fullHealthPoint: 350000,
             attackingPower: 190000,
             defencingPower: 230000,
@@ -74,7 +74,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleRawConfigurations = {
         {
             name: '巨力工头',
             typeIdInFilePathAndCSSClassName: '005',
-            selectionWeightDuringAutoRolling: 300,
+            selectionWeightWhileAutoPicking: 300,
             fullHealthPoint: 113000,
             attackingPower: 120000,
             defencingPower: 140000,

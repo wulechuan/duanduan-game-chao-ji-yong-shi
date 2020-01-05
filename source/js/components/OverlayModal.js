@@ -19,6 +19,11 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
             modalSize: '',
         }
 
+        this.status = {
+            isShowing: false,
+            isLeaving: false,
+        }
+
         this.update       = update      .bind(this)
         this.showUp       = showUp      .bind(this)
         this.leaveAndHide = leaveAndHide.bind(this)
@@ -57,8 +62,24 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
             'content',
         ])
 
+        const countDownBlockElement = createDOMWithClassNames('div', [
+            'count-down',
+        ])
+
+        const countDownTipElement = createDOMWithClassNames('div', [
+            'count-down-tip',
+        ])
+
+        const countDownNumberElement = createDOMWithClassNames('div', [
+            'count-down-number',
+        ])
+
+        countDownBlockElement.appendChild(countDownTipElement)
+        countDownBlockElement.appendChild(countDownNumberElement)
+
         modalElement.appendChild(titleElement)
         modalElement.appendChild(contentElement)
+        modalElement.appendChild(countDownBlockElement)
 
         rootElement.appendChild(backdropElement)
         rootElement.appendChild(modalElement)
@@ -68,6 +89,9 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
             modal: modalElement,
             title: titleElement,
             content: contentElement,
+            countDownBlock: countDownBlockElement,
+            countDownTip: countDownTipElement,
+            countDownNumber: countDownNumberElement,
         }
     }
 
@@ -116,27 +140,92 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         contentElement.innerHTML = contentHTML
     }
 
+    function _timing(timing) {
+        return new Promise(resolve => setTimeout(resolve, timing || 1000))
+    }
+
+    async function _countDown(countDownSettings) {
+        let {
+            seconds,
+            tipHTML,
+        } = countDownSettings
+
+        seconds = parseInt(seconds, 10)
+        if (!(seconds > 1)) { seconds = 3 }
+
+        if (!tipHTML) { tipHTML = '关闭对话框倒计时' }
+
+        const {
+            countDownBlock: countDownBlockElement,
+        } = this.el
+
+        countDownBlockElement.style.display = ''
+
+        let remainedSeconds = seconds
+        while (remainedSeconds > 0 && this.status.isShowing) {
+            _countDownOnce.call(this, remainedSeconds, tipHTML)
+            await _timing(1000)
+            remainedSeconds--
+        }
+    }
+
+    function _countDownOnce(remainedSeconds, tipHTML) {
+        const {
+            countDownNumber: countDownNumberElement,
+            countDownTip:    countDownTipElement,
+        } = this.el
+
+        countDownNumberElement.innerText = remainedSeconds
+        countDownTipElement   .innerHTML = tipHTML
+    }
+
     async function showUp(options) {
         this.update(options)
+
+        let countDownSettings
+
+        if (options && typeof options === 'object') {
+            const {
+                countDown,
+            } = options
+
+            if (countDown && typeof countDown === 'object')
+
+            countDownSettings = countDown
+        }
+
         const rootElement = this.el.root
         rootElement.style.display = ''
+        this.status.isShowing = true
+        this.status.isLeaving = false
 
+        if (countDownSettings) {
+            await _countDown.call(this, countDownSettings)
+            this.leaveAndHide()
+        } else {
+            this.el.countDownBlock.style.display = 'none'
+        }
     }
 
-    function _timing(timing) {
-        return new Promise(resolve => {
-            setTimeout(resolve, timing || 1000)
-        })
-    }
-    
     async function leaveAndHide() {
-        const rootElement = this.el.root
+        const {
+            root:            rootElement,
+            countDownNumber: countDownNumberElement,
+            countDownTip:    countDownTipElement,
+        } = this.el
 
         rootElement.classList.add('is-leaving')
+        this.status.isLeaving = true
 
         await _timing(320)
-        
+
         rootElement.classList.remove('is-leaving')
         rootElement.style.display = 'none'
+
+        countDownNumberElement.innerText = ''
+        countDownTipElement   .innerHTML = ''
+        
+        this.status.isLeaving = false
+        this.status.isShowing = false
     }
 })();

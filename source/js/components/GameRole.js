@@ -5,8 +5,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         'is-attacking',
         'is-defencing',
         'is-suffering',
-        'has-won',
-        'has-lost',
     ]
 
 
@@ -396,7 +394,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const locator1ElementStyle = this.el.locator1.style
         const locator2ElementStyle = this.el.locator2.style
 
-        const oldLeft = parseInt(locator1ElementStyle.left)
+        const oldLeft = parseInt(locator1ElementStyle.left, 10)
 
         const step = (Math.random() * 0.2 + 0.8) * movementDeltaPerInterval
         const desiredNewLeft = oldLeft + step * (shouldMoveLeftwards ? -1 : 1)
@@ -637,6 +635,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     function win() {
         this.stopAllPossibleActions()
         this.setPoseTo('has-won')
+        this.el.root.classList.add('has-won')
 
         const wordsCandidates = [
             '你真是弱爆了！',
@@ -649,6 +648,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         ]
 
         const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
+        console.log(`${this.logString}：“${words}”`)
 
         createOneAutoDisappearPopup.call(this, {
             timingForDisappearing: 12280,
@@ -660,6 +660,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
     function lose() {
         this.stopAllPossibleActions()
+        this.setPoseTo('has-lost')
+        this.el.root.classList.add('has-lost')
         this.status.hasLost = true
 
         const wordsCandidates = [
@@ -671,6 +673,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         ]
 
         const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
+        console.log(`${this.logString}：“${words}”`)
 
         createOneAutoDisappearPopup.call(this, {
             timingForDisappearing: 12280,
@@ -678,6 +681,5 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             content: _createContentForWords.call(this, words),
             noInlineCSSPositioning: true,
         })
-        this.setPoseTo('has-lost')
     }
 })();

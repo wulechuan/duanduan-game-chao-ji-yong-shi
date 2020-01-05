@@ -310,7 +310,9 @@ article blockquote em{
 .overlay-modal .modal{
   z-index:20;
   padding:0.5rem;
-  width:18rem;
+  max-width:80%;
+  max-height:80%;
+  width:16rem;
   height:10rem;
   display:flex;
   flex-direction:column;
@@ -335,23 +337,45 @@ article blockquote em{
   font-size:2rem;
   font-weight:600;
   letter-spacing:0.1em;
-  margin-top:1rem;
+  margin:1rem 0 0 0;
   text-stroke:1px #fff;
   -webkit-text-stroke:1px #fff;
 }
 .overlay-modal .content{
   font-size:1.2rem;
   font-weight:600;
-  margin-bottom:0.8rem;
+  margin:1rem 0;
   text-stroke:0.5px rgba(255,255,255,0.87);
   -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
 }
+.overlay-modal .content p{
+  line-height:1.5;
+  margin:0.2em;
+}
+.overlay-modal .count-down{
+  font-size:1rem;
+  height:2em;
+  font-weight:400;
+  margin:0 0 1rem 0;
+  color:#fff;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+}
+.overlay-modal .count-down .count-down-tip{
+  margin-left:0;
+  margin-right:0.5em;
+}
+.overlay-modal .count-down .count-down-number{
+  font-size:150%;
+  width:1em;
+  padding:0;
+  text-align:center;
+}
 .overlay-modal .modal.huge{
   box-sizing:border-box;
-  width:80%;
-  height:80%;
-  max-width:900px;
-  max-height:750px;
+  width:900px;
+  height:750px;
   padding:1rem 0.5rem;
   border-radius:0.5rem;
   border:0.3rem solid #000;
@@ -565,8 +589,8 @@ article blockquote em{
 }
 .overlay-modal.game-over-announcement .modal{
   padding:1rem 1rem;
-  max-width:80%;
-  width:32rem;
+  width:25rem;
+  height:12rem;
 }
 .overlay-modal.game-over-announcement .modal .content{
   text-align:center;
@@ -818,6 +842,9 @@ article blockquote em{
 }
 .role.is-attacking{
   z-index:6;
+}
+.role.has-won{
+  z-index:20;
 }
 .role .locator,
 .role .popups,
@@ -1693,7 +1720,7 @@ article blockquote em{
   margin-left:-2rem;
 }
 .game-round .overlay-modal.game-round-result-announcement .modal{
-  width:32rem;
+  width:25rem;
 }
 html{
   font-size:20px;
@@ -1701,7 +1728,12 @@ html{
 body{
   margin:0;
 }
+html,
+body{
+  height:100%;
+}
 #app{
+  z-index:2;
   position:fixed;
   top:0;
   left:0;
@@ -1712,4 +1744,21 @@ body{
   width:auto;
   height:auto;
   background-color:#000;
+}
+#info-when-no-more-games{
+  z-index:1;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  margin:0;
+  padding:0;
+  width:auto;
+  height:auto;
+  color:#fff;
+  background-color:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }

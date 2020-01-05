@@ -6,7 +6,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleConfigurationTransformFunction 
     const {
         name,
         typeIdInFilePathAndCSSClassName,
-        selectionWeightDuringAutoRolling,
+        selectionWeightWhileAutoPicking,
         fullHealthPoint,
         attackingPower,
         defencingPower,
@@ -20,7 +20,7 @@ window.duanduanGameChaoJiYongShi.data.allGameRoleConfigurationTransformFunction 
     const roleConfig = {
         name,
         typeIdInFilePathAndCSSClassName,
-        selectionWeightDuringAutoRolling,
+        selectionWeightWhileAutoPicking,
         fullHealthPoint,
         attackingPower,
         defencingPower,

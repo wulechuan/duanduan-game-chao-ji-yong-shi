@@ -54,8 +54,8 @@ window.duanduanGameChaoJiYongShi = {
 
             const randomNumberAround = function (base, span) {
                 const halfSapn = span / 2
-                const min = 1 - halfSapn 
-                const int = Math.ceil((Math.random() * span + min) * base) 
+                const min = 1 - halfSapn
+                const int = Math.ceil((Math.random() * span + min) * base)
                 const fra = Math.random() > 0.5 ? 0.5 : 0
                 return int + fra
             }
@@ -138,11 +138,19 @@ window.duanduanGameChaoJiYongShi = {
 
         appData.allGameFightingStageConfigurations = allGameFightingStageConfigurations
 
-        console.log('\n所有候选【对战舞台数据】就绪。\n\n')
+        console.log('所有候选【对战舞台数据】就绪。')
     },
 
 
-    createNewGameAndRunIt() {
+    createNewGameAndRunIt(appElement, options) {
+        console.log('\n准备创建新游戏\n\n')
+
+        const {
+            onGameEnd,
+            justBeforeGameDestroying,
+            afterGameDestroyed,
+        } = options
+
         const {
             data: appData,
             data: {
@@ -163,7 +171,8 @@ window.duanduanGameChaoJiYongShi = {
         } = gameGlobalSettings
 
         const game = new Game(
-            document.querySelector('#app'),
+            appElement,
+
             {
                 allGameFighterCandidatesForBothPlayers,
                 allGameFightingStageConfigurations,
@@ -171,11 +180,15 @@ window.duanduanGameChaoJiYongShi = {
                 shouldAutoPickFightersByWeights,
                 shouldForceRollingEvenIfAutoPickingByWeights,
                 shouldManuallyPickFighters,
+
+                onGameEnd,
+                justBeforeGameDestroying,
+                afterGameDestroyed,
             }
         )
 
         appData.game = game
 
-        game.prepare()
+        game.start()
     },
 }

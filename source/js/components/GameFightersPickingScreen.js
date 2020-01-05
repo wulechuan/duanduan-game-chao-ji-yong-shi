@@ -162,7 +162,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
 
         if (status.fighter1HasDecided && status.fighter2HasDecided) {
             this.game.services.keyboardEngine.stop()
-            this.game.start()
+            this.game.startGameRounds()
         }
     }
 

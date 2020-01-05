@@ -157,13 +157,13 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
         let accumWeightPointSoFar = 0
         randomizedCandidates.forEach(candidate => {
-            accumWeightPointSoFar += candidate.data.selectionWeightDuringAutoRolling
+            accumWeightPointSoFar += candidate.data.selectionWeightWhileAutoPicking
             candidate.data.accumSelectionWeightPoint = accumWeightPointSoFar
         })
 
         const totalWeightingPoint = accumWeightPointSoFar
         randomizedCandidates.forEach(candidate => {
-            candidate.data.normalizedSelectionWeight      = + (candidate.data.selectionWeightDuringAutoRolling / totalWeightingPoint).toFixed(4)
+            candidate.data.normalizedSelectionWeight      = + (candidate.data.selectionWeightWhileAutoPicking / totalWeightingPoint).toFixed(4)
             candidate.data.normalizedAccumSelectionWeight = + (candidate.data.accumSelectionWeightPoint        / totalWeightingPoint).toFixed(4)
         })
 

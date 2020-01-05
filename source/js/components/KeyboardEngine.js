@@ -33,7 +33,7 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
                 event.preventDefault() // 火狐浏览器必须使用这一句。
             }
         }
- 
+
         window.addEventListener('keydown', this.fireFoxEventsHandler)
         window.addEventListener('keyup',   this.fireFoxEventsHandler)
 
@@ -62,18 +62,26 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
     }
 
     function eventHandlerForKeyDown(key) {
+        const keyDownRegistries = this.data.keyRegistries.keyDown
         const upperCaseKey = key.toUpperCase()
-        const matchedAction = this.data.keyRegistries.keyDown[upperCaseKey]
+        const matchedAction = keyDownRegistries[upperCaseKey]
         matchedAction && matchedAction()
+
+        const anyKeyDownAction = keyDownRegistries['*']
+        anyKeyDownAction && anyKeyDownAction()
     }
 
     function eventHandlerForKeyUp(key) {
+        const keyUpRegistries = this.data.keyRegistries.keyUp
         const upperCaseKey = key.toUpperCase()
-        const matchedAction = this.data.keyRegistries.keyUp[upperCaseKey]
+        const matchedAction = keyUpRegistries[upperCaseKey]
         matchedAction && matchedAction()
+
+        const anyKeyUpAction = keyUpRegistries['*']
+        anyKeyUpAction && anyKeyUpAction()
     }
 
-    function start(keyRawRegistries, requester) {
+    function start(keyRawRegistries, requesterDescription) {
         function processOneTypeOfEventRegisters(rawReg) {
             if (!rawReg || typeof rawReg !== 'object') { return }
 
@@ -152,8 +160,12 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
         }
 
         this.status.isRunning = true
-        let currentServiceInfo = !requester ? '' : `服务于“${requester}”。`
-        console.log('按键侦听引擎已经启动。', currentServiceInfo)
+        if (requesterDescription) {
+            const currentServiceInfo = !requesterDescription ? '' : `服务于“${requesterDescription}”。`
+            console.log('按键侦听引擎已经启动，', currentServiceInfo)
+        } else {
+            console.log('按键侦听引擎已经启动（服务对象未指明）。')
+        }
     }
 
     function stop() {

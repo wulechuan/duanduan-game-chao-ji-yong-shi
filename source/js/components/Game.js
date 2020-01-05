@@ -1,17 +1,31 @@
 window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     const app = window.duanduanGameChaoJiYongShi
-    const { classes, data: appData } = app
+    const { utils, classes, data: appData } = app
+    const {
+        buildOneSplashLineForConsoleLog,
+        formattedDateStringOf,
+        formattedTimeDurationStringOf,
+        createDOMWithClassNames,
+    } = utils
 
-    return function Game(rootElement, initOptions) {
+    return function Game(gameRootContainer, initOptions) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 Game 构造函数。')
         }
+
+        const gameCreationTime = new Date()
+        const gameCreationTimeString = formattedDateStringOf(gameCreationTime)
+        const gameCreationTimeValue = gameCreationTime.getTime()
+        _logGameFirstReport(gameCreationTimeString)
 
         const {
             allGameFighterCandidatesForBothPlayers,
             allGameFightingStageConfigurations,
             // maxRoundsToRun,
             // shouldAutoPickFightersByWeights,
+            onGameEnd,
+            justBeforeGameDestroying,
+            afterGameDestroyed,
         } = initOptions
 
         this.subComponents = {
@@ -39,21 +53,33 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         }
 
         this.el = {
-            root: rootElement,
+            gameRootContainer,
         }
 
         this.status = {
+            gameCreationTimeString,
+            gameCreationTimeValue,
+            gameCreationTime,
+
             isOver: false,
         }
 
+        this.listenersOfMyEvents = {
+            onGameEnd,
+            justBeforeGameDestroying,
+            afterGameDestroyed,
+        }
 
-        this.prepare = prepare.bind(this)
-        this.start   = start  .bind(this)
-        this.end     = end    .bind(this)
+
+        this.start           = start          .bind(this)
+        this.startGameRounds = startGameRounds.bind(this)
+        this.end             = end            .bind(this)
+        this.destroy         = destroy        .bind(this)
 
         _init.call(this, initOptions)
 
-        console.log('【游戏】创建完毕。\n\n', this, '\n\n')
+        console.log('\n\n【游戏】创建完毕。\n\n\n')
+        // console.log('\n', this, '\n\n')
     }
 
     function _init(initOptions) {
@@ -63,7 +89,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         _createCountDownOverlay       .call(this)
         _createFightersPickingScreen  .call(this, initOptions)
         _createRunningScreen          .call(this, initOptions)
-        _queryAndSetupMoreDOMs        .call(this)
+        _createMoreDOMs               .call(this)
     }
 
     function _createKeyboardEngine() {
@@ -109,7 +135,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.subComponents.parts.gameRoundsRunner = gameRunningScreen.provideGameRoundsRunner()
     }
 
-    function _queryAndSetupMoreDOMs() {
+    function _createMoreDOMs() {
         const {
             fightersPickingScreen,
             gameRunningScreen,
@@ -123,16 +149,25 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             },
         } = this.services
 
-        const rootElement = this.el.root
+        const rootElement = createDOMWithClassNames('div', [
+            'game',
+        ])
+
+        rootElement.dataset.creationTime = this.status.gameCreationTimeString
+
         rootElement.appendChild(fightersPickingScreen             .el.root)
         rootElement.appendChild(gameRunningScreen                 .el.root)
         rootElement.appendChild(countDownOverlay                  .el.root)
         rootElement.appendChild(overlayModalOfGameIntro           .el.root)
         rootElement.appendChild(overlayModalOfGameOverAnnouncement.el.root)
+
+        this.el.gameRootContainer.appendChild(rootElement)
+
+        this.el.root = rootElement
     }
 
 
-    function prepare() {
+    function start() {
         const {
             uiScreens: {
                 fightersPickingScreen,
@@ -156,15 +191,12 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         overlayModalOfGameIntro.showUp()
         keyboardEngine.start({
             keyUp: {
-                'ENTER':  closeGameIntroAndStartGame,
-                ' ':      closeGameIntroAndStartGame,
-                'ESCAPE': closeGameIntroAndStartGame,
+                '*': closeGameIntroAndStartGame,
             },
-        })
-
+        }, '游戏说明对话框')
     }
 
-    function start() {
+    async function startGameRounds() {
         const {
             uiScreens: {
                 fightersPickingScreen,
@@ -180,7 +212,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         gameRoundsRunner.createAndStartNewRound()
     }
 
-    function end() {
+    async function end() {
         this.status.isOver = true
 
         const {
@@ -193,7 +225,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         // console.log(finalWinnerRoleConfig, finalWinnerPlayerId)
 
         const isDrawGame = isNaN(finalWinnerPlayerId)
-        
+
         let resultDescHTML
 
         if (isDrawGame) {
@@ -219,10 +251,90 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             ].join('')
         }
 
-        this.services.modals.overlayModalOfGameOverAnnouncement.showUp({
+
+        const {
+            onGameEnd,
+            justBeforeGameDestroying,
+            afterGameDestroyed,
+        } = this.listenersOfMyEvents
+
+        if (typeof onGameEnd === 'function') {
+            await onGameEnd(this)
+        }
+
+
+        if (typeof justBeforeGameDestroying === 'function') {
+            await justBeforeGameDestroying(this)
+        }
+
+
+        const theLastModal = this.services.modals.overlayModalOfGameOverAnnouncement
+
+        this.services.keyboardEngine.start({
+            keyDown: {
+                '*': theLastModal.leaveAndHide,
+            },
+        })
+        
+        await theLastModal.showUp({
             contentHTML: resultDescHTML,
+            countDown: {
+                seconds: 10,
+                tipHTML: '<span>即将游戏退出<span>',
+            },
         })
 
         this.services.keyboardEngine.destroy()
+
+        _logGameLastReport.call(this)
+        
+        this.destroy()
+
+        if (typeof afterGameDestroyed === 'function') {
+            afterGameDestroyed()
+        }
+    }
+
+    function destroy() {
+        this.el.gameRootContainer.removeChild(this.el.root)
+    }
+
+    function _logGameFirstReport(gameCreationTime) {
+        const splashWidth = 32
+        console.log([
+            '\n'.repeat(3),
+            '*'.repeat(splashWidth),
+            buildOneSplashLineForConsoleLog(splashWidth),
+            buildOneSplashLineForConsoleLog(splashWidth, '游戏现在启动', 11),
+            buildOneSplashLineForConsoleLog(splashWidth),
+            buildOneSplashLineForConsoleLog(splashWidth, gameCreationTime),
+            buildOneSplashLineForConsoleLog(splashWidth),
+            '*'.repeat(splashWidth),
+            '\n'.repeat(4),
+        ].join('\n'))
+    }
+
+    function _logGameLastReport() {
+        const gameDestroyTime = Date.now()
+
+        const spentMilliseconds = gameDestroyTime - this.status.gameCreationTimeValue
+        const {
+            string: spentTimeString,
+            visualLength: spentTimeStringViusalWidth,
+        } = formattedTimeDurationStringOf(spentMilliseconds)
+
+        const splashWidth = 32
+
+        console.log([
+            '\n'.repeat(5),
+            '*'.repeat(splashWidth),
+            buildOneSplashLineForConsoleLog(splashWidth),
+            buildOneSplashLineForConsoleLog(splashWidth, '游戏结束！', 9),
+            buildOneSplashLineForConsoleLog(splashWidth),
+            buildOneSplashLineForConsoleLog(splashWidth, `全程用时：${spentTimeString}`, spentTimeStringViusalWidth + 9),
+            buildOneSplashLineForConsoleLog(splashWidth),
+            '*'.repeat(splashWidth),
+            '\n'.repeat(6),
+        ].join('\n'))
     }
 })();

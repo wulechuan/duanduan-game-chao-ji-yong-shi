@@ -1,6 +1,12 @@
 window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
-    maxRoundsToRun: 3,
-    allowToCheat: false,
+    /* 谨慎！我们真的有必要令游戏无止境的进行吗？ */
+    /* 谨慎！我们真的有必要令游戏无止境的进行吗？ */
+    /* 谨慎！我们真的有必要令游戏无止境的进行吗？ */
+    SHOULD_START_NEW_GAME_WHEN_A_GAME_ENDS: false,
+
+
+    maxRoundsToRun: 3,  // 每场游戏的对战局数
+    allowToCheat: true, // 是否允许使用作弊功能
 
 
     /*
@@ -10,9 +16,29 @@ window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
     enableFairMode: true,
 
 
-    shouldManuallyPickFighters: true,
+    shouldManuallyPickFighters: true, // 手工选择战士
+
+    /*
+        在禁止手工选择战士的前提下，此项起作用。
+        - 此项为 true 是：
+            游戏会自动全为两位玩家选择战士。
+            某位战士被选中参战的概率由其 selectionWeightWhileAutoPicking 属性决定。
+        - 此项为 false 时：
+            游戏会自动高速随机滚动展示各候选角色，直至玩家按下代表 “接受” 的按键，
+            滚动到的候选角色即被选定。这类似于击鼓传花。
+    */
     shouldAutoPickFightersByWeights: true,
+
+
+    /* 
+        一般而言，既然要求计算机凭借概率自动选择战士，
+        则没有必要进行“击鼓传花”式的滚动。
+        但，下面一项允许在凭借概率选择战士时，也强迫启用“击鼓传花”模式，
+        由玩家按下代表 “接受” 的按键，方最终确定选用的角色参战。 
+    */
     shouldForceRollingEvenIfAutoPickingByWeights: false,
+
+
 
     /*
         如果攻击力、防御力相对于角色的生命值的比率过于浮夸，
@@ -30,6 +56,11 @@ window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
     roleAttackingPowerExtraRatio: 0.37,
     roleDefencingPowerExtraRatio: 0.37,
 
+
+
+    /* 
+        啰嗦、略带煽情的游戏说明文。
+    */
     gameIntro: {
         titleHTML: [
             '《端端的超级勇士》',

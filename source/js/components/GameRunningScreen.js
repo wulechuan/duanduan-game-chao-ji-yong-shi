@@ -34,7 +34,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRunningScreen = (function () {
 
     function _createMoreDOMs() {
         const {
-            countDownOverlay,
             gameRoundsRunner,
         } = this.subComponents
 

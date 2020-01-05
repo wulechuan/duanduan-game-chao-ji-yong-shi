@@ -569,7 +569,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 ' ':      realEndOfThisGameRound,
                 'ESCAPE': realEndOfThisGameRound,
             },
-        })
+        }, '游戏局结果报告对话框')
 
 
 
