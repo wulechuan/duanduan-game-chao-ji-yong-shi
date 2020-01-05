@@ -66,6 +66,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
         this.status = {
+            hasLost: false, // 输了自己所加入的那一局
+
             isMovingLeftwards: false,
             isMovingRightwards: false,
 
@@ -298,6 +300,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function setPoseTo(poseCSSClassNameToApply) {
+        if (this.status.hasLost) { return }
+
         const {
             root: rootElement,
             theLooks: theLooksElement,
@@ -626,6 +630,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
     function lose() {
         _stopAllPossibleActions.call(this)
+        this.status.hasLost = true
 
         const wordsCandidates = [
             '我一定会报仇的！',

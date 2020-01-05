@@ -222,5 +222,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.services.modals.overlayModalOfGameOverAnnouncement.showUp({
             contentHTML: resultDescHTML,
         })
+
+        this.services.keyboardEngine.destroy()
     }
 })();

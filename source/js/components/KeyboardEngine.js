@@ -27,35 +27,36 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
         const thisKeyboardEngine = this
 
 
-        this.fireFoxEventsHandler = function (event) { event.preventDefault() }
+        this.fireFoxEventsHandler = function (event) {
+            const { key } = event
+            if (!key.match(/^F\d{1,2}$/)) {
+                event.preventDefault() // 火狐浏览器必须使用这一句。
+            }
+        }
+ 
         window.addEventListener('keydown', this.fireFoxEventsHandler)
         window.addEventListener('keyup',   this.fireFoxEventsHandler)
 
 
         this.eventListenerForKeyDown = function (event) {
             // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
-            event.stopPropagation()
 
             const { key } = event
-            // console.log('按键引擎监测到键被按下：', key)
+            // console.log(`按键引擎监测到键被按下："${key}"`)
 
             if (!key.match(/^F\d{1,2}$/)) {
-                event.preventDefault() // 火狐浏览器必须使用这一句。
                 thisKeyboardEngine.eventHandlerForKeyDown(key)
             }
-
         }
 
         this.eventListenerForKeyUp = function (event) {
             // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
-            event.stopPropagation()
 
             const { key } = event
-            // console.log('按键引擎监测到键被松开：', key)
+            // console.log(`按键引擎监测到键被松开："${key}""`)
 
             if (!key.match(/^F\d{1,2}$/)) {
-                event.preventDefault() // 火狐浏览器必须使用这一句。
-                thisKeyboardEngine.eventHandlerForKeyUp(event.key)
+                thisKeyboardEngine.eventHandlerForKeyUp(key)
             }
         }
     }
@@ -170,7 +171,11 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
     }
 
     function destroy() {
+        this.stop()
+        this.el.eventHostElement = null
+        this.data.keyRegistries = null
         window.removeEventListener('keydown', this.fireFoxEventsHandler)
         window.removeEventListener('keyup',   this.fireFoxEventsHandler)
+        console.log('按键侦听引擎已经销毁。')
     }
 })();
