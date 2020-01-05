@@ -198,6 +198,7 @@ roundStatusBarHeight = 7rem
 
         .role-looks {
             opacity 0.6
+            -webkit-filter grayscale(0.8)
             filter grayscale(0.8)
         }
 
@@ -445,6 +446,15 @@ roundStatusBarHeight = 7rem
         .role-looks {
             -webkit-filter: hue-rotate(120deg);
             filter: hue-rotate(120deg);
+        }
+
+        &.has-lost {
+
+            .role-looks {
+                opacity 0.6
+                -webkit-filter hue-rotate(120deg) grayscale(0.8);
+                filter hue-rotate(120deg) grayscale(0.8);
+            }
         }
 
         .keyboard-tips {

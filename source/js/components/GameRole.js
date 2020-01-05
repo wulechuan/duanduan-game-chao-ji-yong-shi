@@ -300,7 +300,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function setPoseTo(poseCSSClassNameToApply) {
-        if (this.status.hasLost) { return }
+        if (this.status.hasLost && poseCSSClassNameToApply !== 'has-lost') { return }
 
         const {
             root: rootElement,
@@ -355,10 +355,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function _takeAnAction(actionFlagPropertyName, poseName) {
-        const actionIsAllowed = _isNotTakingAnyAction.call(this)
+        const { status } = this
+        const actionIsAllowed = _isNotTakingAnyAction.call(this) && !status.hasLost
 
         if (actionIsAllowed) {
-            this.status[actionFlagPropertyName] = true
+            status[actionFlagPropertyName] = true
             this.setPoseTo(poseName)
             // console.log(`玩家 ${this.data.playerId}`, actionFlagPropertyName)
         }

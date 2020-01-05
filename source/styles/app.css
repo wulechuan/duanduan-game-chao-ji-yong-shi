@@ -1038,6 +1038,7 @@ article blockquote em{
 }
 .role.has-lost .role-looks{
   opacity:0.6;
+  -webkit-filter:grayscale(0.8);
   filter:grayscale(0.8);
 }
 .role.has-lost .keyboard-tips{
@@ -1357,6 +1358,11 @@ article blockquote em{
 .role.player-2 .role-looks{
   -webkit-filter:hue-rotate(120deg);
   filter:hue-rotate(120deg);
+}
+.role.player-2.has-lost .role-looks{
+  opacity:0.6;
+  -webkit-filter:hue-rotate(120deg) grayscale(0.8);
+  filter:hue-rotate(120deg) grayscale(0.8);
 }
 .role.player-2 .keyboard-tips{
   left:auto;
