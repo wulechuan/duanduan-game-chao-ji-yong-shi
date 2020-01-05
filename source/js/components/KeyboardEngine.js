@@ -19,11 +19,18 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
 
         this.start                  = start                 .bind(this)
         this.stop                   = stop                  .bind(this)
+        this.destroy                = destroy               .bind(this)
         this.eventHandlerForKeyDown = eventHandlerForKeyDown.bind(this)
         this.eventHandlerForKeyUp   = eventHandlerForKeyUp  .bind(this)
 
 
         const thisKeyboardEngine = this
+
+
+        this.fireFoxEventsHandler = function (event) { event.preventDefault() }
+        window.addEventListener('keydown', this.fireFoxEventsHandler)
+        window.addEventListener('keyup',   this.fireFoxEventsHandler)
+
 
         this.eventListenerForKeyDown = function (event) {
             // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
@@ -38,7 +45,7 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
             }
 
         }
-        
+
         this.eventListenerForKeyUp = function (event) {
             // 该函数没有 bind this 对象。故意保留事件侦听函数原本的 this 对象。
             event.stopPropagation()
@@ -160,5 +167,10 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
             this.status.isRunning = false
             console.log('按键侦听引擎已经停止。')
         }
+    }
+
+    function destroy() {
+        window.removeEventListener('keydown', this.fireFoxEventsHandler)
+        window.removeEventListener('keyup',   this.fireFoxEventsHandler)
     }
 })();
