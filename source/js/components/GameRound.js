@@ -581,7 +581,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             console.log(`${gameRoundDesc}结束。\n平局。\n\n\n`)
             resultDescHTML = '<p>平局<p>'
         } else {
-            const winnerDesc = winner.logString
+            const winnerDesc = winner.displayString
             console.log(`${gameRoundDesc}结束。\n胜利者：${winnerDesc}。\n\n\n`)
             resultDescHTML = [
                 '<p>',
@@ -592,6 +592,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 '</p>',
             ].join('')
         }
+
+        // 在弹出战局报告对话框之前，仍留有短暂的时间，令胜利者可以继续活动。
+        // 因此，有必要在弹框时，彻底禁止胜利者可能在进行的活动。确保清除各种可能的 interval。
+        winner.stopAllPossibleActions()
 
         const {
             overlayModalForResultAnnouncement,

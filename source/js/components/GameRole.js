@@ -48,7 +48,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         //     initialPositionLeft,
         // } = initOptions
 
-        this.logString = `玩家 ${playerId} 的【游戏角色】“${name}”`
+        this.logString = `玩家 ${playerId} 的【${name}】`
+        this.displayString = `玩家 ${playerId} 的【${name}】`
 
         this.subComponents = {}
 
@@ -96,26 +97,28 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
 
-        this.joinGameRound         = joinGameRound        .bind(this)
-        this.faceLeftwards         = faceLeftwards        .bind(this)
-        this.faceRightwards        = faceRightwards       .bind(this)
-        this.setPoseTo             = setPoseTo            .bind(this)
-        this.showEffects           = showEffects          .bind(this)
+        this.joinGameRound          = joinGameRound         .bind(this)
+        this.faceLeftwards          = faceLeftwards         .bind(this)
+        this.faceRightwards         = faceRightwards        .bind(this)
+        this.setPoseTo              = setPoseTo             .bind(this)
+        this.showEffects            = showEffects           .bind(this)
 
-        this.startMovingLeftwards  = startMovingLeftwards .bind(this)
-        this.startMovingRightwards = startMovingRightwards.bind(this)
-        this.stopMovingLeftwards   = stopMovingLeftwards  .bind(this)
-        this.stopMovingRightwards  = stopMovingRightwards .bind(this)
-        this.enterAttackMode       = enterAttackMode      .bind(this)
-        this.quitAttackMode        = quitAttackMode       .bind(this)
-        this.enterDefenceMode      = enterDefenceMode     .bind(this)
-        this.quitDefenceMode       = quitDefenceMode      .bind(this)
+        this.stopAllPossibleActions = stopAllPossibleActions.bind(this)
 
-        this.win                   = win                  .bind(this)
-        this.lose                  = lose                 .bind(this)
-        this.cheat                 = cheat                .bind(this)
+        this.startMovingLeftwards   = startMovingLeftwards  .bind(this)
+        this.startMovingRightwards  = startMovingRightwards .bind(this)
+        this.stopMovingLeftwards    = stopMovingLeftwards   .bind(this)
+        this.stopMovingRightwards   = stopMovingRightwards  .bind(this)
+        this.enterAttackMode        = enterAttackMode       .bind(this)
+        this.quitAttackMode         = quitAttackMode        .bind(this)
+        this.enterDefenceMode       = enterDefenceMode      .bind(this)
+        this.quitDefenceMode        = quitDefenceMode       .bind(this)
 
-        this.$suffer               = $suffer              .bind(this)
+        this.win                    = win                   .bind(this)
+        this.lose                   = lose                  .bind(this)
+        this.cheat                  = cheat                 .bind(this)
+
+        this.$suffer                = $suffer               .bind(this)
 
 
         _init.call(this, initOptions)
@@ -583,7 +586,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         })
     }
 
-    function _stopAllPossibleActions() {
+    function stopAllPossibleActions() {
         this.quitAttackMode()
         this.quitDefenceMode()
         this.stopMovingLeftwards()
@@ -632,7 +635,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function win() {
-        _stopAllPossibleActions.call(this)
+        this.stopAllPossibleActions()
         this.setPoseTo('has-won')
 
         const wordsCandidates = [
@@ -656,7 +659,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function lose() {
-        _stopAllPossibleActions.call(this)
+        this.stopAllPossibleActions()
         this.status.hasLost = true
 
         const wordsCandidates = [
