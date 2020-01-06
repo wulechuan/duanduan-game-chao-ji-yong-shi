@@ -63,7 +63,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         const {
             player1: player1KeyboardShortcuts,
             player2: player2KeyboardShortcuts,
-        } = appData.keyboardShortcuts.gameFightersPicking
+        } = appData.gameGlobalSettings.keyboardShortcuts.gameFightersPicking
 
         const [
             candidatesForPlayer1,

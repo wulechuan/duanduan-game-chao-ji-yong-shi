@@ -10,6 +10,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
 
         const {
             maxRoundsToRun,
+            keyboardShortcuts: {
+                gameRunning: keboardShortcutsForGameRunning,
+            },
         } = initOptions
 
         let _maxRoundsToRun
@@ -32,7 +35,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
 
         this.subComponents = {}
 
-        this.data = {}
+        this.data = {
+            globalKeyboardShortcutsPerGameRound: keboardShortcutsForGameRunning.global,
+        }
 
         this.status = {
             isRunningOneRound: false,
@@ -95,7 +100,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         const newGameRound = new GameRound(
             this.game,
             displayingIndexOfNewGameRound,
-            this.game.data.gameRounds.maxRoundsToRun
+            this.game.data.gameRounds.maxRoundsToRun,
+            {
+                globalKeyboardShortcuts: this.data.globalKeyboardShortcutsPerGameRound,
+            }
         )
 
         gameRounds.current = newGameRound

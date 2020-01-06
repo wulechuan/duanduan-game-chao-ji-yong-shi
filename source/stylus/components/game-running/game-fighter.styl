@@ -275,8 +275,6 @@ roundStatusBarHeight = 7rem
         &.words {
             z-index 19
 
-            text-align center
-
             width: 19rem
             height 2rem // 定高，为了动画的 translateY 一致
 
@@ -288,7 +286,8 @@ roundStatusBarHeight = 7rem
 
                 display inline-block
                 position relative
-                padding 0.5em 0.5em 0.5em 1.9rem // 标点符号在右侧留下的空白太多，所以 padding-right 酌情减少。
+                padding-top    0.5em
+                padding-bottom 0.5em
                 line-height 1.33
                 text-align center
 
@@ -315,11 +314,6 @@ roundStatusBarHeight = 7rem
                 line-height @height
 
                 top -0.4rem
-                left (-1.5 * @width)
-                text-align left
-                padding 0 0 0 0.6rem
-
-                border-radius 0.6rem
 
                 border (- @top) double transparent
             }
@@ -331,7 +325,6 @@ roundStatusBarHeight = 7rem
                 width @height
 
                 top -0.9rem
-                left (-0.75 * @width)
 
                 border-radius 50%
 
@@ -439,16 +432,30 @@ roundStatusBarHeight = 7rem
 
         .words {
 
-            .player-id {
-                color white
-                border-color currentColor
-                background-color #911;
+            .content {
+                padding-left  2em
+                padding-right 0.5em
             }
 
             &:not(.winning-words):not(.last-words) .content {
                 color white
                 border-color currentColor
                 background-color black
+            }
+
+            .avatar {
+                left (-0.75 * 3.6rem)
+                right auto
+            }
+
+            .player-id {
+                left (-1.5 * 3.2rem)
+                text-align left
+                padding 0 0 0 0.6rem
+                border-radius 0.6rem 0 0 0.6rem
+                color white
+                border-color currentColor
+                background-color #911;
             }
         }
     }
@@ -476,21 +483,36 @@ roundStatusBarHeight = 7rem
 
         .words {
 
-            .player-id {
-                color white
-                border-color currentColor
-                background-color #191
-            }
-
             .avatar {
+                transform: scaleX(-1);
                 -webkit-filter: hue-rotate(120deg);
                 filter: hue-rotate(120deg);
+            }
+
+            .content {
+                padding-left  0.5em
+                padding-right 2em
             }
 
             &:not(.winning-words):not(.last-words) .content {
                 color black
                 border-color currentColor
                 background-color white
+            }
+
+            .avatar {
+                right (-0.75 * 3.6rem)
+                left auto
+            }
+
+            .player-id {
+                right (-1.5 * 3.2rem)
+                text-align right
+                padding 0 0.6rem 0 0
+                border-radius 0 0.6rem 0.6rem 0
+                color white
+                border-color currentColor
+                background-color #191
             }
         }
     }

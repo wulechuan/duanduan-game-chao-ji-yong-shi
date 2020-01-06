@@ -96,6 +96,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
         this.joinGameRound          = joinGameRound         .bind(this)
+        this.say                    = say                   .bind(this)
         this.faceLeftwards          = faceLeftwards         .bind(this)
         this.faceRightwards         = faceRightwards        .bind(this)
         this.setPoseTo              = setPoseTo             .bind(this)
@@ -188,7 +189,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         locatorElement1.appendChild(theLooksElement)
         locatorElement2.appendChild(popupsContainerElement)
-        
+
         rootElement1.appendChild(locatorElement1)
         rootElement2.appendChild(locatorElement2)
 
@@ -407,19 +408,21 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function startMovingLeftwards() {
-        if (_takeAnAction.call(this, 'isMovingLeftwards', 'is-moving-leftwards')) {
-            const { status } = this
-
-            if (!status.isFacingLeftwards) {
-                this.faceLeftwards()
-            } else {
-                _makeOneMovement.call(this, true)
-    
-                status.movementIntervalId = setInterval(() => {
-                    _makeOneMovement.call(this, true)
-                }, status.movementInterval)
-            }
+        if (!_takeAnAction.call(this, 'isMovingLeftwards', 'is-moving-leftwards')) {
+            return
         }
+
+        const { status } = this
+
+        if (!status.isFacingLeftwards) {
+            this.faceLeftwards()
+        } else {
+            _makeOneMovement.call(this, true)
+        }
+
+        status.movementIntervalId = setInterval(() => {
+            _makeOneMovement.call(this, true)
+        }, status.movementInterval)
     }
 
     function stopMovingLeftwards() {
@@ -432,19 +435,21 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function startMovingRightwards() {
-        if (_takeAnAction.call(this, 'isMovingRightwards', 'is-moving-rightwards')) {
-            const { status } = this
-
-            if (status.isFacingLeftwards) {
-                this.faceRightwards()
-            } else {
-                _makeOneMovement.call(this, false)
-    
-                status.movementIntervalId = setInterval(() => {
-                    _makeOneMovement.call(this, false)
-                }, status.movementInterval)
-            }
+        if (!_takeAnAction.call(this, 'isMovingRightwards', 'is-moving-rightwards')) {
+            return
         }
+
+        const { status } = this
+
+        if (status.isFacingLeftwards) {
+            this.faceRightwards()
+        } else {
+            _makeOneMovement.call(this, false)
+        }
+
+        status.movementIntervalId = setInterval(() => {
+            _makeOneMovement.call(this, false)
+        }, status.movementInterval)
     }
 
     function stopMovingRightwards() {
@@ -457,16 +462,18 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function enterAttackMode() {
-        if (_takeAnAction.call(this, 'isInAttackingMode', 'is-attacking')) {
-            this.joinedGameRound.acceptOneAttackFromPlayer({
-                attackerPlayerId: this.data.playerId,
-            })
-
-            const { status } = this
-            status.attackingPoseTimerId = setTimeout(() => {
-                this.setPoseTo('')
-            }, Math.floor(status.attackingPoseDuration))
+        if (!_takeAnAction.call(this, 'isInAttackingMode', 'is-attacking')) {
+            return
         }
+
+        this.joinedGameRound.acceptOneAttackFromPlayer({
+            attackerPlayerId: this.data.playerId,
+        })
+
+        const { status } = this
+        status.attackingPoseTimerId = setTimeout(() => {
+            this.setPoseTo('')
+        }, Math.floor(status.attackingPoseDuration))
     }
 
     function quitAttackMode() {
@@ -485,12 +492,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
     function enterDefenceMode() {
         if (_takeAnAction.call(this, 'isInDefencingMode', 'is-defencing')) {
-            const { status } = this
-            status.isActualDefencing = true
-            status.continuousSuffersCount = 0
-            this.showEffects('is-defencing')
-            this.setPoseTo('is-defencing')
+            return
         }
+
+        const { status } = this
+        status.isActualDefencing = true
+        status.continuousSuffersCount = 0
+        this.showEffects('is-defencing')
+        this.setPoseTo('is-defencing')
     }
 
     function quitDefenceMode() {
@@ -517,7 +526,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         status.continuousSuffersCount ++
 
         if (status.continuousSuffersCount >= status.continuousSuffersCountBeforeDisablingDefence) {
-            status.isActualDefencing = false            
+            status.isActualDefencing = false
             this.showEffects('')
         }
 
@@ -542,6 +551,88 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
     }
 
+    function createOneAutoDisappearPopup(options) {
+        const {
+            timingForDisappearing,
+            rootElementExtraCSSClassNames,
+            content,
+            shouldNotApplyRandomPosition, // 获胜宣言或战败遗言的位置不是随机的，须由 CSS（styl）文件指定
+        } = options
+
+        const { AutoDisappearPopup } = classes
+
+        const inlineCSSPositioning = {}
+
+        if (!shouldNotApplyRandomPosition) {
+            const rootElementLeftRatio   = (Math.random() * 0.5 - 0.2).toFixed(2)
+            const rootElementBottomRatio = (Math.random() * 0.5 + 0.32).toFixed(2)
+
+            inlineCSSPositioning.left   = `calc( var(--fighter-visual-box-width ) * ${rootElementLeftRatio  })`
+            inlineCSSPositioning.bottom = `calc( var(--fighter-visual-box-height) * ${rootElementBottomRatio})`
+        }
+
+        new AutoDisappearPopup(
+            this.el.popupsContainer,
+            {
+                timingForDisappearing,
+                rootElementExtraCSSClassNames,
+                rootElementStyle: inlineCSSPositioning,
+                content,
+            }
+        )
+    }
+
+    function say(words, duration, options) {
+        if (typeof words !== 'string' || !words) {
+            return
+        }
+
+        duration = parseInt(duration)
+        if (!(duration > 800)) duration = 800
+
+        let extraCSSClassNames = [ 'words' ]
+        let shouldNotApplyRandomPosition = false
+
+        if (options && typeof options === 'object') {
+            const {
+                extraCSSClassNames: providedCSSClassNames,
+            } = options
+
+            if (Array.isArray(providedCSSClassNames)) {
+                extraCSSClassNames = [
+                    ...extraCSSClassNames,
+                    ...providedCSSClassNames,
+                ]
+            } else {
+                extraCSSClassNames = [
+                    ...extraCSSClassNames,
+                    providedCSSClassNames,
+                ]
+            }
+
+            if ('shouldNotApplyRandomPosition' in options) {
+                shouldNotApplyRandomPosition = !!options.shouldNotApplyRandomPosition
+            }
+        }
+
+        const contentHTML = [
+            `<div class="player-id">${this.data.playerId}</div>`,
+            '<div class="avatar"',
+            ` style="background-image: url('${this.data.images.avatar.filePath}');"`,
+            `></div>`,
+            `<span>${words}</span>`,
+        ].join('')
+
+        console.log(`${this.logString}：“${words}”`)
+
+        createOneAutoDisappearPopup.call(this, {
+            timingForDisappearing: duration,
+            rootElementExtraCSSClassNames: extraCSSClassNames.join(' '),
+            content: contentHTML,
+            shouldNotApplyRandomPosition,
+        })
+    }
+
     function _deSe() { // 嘚瑟
         const { status, data } = this
         const {
@@ -558,9 +649,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
 
         status.allowToDeSe = false
-        setTimeout(() => {
-            status.allowToDeSe = true
-        }, minTimeSpanBetweenTwoDeSe)
+        setTimeout(() =>  status.allowToDeSe = true , minTimeSpanBetweenTwoDeSe)
 
         const wordsCandidates = [
             `你太弱了！连续攻击了我 ${countOfContinuousWeakAttacksIvReceived} 次，<br>对我也没什么伤害！哈哈哈哈！`,
@@ -575,13 +664,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         this.status.countOfContinuousWeakAttacksIvReceived = 0
 
-        // console.log(`${this.logString}：“${words}”`)
-
-        createOneAutoDisappearPopup.call(this, {
-            timingForDisappearing: 5100,
-            rootElementExtraCSSClassNames: 'words',
-            content: _createContentForWords.call(this, words),
-        })
+        this.say(words, 2500)
     }
 
     function stopAllPossibleActions() {
@@ -589,47 +672,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.quitDefenceMode()
         this.stopMovingLeftwards()
         this.stopMovingRightwards()
-    }
-
-    function createOneAutoDisappearPopup(options) {
-        const {
-            timingForDisappearing,
-            rootElementExtraCSSClassNames,
-            content,
-            noInlineCSSPositioning,
-        } = options
-
-        const { AutoDisappearPopup } = classes
-
-        const inlineCSSPositioning = {}
-
-        if (!noInlineCSSPositioning) {
-            const rootElementLeftRatio   = (Math.random() * 0.5 - 0.2).toFixed(2)
-            const rootElementBottomRatio = (Math.random() * 0.5 + 0.32).toFixed(2)
-    
-            inlineCSSPositioning.left   = `calc( var(--fighter-visual-box-width ) * ${rootElementLeftRatio})`
-            inlineCSSPositioning.bottom = `calc( var(--fighter-visual-box-height) * ${rootElementBottomRatio})`
-        }
-
-        new AutoDisappearPopup(
-            this.el.popupsContainer,
-            {
-                timingForDisappearing,
-                rootElementExtraCSSClassNames,
-                rootElementStyle: inlineCSSPositioning,
-                content,
-            }
-        )
-    }
-
-    function _createContentForWords(words) {
-        return [
-            `<div class="player-id">${this.data.playerId}</div>`,
-            '<div class="avatar"',
-            ` style="background-image: url('${this.data.images.avatar.filePath}');"`,
-            `></div>`,
-            `<span>${words}</span>`,
-        ].join('')
     }
 
     function win() {
@@ -648,13 +690,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         ]
 
         const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
-        console.log(`${this.logString}：“${words}”`)
 
-        createOneAutoDisappearPopup.call(this, {
-            timingForDisappearing: 12280,
-            rootElementExtraCSSClassNames: 'words winning-words',
-            content: _createContentForWords.call(this, words),
-            noInlineCSSPositioning: true,
+        this.say(words, 12280, {
+            extraCSSClassNames: [ 'winning-words' ],
+            shouldNotApplyRandomPosition: true,
         })
     }
 
@@ -673,13 +712,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         ]
 
         const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
-        console.log(`${this.logString}：“${words}”`)
 
-        createOneAutoDisappearPopup.call(this, {
-            timingForDisappearing: 12280,
-            rootElementExtraCSSClassNames: 'words last-words',
-            content: _createContentForWords.call(this, words),
-            noInlineCSSPositioning: true,
+        this.say(words, 12280, {
+            extraCSSClassNames: [ 'last-words' ],
+            shouldNotApplyRandomPosition: true,
         })
     }
 })();

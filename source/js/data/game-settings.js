@@ -58,6 +58,47 @@ window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
 
 
 
+    keyboardShortcuts: {
+        gameFightersPicking: { // 选择战士的界面中的快捷键
+            global: {},
+    
+            player1: {
+                prevCandidate:   'A',
+                nextCandidate:   'S',
+                acceptCandidate: 'Z',
+            },
+    
+            player2: {
+                prevCandidate:   ';',
+                nextCandidate:   '\'',
+                acceptCandidate: '/',
+            },
+        },
+    
+        gameRunning: { // 游戏对战过程中的快捷键
+            global: {
+                togglePauseAndResume: 'Y', // 战局暂停、恢复
+            },
+    
+            player1: {
+                moveLeftwards:  'Z',
+                moveRightwards: 'X',
+                attack:         'S',
+                defence:        'A',
+                cheat:          '`',
+            },
+    
+            player2: {
+                moveLeftwards:  '.',
+                moveRightwards: '/',
+                attack:         ';',
+                defence:        '\'',
+                cheat:          'BACKSPACE',
+            },
+        },
+    },
+    
+
     /* 
         啰嗦、略带煽情的游戏说明文。
     */

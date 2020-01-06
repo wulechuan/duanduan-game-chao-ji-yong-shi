@@ -1101,7 +1101,6 @@ article blockquote em{
 }
 .role .auto-disappear-popup.words{
   z-index:19;
-  text-align:center;
   width:19rem;
   height:2rem;
   animation-name:fighter-auto-disappear-popup-words;
@@ -1111,7 +1110,8 @@ article blockquote em{
   font-size:1rem;
   display:inline-block;
   position:relative;
-  padding:0.5em 0.5em 0.5em 1.9rem;
+  padding-top:0.5em;
+  padding-bottom:0.5em;
   line-height:1.33;
   text-align:center;
   border-radius:0.5rem;
@@ -1131,10 +1131,6 @@ article blockquote em{
   height:2.33rem;
   line-height:2.33rem;
   top:-0.4rem;
-  left:-4.800000000000001rem;
-  text-align:left;
-  padding:0 0 0 0.6rem;
-  border-radius:0.6rem;
   border:0.4rem double transparent;
 }
 .role .auto-disappear-popup.words .avatar{
@@ -1142,7 +1138,6 @@ article blockquote em{
   height:3.6rem;
   width:3.6rem;
   top:-0.9rem;
-  left:-2.7rem;
   border-radius:50%;
   border:0.15rem solid #fff;
   background-color:#fff;
@@ -1377,15 +1372,27 @@ article blockquote em{
   left:0;
   right:auto;
 }
-.role.player-1 .words .player-id{
-  color:#fff;
-  border-color:currentColor;
-  background-color:#911;
+.role.player-1 .words .content{
+  padding-left:2em;
+  padding-right:0.5em;
 }
 .role.player-1 .words:not(.winning-words):not(.last-words) .content{
   color:#fff;
   border-color:currentColor;
   background-color:#000;
+}
+.role.player-1 .words .avatar{
+  left:-2.7rem;
+  right:auto;
+}
+.role.player-1 .words .player-id{
+  left:-4.800000000000001rem;
+  text-align:left;
+  padding:0 0 0 0.6rem;
+  border-radius:0.6rem 0 0 0.6rem;
+  color:#fff;
+  border-color:currentColor;
+  background-color:#911;
 }
 .role.player-2 .role-looks{
   -webkit-filter:hue-rotate(120deg);
@@ -1400,19 +1407,32 @@ article blockquote em{
   left:auto;
   right:0;
 }
-.role.player-2 .words .player-id{
-  color:#fff;
-  border-color:currentColor;
-  background-color:#191;
-}
 .role.player-2 .words .avatar{
+  transform:scaleX(-1);
   -webkit-filter:hue-rotate(120deg);
   filter:hue-rotate(120deg);
+}
+.role.player-2 .words .content{
+  padding-left:0.5em;
+  padding-right:2em;
 }
 .role.player-2 .words:not(.winning-words):not(.last-words) .content{
   color:#000;
   border-color:currentColor;
   background-color:#fff;
+}
+.role.player-2 .words .avatar{
+  right:-2.7rem;
+  left:auto;
+}
+.role.player-2 .words .player-id{
+  right:-4.800000000000001rem;
+  text-align:right;
+  padding:0 0.6rem 0 0;
+  border-radius:0 0.6rem 0.6rem 0;
+  color:#fff;
+  border-color:currentColor;
+  background-color:#191;
 }
 .game-round-status-block{
   position:absolute;

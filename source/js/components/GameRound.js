@@ -7,7 +7,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         createDOMWithClassNames,
     } = utils
 
-    return function GameRound(game, gameRoundNumber, roundsTotalCount) {
+    return function GameRound(game, gameRoundNumber, roundsTotalCount, initOptions) {
         const { Game } = classes
 
         if (!new.target) {
@@ -43,6 +43,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         this.gameRoundCaption = gameRoundCaption
 
+        const {
+            globalKeyboardShortcuts: {
+                togglePauseAndResume: keyForTogglingPauseAndResume,
+            },
+        } = initOptions
+
         this.data = {
             gameRoundNumber,
             roundsTotalCount,
@@ -53,6 +59,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 loser: null,
                 winnerPlayerId: NaN,
                 isDrawGameRound: false,
+            },
+
+            globalKeyboardShortcuts: {
+                togglePauseAndResume: keyForTogglingPauseAndResume,
             },
         }
 
@@ -105,10 +115,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     function _createOverlayModals() {
         const { OverlayModal } = classes
 
+        const {
+            globalKeyboardShortcuts,
+        } = this.data
+
         this.services.modals.overlayModalForPausing = new OverlayModal({
             titleHTML: '游戏已经暂停',
             contentHTML: [
-                '<p>&nbsp;&nbsp;按 “Y” 键可继续游戏。</p>',
+                `<p>&nbsp;&nbsp;按 “${globalKeyboardShortcuts.togglePauseAndResume}” 键可继续游戏。</p>`,
             ].join(''),
         })
 
@@ -123,7 +137,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const {
             player1: player1KeyboardShortcuts,
             player2: player2KeyboardShortcuts,
-        } = appData.keyboardShortcuts.gameRunning
+        } = appData.gameGlobalSettings.keyboardShortcuts.gameRunning
 
         const { game } = this
         const { fighters } = this.data
@@ -177,8 +191,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     function _createShortcutKeyHints() {
         const { KeyboardHint } = classes
 
+        const {
+            globalKeyboardShortcuts,
+        } = this.data
+
         const keyboardHintForPausingGameRound = new KeyboardHint({
-            keyName: 'Y',
+            keyName: globalKeyboardShortcuts.togglePauseAndResume,
             keyDescription: '暂停游戏',
         })
 
@@ -327,8 +345,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             keyUp: {},
         })
 
+        const {
+            globalKeyboardShortcuts,
+        } = this.data
+
         const globalKewDown = {
-            'Y': this.togglePauseAndResume,
+            [globalKeyboardShortcuts.togglePauseAndResume]: this.togglePauseAndResume,
         }
 
         const keyboardEngineFullConfig = {

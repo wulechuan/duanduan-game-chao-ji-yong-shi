@@ -168,6 +168,7 @@ window.duanduanGameChaoJiYongShi = {
             shouldAutoPickFightersByWeights,
             shouldForceRollingEvenIfAutoPickingByWeights,
             shouldManuallyPickFighters,
+            keyboardShortcuts,
         } = gameGlobalSettings
 
         const game = new Game(
@@ -184,6 +185,8 @@ window.duanduanGameChaoJiYongShi = {
                 onGameEnd,
                 justBeforeGameDestroying,
                 afterGameDestroyed,
+
+                keyboardShortcuts,
             }
         )
 
