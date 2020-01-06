@@ -357,8 +357,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         allPossibleEffectsNames.forEach(effectsPropertyName => {
             const el = effectsElements[effectsPropertyName]
             if (effectsPropertyName === propertyNameOfEffectsToShow) {
+                // console.log('match:', `"${propertyNameOfEffectsToShow}"`)
                 el.style.display = ''
             } else {
+                // console.log('not match:', `"${effectsPropertyName}"`, `"${propertyNameOfEffectsToShow}"`)
                 el.style.display = 'none'
             }
         })
@@ -491,7 +493,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function enterDefenceMode() {
-        if (_takeAnAction.call(this, 'isInDefencingMode', 'is-defencing')) {
+        if (!_takeAnAction.call(this, 'isInDefencingMode', 'is-defencing')) {
             return
         }
 
