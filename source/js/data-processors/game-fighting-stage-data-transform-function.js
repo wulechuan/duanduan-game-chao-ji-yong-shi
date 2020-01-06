@@ -1,19 +1,24 @@
-window.duanduanGameChaoJiYongShi.data.allGameFightingStageConfigurationTransformFunction = (rawConfig, commonConfig) => {
+window.duanduanGameChaoJiYongShi.data.allGameFightingStageConfigurationTransformFunction = (thisStageRawConfig, allStagesCommonConfig) => {
     const {
         filePathsPrefix,
-        fileExt,
-    } = commonConfig
-
+        fileExt: defaultFileExt,
+    } = allStagesCommonConfig
+    
     const {
-        name,
+        imageSubject,
         typeIdInFilePathAndCSSClassName,
-    } = rawConfig
+        fileName: providedFileName,
+        fileExt:  providedFileExt,
+    } = thisStageRawConfig
+
+    const fileExt = providedFileExt || defaultFileExt || 'jpg'
+    const fileName = providedFileName || `stage-${typeIdInFilePathAndCSSClassName}`
 
     const filePathsPrefixOfThisRole = `${filePathsPrefix}`
-    const imageFilePath = `${filePathsPrefixOfThisRole}/stage-${typeIdInFilePathAndCSSClassName}.${fileExt || 'jpg'}`
+    const imageFilePath = `${filePathsPrefixOfThisRole}/${fileName}.${fileExt}`
 
     const transformedConfig = {
-        name,
+        imageSubject,
         typeIdInFilePathAndCSSClassName,
         filePathsPrefixOfThisRole,
         imageFilePath,

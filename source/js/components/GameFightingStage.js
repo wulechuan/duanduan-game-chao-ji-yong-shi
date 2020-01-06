@@ -8,20 +8,20 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
         }
 
         const {
-            name,
+            imageSubject,
             typeIdInFilePathAndCSSClassName,
             imageFilePath,
         } = gameFightingStageConfiguration
 
         this.data = {
             typeIdInFilePathAndCSSClassName,
-            name,
+            imageSubject,
             imageFilePath,
         }
 
         _init.call(this)
 
-        console.log(`【游戏对战舞台】“${name}”创建完毕。`)
+        console.log(`【游戏对战舞台】“${imageSubject}”创建完毕。`)
     }
 
 
@@ -33,6 +33,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
     function _createDOMs() {
         const {
             typeIdInFilePathAndCSSClassName,
+            imageSubject,
             imageFilePath,
         } = this.data
 
@@ -40,6 +41,8 @@ window.duanduanGameChaoJiYongShi.classes.GameFightingStage = (function () {
             'fighting-stage',
             `fighting-stage-${typeIdInFilePathAndCSSClassName}`,
         ])
+
+        rootElement.dataset.imageSubject = imageSubject
 
         rootElement.style.backgroundImage = `url(${imageFilePath})`
 
