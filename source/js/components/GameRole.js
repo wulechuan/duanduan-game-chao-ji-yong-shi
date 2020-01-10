@@ -92,10 +92,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             countOfContinuousWeakAttacksIvReceived: 0,
             allowToDeSe: true,
             minTimeSpanBetweenTwoDeSe: 5015, // milliseconds
+            
+            sayingWords: null, // TODO: 同一时刻仅允许一句话出现在画面中
+
+            showingTipsCount: 0,
+            maxAllowedShowingTipsCount: 32 - 24,
+
+            waitingForMoreHeldSufferedAttacksTimerId: NaN,
+            heldSufferedAttacksWithoutTipsPoppingUp: [],
         }
 
 
         this.joinGameRound          = joinGameRound         .bind(this)
+        this.onGameRoundStart       = onGameRoundStart      .bind(this)
         this.say                    = say                   .bind(this)
         this.faceLeftwards          = faceLeftwards         .bind(this)
         this.faceRightwards         = faceRightwards        .bind(this)
@@ -300,6 +309,22 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
         this.joinedGameRound = gameRound
+    }
+
+    function onGameRoundStart() {
+        const wordsCandidates = [
+            `这一战，我赢定了！`,
+            '怎么，送死来了？',
+            '跟我较量，你胆子不小啊！',
+            '很荣幸能与你对战！<br>我会全力以赴的！',
+            '以我的势力与你对战，<br>今天的战斗恐怕会很无聊吧？<br>哈哈哈哈',
+        ]
+
+        const words = wordsCandidates[Math.floor(Math.random() * wordsCandidates.length)]
+        this.say(words, 5100, {
+            extraCSSClassNames: [ 'opening-words' ],
+            shouldNotApplyRandomPosition: true,
+        })
     }
 
     function cheat() {
@@ -533,11 +558,42 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
 
-        createOneAutoDisappearPopup.call(this, {
-            timingForDisappearing: 2000,
-            rootElementExtraCSSClassNames: 'health-point-decrease',
-            content: - actualHPDecrease,
-        })
+        if (status.showingTipsCount < status.maxAllowedShowingTipsCount) {
+            createOneAutoDisappearPopup.call(this, {
+                timingForDisappearing: 2000,
+                rootElementExtraCSSClassNames: 'health-point-decrease',
+                content: - actualHPDecrease,
+                afterDisappearing: () => { status.showingTipsCount -- },
+            })
+
+            status.showingTipsCount ++
+        } else {
+            const oldHeldSufferedAttacks = status.heldSufferedAttacksWithoutTipsPoppingUp
+            oldHeldSufferedAttacks.push(desiredHPDecrease)
+
+            if (isNaN(status.waitingForMoreHeldSufferedAttacksTimerId)) {
+                status.waitingForMoreHeldSufferedAttacksTimerId = setTimeout(() => {
+                    status.waitingForMoreHeldSufferedAttacksTimerId = NaN
+                    const accumDecrease = oldHeldSufferedAttacks.reduce((totalDecrease, dec) => {
+                        totalDecrease += dec
+                        return totalDecrease
+                    }, 0)
+    
+                    createOneAutoDisappearPopup.call(this, {
+                        timingForDisappearing: 5100,
+                        rootElementExtraCSSClassNames: 'health-point-decrease    is-for-accum-attacks',
+                        content: [
+                            `<span class="abstract">- ${accumDecrease}</span>`,
+                            `<br>`,
+                            `<span class="details">（由 ${oldHeldSufferedAttacks.length} 次攻击累计造成）</span>`,
+                        ].join(''),
+                    })
+    
+                    status.heldSufferedAttacksWithoutTipsPoppingUp = []
+                    status.showingTipsCount = 0
+                }, 200)
+            }
+        }
 
         // TODO: console.warn('缺少挨揍的姿态图片和相关的视图变化逻辑')
         // if (!status.isActualDefencing) {
@@ -559,6 +615,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             rootElementExtraCSSClassNames,
             content,
             shouldNotApplyRandomPosition, // 获胜宣言或战败遗言的位置不是随机的，须由 CSS（styl）文件指定
+            afterDisappearing,
         } = options
 
         const { AutoDisappearPopup } = classes
@@ -566,9 +623,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const inlineCSSPositioning = {}
 
         if (!shouldNotApplyRandomPosition) {
-            const rootElementLeftRatio   = (Math.random() * 0.5 - 0.2).toFixed(2)
-            const rootElementBottomRatio = (Math.random() * 0.5 + 0.32).toFixed(2)
-
+            const rootElementLeftRatio   = (Math.random() * 0.5 + 0.25).toFixed(2)
+            const rootElementBottomRatio = (Math.random() * 0.5 + 0.25).toFixed(2)
+            
+            // 不能使用【百分比】数值，因为父元素的尺寸故意设置成 0像素。
             inlineCSSPositioning.left   = `calc( var(--fighter-visual-box-width ) * ${rootElementLeftRatio  })`
             inlineCSSPositioning.bottom = `calc( var(--fighter-visual-box-height) * ${rootElementBottomRatio})`
         }
@@ -580,6 +638,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
                 rootElementExtraCSSClassNames,
                 rootElementStyle: inlineCSSPositioning,
                 content,
+                afterDisappearing,
             }
         )
     }

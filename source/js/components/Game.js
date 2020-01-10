@@ -276,7 +276,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                     '*': theLastModal.leaveAndHide,
                 },
             })
-        }, 3000)
+        }, 800)
 
         await theLastModal.showUp({
             contentHTML: resultDescHTML,

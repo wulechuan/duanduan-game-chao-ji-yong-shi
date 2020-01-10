@@ -15,12 +15,23 @@ window.duanduanGameChaoJiYongShi.classes.AutoDisappearPopup = (function () {
             throw new Error('构造【可自动消失的弹出层】实例时，必须给出足够的参数。')
         }
 
-        // const {
-        //     timingForDisappearing,
-        //     rootElementExtraCSSClassNames,
-        //     rootElementStyle,
-        //     content,
-        // } = initOptions
+        const {
+            // timingForDisappearing,
+            // rootElementExtraCSSClassNames,
+            // rootElementStyle,
+            // content,
+            afterDisappearing,
+        } = initOptions
+
+        this.status = {
+            timerId: NaN,
+        }
+
+        this.callBacks = {
+            afterDisappearing,
+        }
+
+        this.disappear = disappear.bind(this)
 
         _init.call(this, parentElement, initOptions)
 
@@ -84,9 +95,33 @@ window.duanduanGameChaoJiYongShi.classes.AutoDisappearPopup = (function () {
             _timingForDisappearing = 800
         }
 
-        const rootElement = this.el.root
-        setTimeout(() => {
-            rootElement.parentElement.removeChild(rootElement)
+        const { status } = this
+        status.timerId = setTimeout(() => {
+            _disappear.call(this, 'timeout')
         }, _timingForDisappearing)
+    }
+
+    function disappear(reason) {
+        _disappear.call(this, reason || 'forced')
+    }
+
+    function _disappear(reason) {
+        const { status } = this
+        if (isNaN(status.timerId)) { return }
+
+        if (reason !== 'timeout') {
+            clearTimeout(status.timerId)
+        }
+
+        status.timerId = NaN
+
+        const rootElement = this.el.root
+        rootElement.parentElement.removeChild(rootElement)
+
+        const callBack = this.callBacks.afterDisappearing
+
+        if (typeof callBack === 'function') {
+            callBack(this)
+        }
     }
 })();

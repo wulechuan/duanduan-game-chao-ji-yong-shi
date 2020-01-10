@@ -309,6 +309,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.status.isRunning = true
         _startKeyboardEngine.call(this)
         _startJudgementInterval.call(this)
+
+        this.data.fighters.both.forEach(fighter => fighter.onGameRoundStart(this))
     }
 
     function _startKeyboardEngine() {

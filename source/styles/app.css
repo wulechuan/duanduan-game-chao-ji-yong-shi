@@ -859,11 +859,8 @@ article blockquote em{
   height:0;
   overflow:visible;
 }
-.role .locator,
-.role .popups{
-  bottom:4.5rem;
-}
 .role .locator{
+  bottom:4.5rem;
   transition-property:top right bottom left transform;
   transition-timing-function:ease;
   transition-duration:0.15s;
@@ -871,6 +868,7 @@ article blockquote em{
 .role .popups{
   z-index:100;
   left:calc(var(--fighter-visual-box-width) / -4);
+  bottom:0;
 }
 .role .popups *{
   pointer-events:none;
@@ -1081,30 +1079,47 @@ article blockquote em{
 }
 .role .auto-disappear-popup{
   position:absolute;
+  width:20rem;
+  height:0;
   overflow:visible;
   animation-name:fighter-auto-disappear-popup-default;
   animation-timing-function:ease-in-out;
   animation-fill-mode:both;
+}
+.role .auto-disappear-popup .content{
+  transform:translateX(-50%);
 }
 .role .auto-disappear-popup.health-point-decrease{
   z-index:3;
   animation-duration:1s;
 }
 .role .auto-disappear-popup.health-point-decrease .content{
+  display:inline-block;
   font-size:1.2rem;
   padding:0.25em 1em;
   line-height:1.3;
   border-radius:0.5rem;
   border:0.25rem double #fff;
   color:#fff;
-  background-color:rgba(255,0,0,0.79);
+  background-color:rgba(255,0,0,0.75);
+}
+.role .auto-disappear-popup.health-point-decrease.is-for-accum-attacks{
+  animation-name:fighter-auto-disappear-popup-words;
+  animation-duration:4.5s;
+}
+.role .auto-disappear-popup.health-point-decrease.is-for-accum-attacks .content{
+  border-color:#e99;
+  background-color:rgba(119,17,17,0.9);
 }
 .role .auto-disappear-popup.words{
   z-index:19;
   width:19rem;
-  height:2rem;
   animation-name:fighter-auto-disappear-popup-words;
   animation-duration:4.5s;
+}
+.role .auto-disappear-popup.words .content,
+.role .auto-disappear-popup.words .player-id{
+  box-shadow:0 0 0.6rem rgba(0,0,0,0.79);
 }
 .role .auto-disappear-popup.words .content{
   font-size:1rem;
@@ -1146,22 +1161,28 @@ article blockquote em{
   background-repeat:no-repeat;
   background-position:center;
 }
+.role .auto-disappear-popup.words.opening-words,
 .role .auto-disappear-popup.words.winning-words,
 .role .auto-disappear-popup.words.last-words{
   z-index:30;
-  left:calc(var(--fighter-visual-box-height) * -0.25);
+  left:calc(var(--fighter-visual-box-width) * 0.25);
   width:var(--fighter-visual-box-width);
+}
+.role .auto-disappear-popup.words.winning-words,
+.role .auto-disappear-popup.words.last-words{
   animation-name:fighter-auto-disappear-popup-ending-words;
   animation-duration:10s;
 }
-.role .auto-disappear-popup.words.winning-words .content,
-.role .auto-disappear-popup.words.last-words .content,
-.role .auto-disappear-popup.words.winning-words .content .player-id,
-.role .auto-disappear-popup.words.last-words .content .player-id{
-  box-shadow:0 0 0.6rem rgba(0,0,0,0.79);
+.role .auto-disappear-popup.words.opening-words{
+  bottom:calc(var(--fighter-visual-box-height) * 0.87);
+}
+.role .auto-disappear-popup.words.opening-words .content{
+  color:#000;
+  border-color:#342c19;
+  background-color:#9cf;
 }
 .role .auto-disappear-popup.words.winning-words{
-  bottom:calc(var(--fighter-visual-box-height) * 0.7);
+  bottom:calc(var(--fighter-visual-box-height) * 0.87);
 }
 .role .auto-disappear-popup.words.winning-words .content{
   color:#000;
@@ -1176,196 +1197,196 @@ article blockquote em{
   border-color:#512;
   background-color:#a23;
 }
-@-moz-keyframes fighter-auto-disappear-popup-words{
-  0%{
-    opacity:0;
-    transform:none;
-  }
-  7%, 92%{
-    opacity:1;
-  }
-  9%, 94%{
-    transform:translateY(-100%);
-  }
-  100%{
-    opacity:0;
-    transform:translateY(-319%);
-  }
-}
-@-webkit-keyframes fighter-auto-disappear-popup-words{
-  0%{
-    opacity:0;
-    transform:none;
-  }
-  7%, 92%{
-    opacity:1;
-  }
-  9%, 94%{
-    transform:translateY(-100%);
-  }
-  100%{
-    opacity:0;
-    transform:translateY(-319%);
-  }
-}
-@-o-keyframes fighter-auto-disappear-popup-words{
-  0%{
-    opacity:0;
-    transform:none;
-  }
-  7%, 92%{
-    opacity:1;
-  }
-  9%, 94%{
-    transform:translateY(-100%);
-  }
-  100%{
-    opacity:0;
-    transform:translateY(-319%);
-  }
-}
-@keyframes fighter-auto-disappear-popup-words{
-  0%{
-    opacity:0;
-    transform:none;
-  }
-  7%, 92%{
-    opacity:1;
-  }
-  9%, 94%{
-    transform:translateY(-100%);
-  }
-  100%{
-    opacity:0;
-    transform:translateY(-319%);
-  }
-}
-@-moz-keyframes fighter-auto-disappear-popup-ending-words{
-  0%{
-    opacity:0;
-    transform:none;
-  }
-  3%, 96%{
-    opacity:1;
-  }
-  5%, 97.5%{
-    transform:translateY(-100%);
-  }
-  100%{
-    opacity:0;
-    transform:translateY(-319%);
-  }
-}
-@-webkit-keyframes fighter-auto-disappear-popup-ending-words{
-  0%{
-    opacity:0;
-    transform:none;
-  }
-  3%, 96%{
-    opacity:1;
-  }
-  5%, 97.5%{
-    transform:translateY(-100%);
-  }
-  100%{
-    opacity:0;
-    transform:translateY(-319%);
-  }
-}
-@-o-keyframes fighter-auto-disappear-popup-ending-words{
-  0%{
-    opacity:0;
-    transform:none;
-  }
-  3%, 96%{
-    opacity:1;
-  }
-  5%, 97.5%{
-    transform:translateY(-100%);
-  }
-  100%{
-    opacity:0;
-    transform:translateY(-319%);
-  }
-}
-@keyframes fighter-auto-disappear-popup-ending-words{
-  0%{
-    opacity:0;
-    transform:none;
-  }
-  3%, 96%{
-    opacity:1;
-  }
-  5%, 97.5%{
-    transform:translateY(-100%);
-  }
-  100%{
-    opacity:0;
-    transform:translateY(-319%);
-  }
-}
 @-moz-keyframes fighter-auto-disappear-popup-default{
   0%{
     opacity:0;
-    transform:none;
+    transform:translateY(2rem);
   }
   30%, 75%{
     opacity:1;
   }
   45%, 75%{
-    transform:translateY(-100%);
+    transform:none;
   }
   100%{
     opacity:0;
-    transform:translateY(-190%);
+    transform:translateY(-3.8rem);
   }
 }
 @-webkit-keyframes fighter-auto-disappear-popup-default{
   0%{
     opacity:0;
-    transform:none;
+    transform:translateY(2rem);
   }
   30%, 75%{
     opacity:1;
   }
   45%, 75%{
-    transform:translateY(-100%);
+    transform:none;
   }
   100%{
     opacity:0;
-    transform:translateY(-190%);
+    transform:translateY(-3.8rem);
   }
 }
 @-o-keyframes fighter-auto-disappear-popup-default{
   0%{
     opacity:0;
-    transform:none;
+    transform:translateY(2rem);
   }
   30%, 75%{
     opacity:1;
   }
   45%, 75%{
-    transform:translateY(-100%);
+    transform:none;
   }
   100%{
     opacity:0;
-    transform:translateY(-190%);
+    transform:translateY(-3.8rem);
   }
 }
 @keyframes fighter-auto-disappear-popup-default{
   0%{
     opacity:0;
-    transform:none;
+    transform:translateY(2rem);
   }
   30%, 75%{
     opacity:1;
   }
   45%, 75%{
-    transform:translateY(-100%);
+    transform:none;
   }
   100%{
     opacity:0;
-    transform:translateY(-190%);
+    transform:translateY(-3.8rem);
+  }
+}
+@-moz-keyframes fighter-auto-disappear-popup-words{
+  0%{
+    opacity:0;
+    transform:translateY(2rem);
+  }
+  7%, 92%{
+    opacity:1;
+  }
+  9%, 94%{
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-5.1rem);
+  }
+}
+@-webkit-keyframes fighter-auto-disappear-popup-words{
+  0%{
+    opacity:0;
+    transform:translateY(2rem);
+  }
+  7%, 92%{
+    opacity:1;
+  }
+  9%, 94%{
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-5.1rem);
+  }
+}
+@-o-keyframes fighter-auto-disappear-popup-words{
+  0%{
+    opacity:0;
+    transform:translateY(2rem);
+  }
+  7%, 92%{
+    opacity:1;
+  }
+  9%, 94%{
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-5.1rem);
+  }
+}
+@keyframes fighter-auto-disappear-popup-words{
+  0%{
+    opacity:0;
+    transform:translateY(2rem);
+  }
+  7%, 92%{
+    opacity:1;
+  }
+  9%, 94%{
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-5.1rem);
+  }
+}
+@-moz-keyframes fighter-auto-disappear-popup-ending-words{
+  0%{
+    opacity:0;
+    transform:translateY(2rem);
+  }
+  3%, 96%{
+    opacity:1;
+  }
+  5%, 97.5%{
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-5.1rem);
+  }
+}
+@-webkit-keyframes fighter-auto-disappear-popup-ending-words{
+  0%{
+    opacity:0;
+    transform:translateY(2rem);
+  }
+  3%, 96%{
+    opacity:1;
+  }
+  5%, 97.5%{
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-5.1rem);
+  }
+}
+@-o-keyframes fighter-auto-disappear-popup-ending-words{
+  0%{
+    opacity:0;
+    transform:translateY(2rem);
+  }
+  3%, 96%{
+    opacity:1;
+  }
+  5%, 97.5%{
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-5.1rem);
+  }
+}
+@keyframes fighter-auto-disappear-popup-ending-words{
+  0%{
+    opacity:0;
+    transform:translateY(2rem);
+  }
+  3%, 96%{
+    opacity:1;
+  }
+  5%, 97.5%{
+    transform:none;
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-5.1rem);
   }
 }
 .role.player-1 .keyboard-tips{
@@ -1376,7 +1397,7 @@ article blockquote em{
   padding-left:2em;
   padding-right:0.5em;
 }
-.role.player-1 .words:not(.winning-words):not(.last-words) .content{
+.role.player-1 .words:not(.winning-words):not(.last-words):not(.opening-words) .content{
   color:#fff;
   border-color:currentColor;
   background-color:#000;
@@ -1416,7 +1437,7 @@ article blockquote em{
   padding-left:0.5em;
   padding-right:2em;
 }
-.role.player-2 .words:not(.winning-words):not(.last-words) .content{
+.role.player-2 .words:not(.winning-words):not(.last-words):not(.opening-words) .content{
   color:#000;
   border-color:currentColor;
   background-color:#fff;
@@ -1767,6 +1788,7 @@ body{
   width:auto;
   height:auto;
   background-color:#000;
+  overflow:hidden;
 }
 #info-when-no-more-games{
   z-index:1;
