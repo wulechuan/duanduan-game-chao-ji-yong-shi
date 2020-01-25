@@ -37,6 +37,8 @@
 
         const appElement = document.querySelector('#app')
 
+        app.createGamePreferencesPanel(appElement)
+
 
         let afterGameDestroyed
         if (data.gameGlobalSettings.SHOULD_START_NEW_GAME_WHEN_A_GAME_ENDS) {

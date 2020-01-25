@@ -1,3 +1,13 @@
+.check-box{
+  padding:0.5em;
+}
+.check-box > label{
+  color:#f00;
+}
+.check-box input[type="checkbox"]{
+  width:2rem;
+  height:2rem;
+}
 article{
   line-height:1.6;
 }
@@ -1766,6 +1776,15 @@ article blockquote em{
 .game-round .overlay-modal.game-round-result-announcement .modal{
   width:25rem;
 }
+.game-preferences-panel{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background-color:#fff;
+}
 html{
   font-size:20px;
 }
@@ -1789,6 +1808,12 @@ body{
   height:auto;
   background-color:#000;
   overflow:hidden;
+}
+#app .game{
+  z-index:10;
+}
+#app .game-preferences-panel{
+  z-index:20;
 }
 #info-when-no-more-games{
   z-index:1;
