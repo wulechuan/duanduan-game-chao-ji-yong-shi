@@ -132,32 +132,34 @@ window.duanduanGameChaoJiYongShi.classes.FormControls.createDOMsForSingleFormCon
         ..._extraCSSClassNames,
     ])
 
-    const inputId = `input-${rootCSSClassName}-${Math.floor(Math.random() * 100000000)}`
+    const inputElementId = `input-${rootCSSClassName}-${Math.floor(Math.random() * 100000000)}`
     
     const inputElement = createDOMWithClassNames('input', [
         'the-control',
     ])
     inputElement.type = inputType
-    inputElement.id = inputId
+    inputElement.id = inputElementId
 
     if (typeof onChange === 'function') {
         inputElement.onchange = onChange
     }
 
     const label1Element = createDOMWithClassNames('label', [
+        'label',
         label2 ? 'label-1' : '',
     ])
     label1Element.innerText = labelText
-    label1Element.setAttribute('for', inputId)
+    label1Element.setAttribute('for', inputElementId)
 
     let label2Element
 
     if (label2) {
         label2Element = createDOMWithClassNames('label', [
+            'label',
             'label-2',
         ])
         label2Element.innerText = label2
-        label2Element.setAttribute('for', inputId)
+        label2Element.setAttribute('for', inputElementId)
     }
     
 
@@ -171,10 +173,17 @@ window.duanduanGameChaoJiYongShi.classes.FormControls.createDOMsForSingleFormCon
     }
 
     if (description) {
-        const descriptionElement = createDOMWithClassNames('p', [
+        const descriptionElement = createDOMWithClassNames('label', [
             'description',
         ])
-        descriptionElement.innerText = description
+        descriptionElement.setAttribute('for', inputElementId)
+
+        const descriptionParagraphElement = createDOMWithClassNames('p', [
+        ])
+
+        descriptionParagraphElement.innerHTML = description
+
+        descriptionElement.appendChild(descriptionParagraphElement)
         rootElement.appendChild(descriptionElement)
     }
 

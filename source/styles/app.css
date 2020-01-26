@@ -8,48 +8,64 @@
   align-items:center;
   padding:0 0.5em;
 }
+.form-control:focus-within{
+  outline:3px solid #000;
+}
 .form-control:not(.is-disabled ):hover{
   background-color:rgba(0,0,0,0.1);
 }
-.form-control > label,
+.form-control input{
+  border:1px solid transparent;
+}
+.form-control input:not([type="checkbox"]):not([type="radio"]){
+  border-bottom-color:#000;
+}
+.form-control > label{
+  cursor:pointer;
+}
+.form-control > .label,
 .form-control > .description,
 .form-control > .the-control{
   display:block;
 }
 .form-control > .the-control{
   flex:0 0;
-  margin:0;
+  margin:0 0.25em 0 0;
   min-width:10em;
   font-size:inherit;
+  outline:none;
 }
-.form-control > label,
+.form-control > .label,
 .form-control > .description{
-  padding:0.1em 0.5em;
+  padding:0.1em 0.25em;
   line-height:1.5;
 }
 .form-control.has-dual-labels > .label-1{
-  margin-left:-0.5em;
+  margin-left:-0.25em;
 }
-.form-control > label{
+.form-control > .label{
   min-width:1em;
   color:#000;
-  cursor:pointer;
 }
 .form-control .description{
-  flex:1 1;
-  min-width:100%;
+  flex:1 0;
+  min-width:70%;
   margin:0 0 0 1em;
 }
-.form-control.has-description > label{
-  min-width:100%;
+.form-control .description p{
+  margin:0.1em 0;
+}
+.form-control.has-description > .label{
+  flex:1 0;
+  min-width:60%;
 }
 .form-control.is-disabled .description,
-.form-control.is-disabled > label,
+.form-control.is-disabled > .label,
 .form-control.is-disabled > .the-control{
   cursor:not-allowed;
 }
 .form-control.is-disabled .description,
-.form-control.is-disabled > label{
+.form-control.is-disabled > .label{
   color:#ccc;
   font-style:italic;
 }
@@ -57,9 +73,45 @@
   width:1em;
   min-width:1em;
   height:1em;
+  margin-top:2px;
+  color:#7951ff;
+  position:relative;
+}
+.check-box input[type="checkbox"]::after,
+.check-box input[type="checkbox"]::before{
+  content:'';
+  display:block;
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+.check-box input[type="checkbox"]::before{
+  z-index:1;
+  border:2px solid currentColor;
+  background-color:#fff;
+  margin:auto;
+}
+.check-box input[type="checkbox"]::after{
+  visibility:hidden;
+  opacity:0;
+  z-index:2;
+  background-color:currentColor;
+  margin:4px;
+  transition-property:visibility, opacity, width, height, margin;
+  transition-duration:0.3s;
+  transition-timing-function:ease-out;
+}
+.check-box input[type="checkbox"]:checked::after{
+  visibility:visible;
+  opacity:1;
+}
+.check-box.is-disabled input[type="checkbox"]{
+  color:#ccc;
 }
 .check-box .description{
-  margin-left:1em;
+  margin-left:1.25em;
 }
 .number-box input.the-control{
   width:4em;

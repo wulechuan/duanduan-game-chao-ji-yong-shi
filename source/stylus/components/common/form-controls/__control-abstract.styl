@@ -9,11 +9,27 @@
     align-items: center
     padding: 0 0.5em
 
+    &:focus-within {
+        outline 3px solid black
+    }
+
     &:not(.is-disabled ):hover {
         background-color: rgba(black, 0.1)
     }
 
-    > label,
+    input {
+        border 1px solid transparent
+
+        &:not([type="checkbox"]):not([type="radio"]) {
+            border-bottom-color black
+        }
+    }
+
+    > label {
+        cursor pointer
+    }
+
+    > .label,
     > .description,
     > .the-control {
         display block
@@ -21,21 +37,22 @@
 
     > .the-control {
         flex 0 0
-        margin 0
+        margin 0 .25em 0 0
         min-width 10em
         font-size inherit
+        outline none
     }
 
-    > label,
+    > .label,
     > .description {
-        padding 0.1em 0.5em
+        padding 0.1em 0.25em
         line-height 1.5
     }
 
     &.has-dual-labels {
 
         > .label-1 {
-            margin-left -0.5em
+            margin-left -0.25em
         }
 
         > .label-2 {
@@ -43,35 +60,39 @@
         }
     }
 
-    > label {
+    > .label {
         min-width 1em
         color black
-        cursor pointer
     }
 
     .description {
-        flex 1 1
-        min-width 100%
+        flex 1 0
+        min-width 70%
         margin 0 0 0 1em
+
+        p {
+            margin 0.1em 0
+        }
     }
 
     &.has-description {
 
-        > label {
-            min-width 100%
+        > .label {
+            flex 1 0
+            min-width 60%
         }
     }
 
     &.is-disabled {
 
         .description,
-        > label,
+        > .label,
         > .the-control {
             cursor not-allowed
         }
 
         .description,
-        > label {
+        > .label {
             color #ccc
             font-style italic
         }
