@@ -39,15 +39,23 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                 {
                     label: '最多对战', type: 'number-box',
                     options: {
-                        label2: '局',
+                        label2: '局（必须大于零，且必须为单数）',
                         description: '',
                         initValue: maxRoundsToRun || 3,
                         isDisabled: false,
                         uniqueCSSClassName: 'settings-max_rounds_to_run',
                         extraCSSClassNames: '',
                         onChange: (e) => {
-                            const newValue = e.target.value
-                            gameSetingsToModify.maxRoundsToRun = + newValue
+                            const newValue = + e.target.value
+                            let newValueIsValid = true
+                            if (newValue < 1)       { newValueIsValid = false }
+                            if (newValue % 2 === 0) { newValueIsValid = false }
+
+                            if (newValueIsValid) {
+                                gameSetingsToModify.maxRoundsToRun = + newValue
+                            } else {
+                                e.target.value = gameSetingsToModify.maxRoundsToRun
+                            }
                         }
                     }
                 },
@@ -57,7 +65,7 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                 {
                     label: '开启公平模式', type: 'check-box',
                     options: {
-                        description: '',
+                        description: '本游戏幕后有一个角色配置文件，写明了每个角色的生命值和能力。这样的配置太过随意，可能出现人为强化或弱化某个角色的情况。当开启“公平模式”时，游戏将忽略上述人为配置，改为自动随机决定每个战士的生命值和能力，且每个战士的各项指标差别不会太大。故名。',
                         isChecked: !!enableFairMode,
                         isDisabled: false,
                         uniqueCSSClassName: 'settings-enable_fair_mode',
