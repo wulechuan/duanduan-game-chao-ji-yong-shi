@@ -85,6 +85,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     function _init(initOptions) {
         _createKeyboardEngine         .call(this)
         _createGameIntro              .call(this)
+        _createGamePreferencesPanel   .call(this)
         _createOverlayModalForGameOver.call(this)
         _createCountDownOverlay       .call(this)
         _createFightersPickingScreen  .call(this, initOptions)
@@ -103,6 +104,18 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             ...appData.gameGlobalSettings.gameIntro,
             modalSize: 'huge',
             cssClassNames: [ 'game-intro' ],
+        })
+    }
+
+    function _createGamePreferencesPanel() {
+        const { GamePreferencesPanel, OverlayModal } = classes
+        const gamePreferencesPanel = new GamePreferencesPanel(appData.gameGlobalSettings)
+        this.subComponents.parts.gamePreferencesPanel = gamePreferencesPanel
+        this.services.modals.overlayModalOfGamePreferencesPanel = new OverlayModal({
+            modalSize: 'huge',
+            titleHTML: '游戏配置项',
+            contentComponent: gamePreferencesPanel,
+            cssClassNames: [ 'game-preferences-panel' ],
         })
     }
 
@@ -145,6 +158,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             countDownOverlay,
             modals: {
                 overlayModalOfGameIntro,
+                overlayModalOfGamePreferencesPanel,
                 overlayModalOfGameOverAnnouncement,
             },
         } = this.services
@@ -159,6 +173,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         rootElement.appendChild(gameRunningScreen                 .el.root)
         rootElement.appendChild(countDownOverlay                  .el.root)
         rootElement.appendChild(overlayModalOfGameIntro           .el.root)
+        rootElement.appendChild(overlayModalOfGamePreferencesPanel.el.root)
         rootElement.appendChild(overlayModalOfGameOverAnnouncement.el.root)
 
         this.el.gameRootContainer.appendChild(rootElement)
@@ -173,19 +188,30 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 fightersPickingScreen,
                 gameRunningScreen,
             },
+            parts: {
+                gamePreferencesPanel,
+            },
         } = this.subComponents
 
         gameRunningScreen.hide()
 
         const {
             keyboardEngine,
-            modals: { overlayModalOfGameIntro },
+            modals: {
+                overlayModalOfGameIntro,
+                overlayModalOfGamePreferencesPanel,
+            },
         } = this.services
 
-        const closeGameIntroAndStartGame = () => {
+        function closeGameIntroAndStartGame() {
             overlayModalOfGameIntro.leaveAndHide()
             keyboardEngine.stop()
-            fightersPickingScreen.showUp()
+            overlayModalOfGamePreferencesPanel.showUp()
+            keyboardEngine.start({
+                keyUp: {
+                    'ESCAPE': closeGamePreferencesPanelAndStartGame,
+                },
+            }, '游戏配置项对话框')
         }
 
         overlayModalOfGameIntro.showUp()
@@ -194,6 +220,24 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 '*': closeGameIntroAndStartGame,
             },
         }, '游戏说明对话框')
+
+
+
+        function closeGamePreferencesPanelAndStartGame() {
+            overlayModalOfGamePreferencesPanel.leaveAndHide()
+            keyboardEngine.stop()
+            fightersPickingScreen.showUp()
+        }
+
+        overlayModalOfGamePreferencesPanel.showUp(null, (overlayModalInstance) => {
+            gamePreferencesPanel.allControlInstances[0].el.input.focus()
+        })
+
+        // keyboardEngine.start({
+        //     keyUp: {
+        //         '*': closeGameIntroAndStartGame,
+        //     },
+        // }, '游戏说明对话框')
     }
 
     async function startGameRounds() {

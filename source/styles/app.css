@@ -1,3 +1,6 @@
+.form{
+  font-size:1rem;
+}
 .form-controls-row{
   display:block;
   margin:1em auto;
@@ -48,8 +51,9 @@
   color:#000;
 }
 .form-control .description{
+  font-size:80%;
   flex:1 0;
-  min-width:70%;
+  min-width:calc(100% - 2em);
   margin:0 0 0 1em;
 }
 .form-control .description p{
@@ -111,7 +115,7 @@
   color:#ccc;
 }
 .check-box .description{
-  margin-left:1.25em;
+  margin-left:1.7em;
 }
 .number-box input.the-control{
   width:4em;
@@ -467,7 +471,7 @@ article blockquote em{
   text-stroke:1px #fff;
   -webkit-text-stroke:1px #fff;
 }
-.overlay-modal .content{
+.overlay-modal > .content{
   font-size:1.2rem;
   font-weight:600;
   margin:1rem 0;
@@ -518,7 +522,7 @@ article blockquote em{
   -webkit-text-stroke:0;
   margin:0.5rem auto;
 }
-.overlay-modal .modal.huge .content{
+.overlay-modal .modal.huge > .content{
   overflow:auto;
   padding:0.25rem 1rem 2.75rem 1rem;
   margin:0.5rem auto;
@@ -1891,6 +1895,8 @@ article blockquote em{
 }
 .game-preferences-panel{
   display:block;
+}
+#app > .game-preferences-panel{
   position:fixed;
   top:0;
   left:0;
@@ -1898,7 +1904,7 @@ article blockquote em{
   bottom:0;
   background-color:#fff;
 }
-.game-preferences-panel > .content{
+#app > .game-preferences-panel > .content{
   padding:2rem;
 }
 html{

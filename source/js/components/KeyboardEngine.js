@@ -44,7 +44,7 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
             const { key } = event
             // console.log(`按键引擎监测到键被按下："${key}"`)
 
-            if (!key.match(/^F\d{1,2}$/)) {
+            if (!key.match(/^F\d{1,2}|Tab$/i)) {
                 thisKeyboardEngine.eventHandlerForKeyDown(key)
             }
         }
@@ -55,7 +55,7 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardEngine = (function () {
             const { key } = event
             // console.log(`按键引擎监测到键被松开："${key}""`)
 
-            if (!key.match(/^F\d{1,2}$/)) {
+            if (!key.match(/^F\d{1,2}|Tab$/i)) {
                 thisKeyboardEngine.eventHandlerForKeyUp(key)
             }
         }

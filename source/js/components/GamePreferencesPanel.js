@@ -13,6 +13,7 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
     function _init(gameSetingsToModify) {
         const domCreationConfigurationsArray = _defineControlsConfig.call(this, gameSetingsToModify)
         _createDOMs.call(this, domCreationConfigurationsArray)
+        _setupDOMS.call(this)
     }
 
     function _defineControlsConfig(gameSetingsToModify) {
@@ -131,6 +132,10 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
             'game-preferences-panel',
         ])
 
+        const formElement = createDOMWithClassNames('form', [
+            'form',
+        ])
+
         const contentElement = createDOMWithClassNames('div', [
             'content',
         ])
@@ -144,10 +149,12 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
 
         allFormRowsDOM.forEach(dom => contentElement.appendChild(dom))
 
-        rootElement.appendChild(contentElement)
+        formElement.appendChild(contentElement)
+        rootElement.appendChild(formElement)
 
         this.el = {
             root: rootElement,
+            form: formElement,
         }
 
         const el = this.el
@@ -161,5 +168,17 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
         }, {})
 
         this.allControlInstances.push(...allControlInstances)
+    }
+
+    function _setupDOMS() {
+        const formElement = this.el.form
+
+        formElement.onkeydown = function(e) {
+            e.stopPropagation()
+        }
+
+        formElement.onkeyup = function(e) {
+            e.stopPropagation()
+        }
     }
 })();

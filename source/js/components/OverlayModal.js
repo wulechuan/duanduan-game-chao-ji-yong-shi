@@ -14,9 +14,10 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         // } = initOptions
 
         this.data = {
-            titleHTML: '',
-            contentHTML: '',
-            modalSize: '',
+            modalSize:        '',
+            titleHTML:        '',
+            contentHTML:      '',
+            contentComponent: null,
         }
 
         this.status = {
@@ -99,17 +100,29 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         if (!options || typeof options !== 'object') { return }
 
         const {
-            titleHTML:   inputTitleHTML,
-            contentHTML: inputContentHTML,
-            modalSize:   inputModalSize,
-            cssClassNames: inputCssClassNames,
+            titleHTML:        inputTitleHTML,
+            contentHTML:      inputContentHTML,
+            contentComponent: inputContentComponent,
+            modalSize:        inputModalSize,
+            cssClassNames:    inputCssClassNames,
         } = options
 
         const { data } = this
 
         if (inputTitleHTML)   { data.titleHTML   = inputTitleHTML   }
-        if (inputContentHTML) { data.contentHTML = inputContentHTML }
         if (inputModalSize)   { data.modalSize   = inputModalSize   }
+
+        if (inputContentComponent) {
+            if (!inputContentComponent.el || !(inputContentComponent.el.root instanceof Node)) {
+                throw new TypeError('OverlayModal 更新时错误：contentComponent 必须给出一个标准的组件对象，它应拥有有 el.root 元素。')
+            }
+
+            data.contentComponent = inputContentComponent
+            data.contentHTML      = ''
+        } else if (inputContentHTML) {
+            data.contentHTML      = inputContentHTML
+            data.contentComponent = null
+        }
 
         if (Array.isArray(inputCssClassNames)) {
             this.el.root.className = [
@@ -119,9 +132,10 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         }
 
         const {
+            modalSize,
             titleHTML,
             contentHTML,
-            modalSize,
+            contentComponent,
         } = data
 
         const {
@@ -137,7 +151,13 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         }
 
         titleElement  .innerHTML = titleHTML
-        contentElement.innerHTML = contentHTML
+
+        if (contentComponent) {
+            contentElement.innerHTML = ''
+            contentElement.appendChild(contentComponent.el.root)
+        } else {
+            contentElement.innerHTML = contentHTML
+        }
     }
 
     function _timing(timing) {
@@ -179,7 +199,7 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         countDownTipElement   .innerHTML = tipHTML
     }
 
-    async function showUp(options) {
+    async function showUp(options, callback) {
         this.update(options)
 
         let countDownSettings
@@ -199,11 +219,17 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
         this.status.isShowing = true
         this.status.isLeaving = false
 
+        if (!countDownSettings) {
+            this.el.countDownBlock.style.display = 'none'
+        }
+
+        if (typeof callback === 'function') {
+            callback(this)
+        }
+
         if (countDownSettings) {
             await _countDown.call(this, countDownSettings)
             this.leaveAndHide()
-        } else {
-            this.el.countDownBlock.style.display = 'none'
         }
     }
 
@@ -228,7 +254,7 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
 
         countDownNumberElement.innerText = ''
         countDownTipElement   .innerHTML = ''
-        
+
         status.isLeaving = false
         status.isShowing = false
     }

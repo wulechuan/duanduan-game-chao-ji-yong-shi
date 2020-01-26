@@ -140,13 +140,6 @@ window.duanduanGameChaoJiYongShi = {
         console.log('所有候选【对战舞台数据】就绪。')
     },
 
-    createGamePreferencesPanel(appElement) {
-        const { GamePreferencesPanel } = this.classes
-        const { gameGlobalSettings } = this.data
-        const gamePreferencesPanel = new GamePreferencesPanel(gameGlobalSettings)
-        appElement.appendChild(gamePreferencesPanel.el.root)
-    },
-
     createNewGameAndRunIt(appElement, options) {
         console.log('\n准备创建新游戏\n\n')
 
