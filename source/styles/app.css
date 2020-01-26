@@ -457,6 +457,13 @@ article blockquote em{
   box-shadow:0 0 1rem rgba(0,0,0,0.219);
   animation:overlay-modal-modal-enter 0.28s ease-out forwards;
 }
+.overlay-modal .modal > .content{
+  font-size:1.2rem;
+  font-weight:600;
+  margin:1rem 0;
+  text-stroke:0.5px rgba(255,255,255,0.87);
+  -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
+}
 .overlay-modal.is-leaving .backdrop{
   animation:overlay-modal-backdrop-fading-out 0.3s ease-out forwards;
 }
@@ -470,13 +477,6 @@ article blockquote em{
   margin:1.5rem 0 0 0;
   text-stroke:1px #fff;
   -webkit-text-stroke:1px #fff;
-}
-.overlay-modal > .content{
-  font-size:1.2rem;
-  font-weight:600;
-  margin:1rem 0;
-  text-stroke:0.5px rgba(255,255,255,0.87);
-  -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
 }
 .overlay-modal .count-down{
   font-size:1rem;

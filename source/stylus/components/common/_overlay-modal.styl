@@ -59,6 +59,15 @@
         box-shadow: 0 0 1rem rgba(black, 0.219)
 
         animation overlay-modal-modal-enter 0.28s ease-out forwards
+
+
+        > .content {
+            font-size: 1.2rem
+            font-weight: 600
+            margin: 1rem 0
+            text-stroke: 0.5px rgba(white, 0.87)
+            -webkit-text-stroke: @text-stroke
+        }
     }
 
     &.is-leaving {
@@ -108,13 +117,6 @@
         -webkit-text-stroke: @text-stroke
     }
 
-    > .content {
-        font-size: 1.2rem
-        font-weight: 600
-        margin: 1rem 0
-        text-stroke: 0.5px rgba(white, 0.87)
-        -webkit-text-stroke: @text-stroke
-    }
 
     .count-down {
         font-size: 1rem
@@ -144,7 +146,7 @@
 
 
     .modal:not(.huge) {
-        
+
         .content p {
             line-height: 1.6
             margin: 0.2em
