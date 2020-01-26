@@ -1,12 +1,73 @@
-.check-box{
-  padding:0.5em;
+.form-controls-row{
+  display:block;
+  margin:1em auto;
 }
-.check-box > label{
-  color:#f00;
+.form-control{
+  display:inline-flex;
+  flex-wrap:wrap;
+  align-items:center;
+  padding:0 0.5em;
+}
+.form-control:not(.is-disabled ):hover{
+  background-color:rgba(0,0,0,0.1);
+}
+.form-control > label,
+.form-control > .description,
+.form-control > .the-control{
+  display:block;
+}
+.form-control > .the-control{
+  flex:0 0;
+  margin:0;
+  min-width:10em;
+  font-size:inherit;
+}
+.form-control > label,
+.form-control > .description{
+  padding:0.1em 0.5em;
+  line-height:1.5;
+}
+.form-control.has-dual-labels > .label-1{
+  margin-left:-0.5em;
+}
+.form-control > label{
+  min-width:1em;
+  color:#000;
+  cursor:pointer;
+}
+.form-control .description{
+  flex:1 1;
+  min-width:100%;
+  margin:0 0 0 1em;
+}
+.form-control.has-description > label{
+  min-width:100%;
+}
+.form-control.is-disabled .description,
+.form-control.is-disabled > label,
+.form-control.is-disabled > .the-control{
+  cursor:not-allowed;
+}
+.form-control.is-disabled .description,
+.form-control.is-disabled > label{
+  color:#ccc;
+  font-style:italic;
 }
 .check-box input[type="checkbox"]{
-  width:2rem;
-  height:2rem;
+  width:1em;
+  min-width:1em;
+  height:1em;
+}
+.check-box .description{
+  margin-left:1em;
+}
+.number-box input.the-control{
+  width:4em;
+  min-width:4em;
+  text-align:center;
+}
+.number-box .description{
+  margin-left:checkBoxSize;
 }
 article{
   line-height:1.6;
@@ -1777,13 +1838,16 @@ article blockquote em{
   width:25rem;
 }
 .game-preferences-panel{
-  display:none;
+  display:block;
   position:fixed;
   top:0;
   left:0;
   right:0;
   bottom:0;
   background-color:#fff;
+}
+.game-preferences-panel > .content{
+  padding:2rem;
 }
 html{
   font-size:20px;

@@ -142,7 +142,8 @@ window.duanduanGameChaoJiYongShi = {
 
     createGamePreferencesPanel(appElement) {
         const { GamePreferencesPanel } = this.classes
-        const gamePreferencesPanel = new GamePreferencesPanel()
+        const { gameGlobalSettings } = this.data
+        const gamePreferencesPanel = new GamePreferencesPanel(gameGlobalSettings)
         appElement.appendChild(gamePreferencesPanel.el.root)
     },
 
