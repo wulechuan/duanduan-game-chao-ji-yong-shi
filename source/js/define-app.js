@@ -1,4 +1,6 @@
 window.duanduanGameChaoJiYongShi = {
+    games: [],
+
     classes: {}, // 各种构造函数统一存放于此。
 
     data: {
@@ -12,8 +14,10 @@ window.duanduanGameChaoJiYongShi = {
 
         // allGameFighterCandidatesForBothPlayers: [],
         // allGameFightingStageCandidates: [],
+    },
 
-        // game: null,
+    async fetchGameGlobalSettings() {
+        return Promise.resolve(this.data.gameGlobalSettings)
     },
 
     async fetchGameRoleRawConfigurations() {
@@ -24,172 +28,102 @@ window.duanduanGameChaoJiYongShi = {
         return Promise.resolve(this.data.allGameFightingStageRawConfigurations)
     },
 
-    async prepareAllGameRoleCandidatesForBothPlayers() {
-        const rawConfigurations = await this.fetchGameRoleRawConfigurations()
 
-        const appData = this.data
+    ShowAuthorInfo() {
+        const authorInfoElement = document.querySelector('#info-when-no-more-games')
+        if (authorInfoElement) {
+            appElement       .style.display = 'none'
+            authorInfoElement.style.display = ''
+        }
+    },
 
-        const {
-            gameGlobalSettings: {
-                enableFairMode,
-            },
-            allGameRoleConfigurationTransformFunction,
-        } = appData
+    reportAppLaunch() {
+        const splashWidth = 32
 
-        const dataTransformFunction = allGameRoleConfigurationTransformFunction
-        const {
-            common: roleCommonConfiguration,
-        } = rawConfigurations
+        const { buildOneSplashLineForConsoleLog } = this.utils
 
-        const allGameRoleConfigurations = rawConfigurations.items.map(rawConfig => {
-            return dataTransformFunction(rawConfig, roleCommonConfiguration)
-        })
+        console.log([
+            '\n'.repeat(0),
+            '*'.repeat(splashWidth),
+            buildOneSplashLineForConsoleLog(splashWidth),
+            buildOneSplashLineForConsoleLog(splashWidth, '应用现在启动', 11),
+            buildOneSplashLineForConsoleLog(splashWidth),
+            '*'.repeat(splashWidth),
+            '\n'.repeat(1),
+        ].join('\n'))
+    },
 
-        if (enableFairMode) {
-            appData.gameGlobalSettings.allowToCheat = false
+    start(rootElementSelector) {
+        this.reportAppLaunch()
 
-            const fairHealthPointBase  = 24
-            const fairAttackPointBase  = 15
-            const fairDefencePointBase = 10
+        console.log('正在等待从网络接受游戏数据（实际上目前这种说法是虚假的，没有网络请求）。')
+        Promise.all([
+            rootElementSelector,
+            this.fetchGameGlobalSettings(),
+            this.fetchGameRoleRawConfigurations(),
+            this.fetchGameFightingStageRawConfigurations(),
+        ]).then(this.createNewGameAndRunIt.bind(this))
+    },
 
-            const randomNumberAround = function (base, span) {
-                const halfSapn = span / 2
-                const min = 1 - halfSapn
-                const int = Math.ceil((Math.random() * span + min) * base)
-                const fra = Math.random() > 0.5 ? 0.5 : 0
-                return int + fra
-            }
+    createNewGameAndRunIt(allPromisedData) {
+        const [
+            rootElementSelector,
+            gameGlobalSettings,
+            allGameRoleRawConfigurations,
+            allGameFightingStageRawConfigurations,
+        ] = allPromisedData
 
-            allGameRoleConfigurations.forEach(roleConfig => {
-                roleConfig.fullHealthPoint = randomNumberAround(fairHealthPointBase,  0.3) * 1000
-                roleConfig.attackingPower  = randomNumberAround(fairAttackPointBase,  0.4) * 1000
-                roleConfig.defencingPower  = randomNumberAround(fairDefencePointBase, 0.4) * 1000
-            })
+        // console.log('rootElementSelector\n   ', rootElementSelector)
+        // console.log('gameGlobalSettings\n   ', gameGlobalSettings)
+        // console.log('allGameRoleRawConfigurations\n', allGameRoleRawConfigurations)
+        // console.log('allGameFightingStageRawConfigurations\n', allGameFightingStageRawConfigurations)
+
+
+        const appElement = document.querySelector(rootElementSelector)
+        
+        let afterGameDestroyed
+        if (gameGlobalSettings.SHOULD_START_NEW_GAME_WHEN_A_GAME_ENDS) {
+            console.log('')
+            console.warn([
+                '',
+                '游戏已经配置成循环模式。',
+                '',
+                '谨慎！我们真的有必要令游戏无止境的进行吗？',
+                '谨慎！我们真的有必要令游戏无止境的进行吗？',
+                '谨慎！我们真的有必要令游戏无止境的进行吗？',
+                '',
+                '',
+            ].join('\n'))
+
+            afterGameDestroyed = _createNewGameAndRunIt
+        } else {
+            afterGameDestroyed = this.ShowAuthorInfo
         }
 
-        let maxHP = 0 // health
-        let maxAP = 0 // attack
-        let maxDP = 0 // defence
+        const { Game } = this.classes
 
-        allGameRoleConfigurations.forEach(roleConfig => {
-            const {
-                fullHealthPoint,
-                attackingPower,
-                defencingPower,
-            } = roleConfig
+        function _createNewGameAndRunIt() {
+            console.log('\n准备创建新游戏\n\n')
 
-            maxHP = Math.max(maxHP, fullHealthPoint)
-            maxAP = Math.max(maxAP, attackingPower)
-            maxDP = Math.max(maxDP, defencingPower)
-        })
+            const game = new Game(
+                appElement,
+    
+                {
+                    gameGlobalSettings,
+                    allGameRoleRawConfigurations,
+                    allGameFightingStageRawConfigurations,
+    
+                    // onGameEnd,
+                    // justBeforeGameDestroying,
+                    afterGameDestroyed,
+                }
+            )
+    
+            this.games.push(game)
+    
+            game.start()
+        }
 
-        allGameRoleConfigurations.forEach(roleConfig => {
-            const {
-                fullHealthPoint,
-                attackingPower,
-                defencingPower,
-            } = roleConfig
-
-            roleConfig.healthPointRatio    = + Math.max(0.01, (fullHealthPoint / maxHP).toFixed(4))
-            roleConfig.attackingPowerRatio = + Math.max(0.01, (attackingPower  / maxAP).toFixed(4))
-            roleConfig.defencingPowerRatio = + Math.max(0.01, (defencingPower  / maxDP).toFixed(4))
-        })
-
-        appData.allGameRoleConfigurations = allGameRoleConfigurations
-
-        appData.allGameFighterCandidatesForBothPlayers = [
-            this.prepareAllGameRoleCandidatesForPlayer(1, allGameRoleConfigurations),
-            this.prepareAllGameRoleCandidatesForPlayer(2, allGameRoleConfigurations),
-        ]
-    },
-
-    prepareAllGameRoleCandidatesForPlayer(playerId, allGameRoleConfigurations) {
-        const { GameRoleCandidate } = this.classes
-
-        // console.log('\n准备为玩家', playerId, '创建所有【角色候选人】……')
-
-        const gameRoleCandidates = allGameRoleConfigurations.map(roleConfig => {
-            return new GameRoleCandidate(playerId, roleConfig)
-        })
-
-        console.log('为玩家', playerId, '创建【角色候选人】完毕。')
-
-        return gameRoleCandidates
-    },
-
-    async prepareAllGameFightingStageCandidates(stageConfigurations) {
-        const rawConfigurations = await this.fetchGameFightingStageRawConfigurations()
-
-        const appData = this.data
-        const {
-            allGameFightingStageConfigurationTransformFunction,
-        } = appData
-
-        const dataTransformFunction = allGameFightingStageConfigurationTransformFunction
-
-        const {
-            common: stageCommonConfigurations,
-        } = rawConfigurations
-
-        const allGameFightingStageConfigurations = rawConfigurations.items.map(rawConfig => {
-            return dataTransformFunction(rawConfig, stageCommonConfigurations)
-        })
-
-        appData.allGameFightingStageConfigurations = allGameFightingStageConfigurations
-
-        console.log('所有候选【对战舞台数据】就绪。')
-    },
-
-    createNewGameAndRunIt(appElement, options) {
-        console.log('\n准备创建新游戏\n\n')
-
-        const {
-            onGameEnd,
-            justBeforeGameDestroying,
-            afterGameDestroyed,
-        } = options
-
-        const {
-            data: appData,
-            data: {
-                allGameFighterCandidatesForBothPlayers,
-                allGameFightingStageConfigurations,
-                gameGlobalSettings,
-            },
-            classes: {
-                Game,
-            },
-        } = this
-
-        const {
-            maxRoundsToRun,
-            shouldAutoPickFightersByWeights,
-            shouldForceRollingEvenIfAutoPickingByWeights,
-            shouldManuallyPickFighters,
-            keyboardShortcuts,
-        } = gameGlobalSettings
-
-        const game = new Game(
-            appElement,
-
-            {
-                allGameFighterCandidatesForBothPlayers,
-                allGameFightingStageConfigurations,
-                maxRoundsToRun,
-                shouldAutoPickFightersByWeights,
-                shouldForceRollingEvenIfAutoPickingByWeights,
-                shouldManuallyPickFighters,
-
-                onGameEnd,
-                justBeforeGameDestroying,
-                afterGameDestroyed,
-
-                keyboardShortcuts,
-            }
-        )
-
-        appData.game = game
-
-        game.start()
+        _createNewGameAndRunIt()
     },
 }

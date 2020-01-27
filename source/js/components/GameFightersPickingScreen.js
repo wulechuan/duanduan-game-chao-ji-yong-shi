@@ -1,6 +1,6 @@
 window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function () {
     const app = window.duanduanGameChaoJiYongShi
-    const { utils, classes, data: appData } = app
+    const { utils, classes } = app
     
     const { createDOMWithClassNames } = utils
 
@@ -60,10 +60,11 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
 
     function _createFighterPickersForBothPlayers() {
         const { GameFighterPicker } = classes
+        const { game } = this
         const {
             player1: player1KeyboardShortcuts,
             player2: player2KeyboardShortcuts,
-        } = appData.gameGlobalSettings.keyboardShortcuts.gameFightersPicking
+        } = game.settings.keyboardShortcuts.gameFightersPicking
 
         const [
             candidatesForPlayer1,

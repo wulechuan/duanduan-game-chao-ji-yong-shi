@@ -134,12 +134,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
     function _createFighters() {
         const { GameRole } = classes
+        const { game } = this
         const {
             player1: player1KeyboardShortcuts,
             player2: player2KeyboardShortcuts,
-        } = appData.gameGlobalSettings.keyboardShortcuts.gameRunning
+        } = game.settings.keyboardShortcuts.gameRunning
 
-        const { game } = this
         const { fighters } = this.data
 
         const [
@@ -260,7 +260,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
     function cheatedBy(attacker, cheatingAttacksCount) {
-        if (!appData.gameGlobalSettings.allowToCheat) {
+        const { game } = this
+        if (!game.settings.allowToCheat) {
             console.log(`听着，${attacker.logString}，你不准作弊！`)
             return
         }
@@ -508,7 +509,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const {
             roleAttackingPowerExtraRatio,
             roleDefencingPowerExtraRatio,
-        } = appData.gameGlobalSettings
+        } = this.game.settings
 
         const suffererDefensiveRatioIdea = suffererIsDefencing
             ? (Math.random() * 0.2  + 0.8)

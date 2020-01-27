@@ -1,6 +1,6 @@
 window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     const app = window.duanduanGameChaoJiYongShi
-    const { utils, classes, data: appData } = app
+    const { utils, classes } = app
     const {
         buildOneSplashLineForConsoleLog,
         formattedDateStringOf,
@@ -21,8 +21,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         const {
             allGameFighterCandidatesForBothPlayers,
             allGameFightingStageConfigurations,
-            // maxRoundsToRun,
-            // shouldAutoPickFightersByWeights,
+            gameGlobalSettings,
             onGameEnd,
             justBeforeGameDestroying,
             afterGameDestroyed,
@@ -35,6 +34,9 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         this.services = { modals: {} }
 
+        this.globalSettings = gameGlobalSettings
+        this.settings = gameGlobalSettings.perGameSettings
+
         this.data = {
             allGameFighterCandidatesForBothPlayers,
             allGameFightingStageConfigurations,
@@ -46,7 +48,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             },
             gameRounds: {
                 minWinningRoundsPerPlayer: NaN,
-                maxRoundsToRun: NaN,
+                maxRoundsToRun: this.settings.maxRoundsToRun,
                 history: [],
                 current: null,
             },
@@ -93,6 +95,133 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         _createMoreDOMs               .call(this)
     }
 
+    //----------------------
+
+    
+    async function prepareAllGameRoleCandidatesForBothPlayers() {
+        // console.log('正在准备游戏通用数据（候选角色、候选游戏对战舞台数据等）。')
+        // data: {
+        //     allGameFighterCandidatesForBothPlayers,
+        //     allGameFightingStageConfigurations,
+        // },
+
+        const rawConfigurations = await this.fetchGameRoleRawConfigurations()
+
+        const appData = this.data
+
+        const {
+            gameGlobalSettings: {
+                enableFairMode,
+            },
+            allGameRoleConfigurationTransformFunction,
+        } = appData
+
+        const dataTransformFunction = allGameRoleConfigurationTransformFunction
+        const {
+            common: roleCommonConfiguration,
+        } = rawConfigurations
+
+        const allGameRoleConfigurations = rawConfigurations.items.map(rawConfig => {
+            return dataTransformFunction(rawConfig, roleCommonConfiguration)
+        })
+
+        if (enableFairMode) {
+            appData.gameGlobalSettings.allowToCheat = false
+
+            const fairHealthPointBase  = 24
+            const fairAttackPointBase  = 15
+            const fairDefencePointBase = 10
+
+            const randomNumberAround = function (base, span) {
+                const halfSapn = span / 2
+                const min = 1 - halfSapn
+                const int = Math.ceil((Math.random() * span + min) * base)
+                const fra = Math.random() > 0.5 ? 0.5 : 0
+                return int + fra
+            }
+
+            allGameRoleConfigurations.forEach(roleConfig => {
+                roleConfig.fullHealthPoint = randomNumberAround(fairHealthPointBase,  0.3) * 1000
+                roleConfig.attackingPower  = randomNumberAround(fairAttackPointBase,  0.4) * 1000
+                roleConfig.defencingPower  = randomNumberAround(fairDefencePointBase, 0.4) * 1000
+            })
+        }
+
+        let maxHP = 0 // health
+        let maxAP = 0 // attack
+        let maxDP = 0 // defence
+
+        allGameRoleConfigurations.forEach(roleConfig => {
+            const {
+                fullHealthPoint,
+                attackingPower,
+                defencingPower,
+            } = roleConfig
+
+            maxHP = Math.max(maxHP, fullHealthPoint)
+            maxAP = Math.max(maxAP, attackingPower)
+            maxDP = Math.max(maxDP, defencingPower)
+        })
+
+        allGameRoleConfigurations.forEach(roleConfig => {
+            const {
+                fullHealthPoint,
+                attackingPower,
+                defencingPower,
+            } = roleConfig
+
+            roleConfig.healthPointRatio    = + Math.max(0.01, (fullHealthPoint / maxHP).toFixed(4))
+            roleConfig.attackingPowerRatio = + Math.max(0.01, (attackingPower  / maxAP).toFixed(4))
+            roleConfig.defencingPowerRatio = + Math.max(0.01, (defencingPower  / maxDP).toFixed(4))
+        })
+
+        appData.allGameRoleConfigurations = allGameRoleConfigurations
+
+        appData.allGameFighterCandidatesForBothPlayers = [
+            this.prepareAllGameRoleCandidatesForPlayer(1, allGameRoleConfigurations),
+            this.prepareAllGameRoleCandidatesForPlayer(2, allGameRoleConfigurations),
+        ]
+    }
+
+    function prepareAllGameRoleCandidatesForPlayer(playerId, allGameRoleConfigurations) {
+        const { GameRoleCandidate } = this.classes
+
+        // console.log('\n准备为玩家', playerId, '创建所有【角色候选人】……')
+
+        const gameRoleCandidates = allGameRoleConfigurations.map(roleConfig => {
+            return new GameRoleCandidate(playerId, roleConfig)
+        })
+
+        console.log('为玩家', playerId, '创建【角色候选人】完毕。')
+
+        return gameRoleCandidates
+    }
+
+    async function prepareAllGameFightingStageCandidates(stageConfigurations) {
+        const rawConfigurations = await this.fetchGameFightingStageRawConfigurations()
+
+        const appData = this.data
+        const {
+            allGameFightingStageConfigurationTransformFunction,
+        } = appData
+
+        const dataTransformFunction = allGameFightingStageConfigurationTransformFunction
+
+        const {
+            common: stageCommonConfigurations,
+        } = rawConfigurations
+
+        const allGameFightingStageConfigurations = rawConfigurations.items.map(rawConfig => {
+            return dataTransformFunction(rawConfig, stageCommonConfigurations)
+        })
+
+        appData.allGameFightingStageConfigurations = allGameFightingStageConfigurations
+
+        console.log('所有候选【对战舞台数据】就绪。')
+    }
+
+    //----------------------
+
     function _createKeyboardEngine() {
         const { KeyboardEngine } = classes
         this.services.keyboardEngine = new KeyboardEngine()
@@ -101,7 +230,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     function _createGameIntro() {
         const { OverlayModal } = classes
         this.services.modals.overlayModalOfGameIntro = new OverlayModal({
-            ...appData.gameGlobalSettings.gameIntro,
+            ...this.globalSettings.gameIntro,
             modalSize: 'huge',
             cssClassNames: [ 'game-intro' ],
         })
@@ -109,7 +238,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     function _createGamePreferencesPanel() {
         const { GamePreferencesPanel, OverlayModal } = classes
-        const gamePreferencesPanel = new GamePreferencesPanel(appData.gameGlobalSettings)
+        const gamePreferencesPanel = new GamePreferencesPanel(this.settings)
         this.subComponents.parts.gamePreferencesPanel = gamePreferencesPanel
         this.services.modals.overlayModalOfGamePreferencesPanel = new OverlayModal({
             modalSize: 'huge',

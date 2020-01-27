@@ -3,7 +3,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
     const { utils, classes } = app
     const { createDOMWithClassNames } = utils
 
-    return function GameRoundsRunner(game, initOptions) {
+    return function GameRoundsRunner(game) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRoundsRunner 构造函数。')
         }
@@ -13,24 +13,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
             keyboardShortcuts: {
                 gameRunning: keboardShortcutsForGameRunning,
             },
-        } = initOptions
+        } = game.settings
 
-        let _maxRoundsToRun
-
-        if (maxRoundsToRun === undefined || maxRoundsToRun === null) {
-            _maxRoundsToRun = 3
-        } else {
-            _maxRoundsToRun = Math.floor(maxRoundsToRun)
-            if (_maxRoundsToRun !== maxRoundsToRun || _maxRoundsToRun % 2 === 0) {
-                throw new Error('maxRoundsToRun 必须为正奇数。')
-            }
-        }
-
-        const minWinningRoundsPerPlayer = Math.ceil(_maxRoundsToRun / 2)
+        const minWinningRoundsPerPlayer = Math.ceil(maxRoundsToRun / 2)
 
         this.game = game
 
-        game.data.gameRounds.maxRoundsToRun = _maxRoundsToRun
         game.data.gameRounds.minWinningRoundsPerPlayer = minWinningRoundsPerPlayer
 
         this.subComponents = {}
