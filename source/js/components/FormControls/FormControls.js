@@ -34,14 +34,21 @@ window.duanduanGameChaoJiYongShi.classes.FormControls.mixinCommonFeaturesToSingl
 window.duanduanGameChaoJiYongShi.classes.FormControls.createFormControlDOMs = function createFormControlDOMs(domCreationConfigurationsArray) {
     const app = window.duanduanGameChaoJiYongShi
 
+    const { utils, classes } = app
+
     const {
         createDOMWithClassNames
-    } = app.utils
+    } = utils
+
+    const {
+        Button,
+        FormControls,
+    } = classes
 
     const {
         NumberBox,
         CheckBox,
-    } = app.classes.FormControls
+    } = FormControls
 
     const allControlInstances = []
     const namedControlInstances = {} // 由“uniqueCSSClassName”为索引，凡具备该 CSS 类名的控件实例，即为所谓“named”控件实例。
@@ -72,6 +79,10 @@ window.duanduanGameChaoJiYongShi.classes.FormControls.createFormControlDOMs = fu
 
                 case 'number-box':
                     formControlInstance = new NumberBox(label, options)
+                    break
+
+                case 'button':
+                    formControlInstance = new Button(label, options)
                     break
 
                 default:

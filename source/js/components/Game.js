@@ -204,7 +204,35 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.status.resolvePromiseOf['game intro modal closed']()
     }
     
-    function _closeModalOfGamePreferencesPanel() {
+    function _startUsingGamePreferencesPanel() {
+        const {
+            keyboardEngine,
+            modals: {
+                overlayModalOfGamePreferencesPanel,
+            },
+        } = this.services
+
+        const { gamePreferencesPanel } = this.subComponents.parts
+
+        overlayModalOfGamePreferencesPanel.showUp(null, async () => {
+            gamePreferencesPanel.allControlInstances[0].el.input.focus()
+            const result = await gamePreferencesPanel.collectDataAndThenSubmit()
+            if (result !== 'canceled:external reason') {
+                _stopUsingGamePreferencesPanelAndCloseItsHostingModal.call(this)
+            }
+        })
+
+        keyboardEngine.start({
+            keyUp: {
+                'ESCAPE': () => {
+                    gamePreferencesPanel.cancel('canceled:external reason')
+                    _stopUsingGamePreferencesPanelAndCloseItsHostingModal.call(this)
+                },
+            },
+        }, '游戏配置项对话框')
+    }
+    
+    function _stopUsingGamePreferencesPanelAndCloseItsHostingModal() {
         this.services.keyboardEngine.stop()
         this.services.modals.overlayModalOfGamePreferencesPanel.leaveAndHide()
         this.status.resolvePromiseOf['game settings decided']()
@@ -237,13 +265,12 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
     async function start() {
-        const { promiseOf, resolvePromiseOf } = this.status
+        const { promiseOf } = this.status
 
         const {
             keyboardEngine,
             modals: {
                 overlayModalOfGameIntro,
-                overlayModalOfGamePreferencesPanel,
             },
         } = this.services
 
@@ -262,14 +289,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
 
 
-        overlayModalOfGamePreferencesPanel.showUp(null, () => {
-            this.subComponents.parts.gamePreferencesPanel.allControlInstances[0].el.input.focus()
-        })
-        keyboardEngine.start({
-            keyUp: {
-                'ESCAPE': () => _closeModalOfGamePreferencesPanel.call(this),
-            },
-        }, '游戏配置项对话框')
+        _startUsingGamePreferencesPanel.call(this)
 
 
 

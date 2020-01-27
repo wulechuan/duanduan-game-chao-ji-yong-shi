@@ -1,11 +1,23 @@
 window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
     const app = window.duanduanGameChaoJiYongShi
     const { utils, classes } = app
-    const { createDOMWithClassNames } = utils
+    const {
+        createDOMWithClassNames,
+        createPromisesAndStoreIn,
+    } = utils
 
     return function GamePreferencesPanel(gameSetingsToModify) {
         this.allControlInstances = []
         this.namedControlInstances = {}
+
+        this.status = {}
+
+        createPromisesAndStoreIn(this.status, [
+            'data submitted or canceled',
+        ])
+
+        this.collectDataAndThenSubmit = collectDataAndThenSubmit.bind(this)
+        this.cancel                   = cancel                  .bind(this)
         
         _init.call(this, gameSetingsToModify)
     }
@@ -14,6 +26,10 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
         const domCreationConfigurationsArray = _defineControlsConfig.call(this, gameSetingsToModify)
         _createDOMs.call(this, domCreationConfigurationsArray)
         _setupDOMS.call(this)
+    }
+
+    async function collectDataAndThenSubmit() {
+        return await this.status.promiseOf['data submitted or canceled']
     }
 
     function _defineControlsConfig(gameSetingsToModify) {
@@ -57,8 +73,8 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                             } else {
                                 e.target.value = gameSetingsToModify.maxRoundsToRun
                             }
-                        }
-                    }
+                        },
+                    },
                 },
             ],
 
@@ -76,8 +92,8 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                             gameSetingsToModify.enableFairMode = newValue
                             const affectedControl = namedControlInstances['settings-allow_to_cheat']
                             affectedControl.setDisabledAs(newValue)
-                        }
-                    }
+                        },
+                    },
                 },
             ],
 
@@ -93,8 +109,8 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                         onChange: (e) => {
                             const newValue = e.target.checked
                             gameSetingsToModify.allowToCheat = newValue
-                        }
-                    }
+                        },
+                    },
                 },
             ],
 
@@ -112,8 +128,8 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                             gameSetingsToModify.shouldManuallyPickFighters = newValue
                             const affectedControl = namedControlInstances['settings-should_auto_pick_fighters_by_weights']
                             affectedControl.setDisabledAs(newValue)
-                        }
-                    }
+                        },
+                    },
                 },
             ],
 
@@ -129,9 +145,24 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                         onChange: (e) => {
                             const newValue = e.target.checked
                             gameSetingsToModify.shouldAutoPickFightersByWeights = newValue
-                        }
-                    }
+                        },
+                    },
                 },
+            ],
+
+            [
+                {
+                    label: '确定', type: 'button',
+                    options: {
+                        description: '',
+                        isDisabled: false,
+                        uniqueCSSClassName: 'settings-button_ok',
+                        extraCSSClassNames: '',
+                        onClick: (e) => {
+                            _afterDataSubmitted.call(this)
+                        },
+                    }
+                }
             ],
         ]
     }
@@ -158,6 +189,7 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
 
         allFormRowsDOM.forEach(dom => contentElement.appendChild(dom))
 
+        
         formElement.appendChild(contentElement)
         rootElement.appendChild(formElement)
 
@@ -182,6 +214,10 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
     function _setupDOMS() {
         const formElement = this.el.form
 
+        formElement.onsubmit = function(e) {
+            e.preventDefault()
+        }
+
         formElement.onkeydown = function(e) {
             const { key } = e
             if (!key.match(/Escape|Enter/i)) {
@@ -196,5 +232,13 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                 e.stopPropagation()
             }
         }
+    }
+
+    function _afterDataSubmitted() {
+        this.status.resolvePromiseOf['data submitted or canceled']('ok')
+    }
+
+    function cancel(reason) {
+        this.status.resolvePromiseOf['data submitted or canceled'](reason)
     }
 })();

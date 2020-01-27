@@ -1,3 +1,6 @@
+:focus{
+  outline:5px solid #000;
+}
 .form{
   font-size:1rem;
 }
@@ -12,7 +15,7 @@
   padding:0 0.5em;
 }
 .form-control:focus-within{
-  outline:3px solid #000;
+  outline:5px solid #000;
 }
 .form-control:not(.is-disabled ):hover{
   background-color:rgba(0,0,0,0.1);
@@ -124,6 +127,29 @@
 }
 .number-box .description{
   margin-left:checkBoxSize;
+}
+button{
+  font-size:1rem;
+  display:inline-block;
+  padding:0.25em 1.5em;
+  line-height:1.5;
+  border-radius:0.3em;
+  margin:0.5em;
+  float:right;
+  border-style:solid;
+  border-width:1px;
+  cursor:pointer;
+  color:#fff;
+  border-color:#4020aa;
+  background-color:#7951fe;
+}
+button:hover{
+  background-color:#5b39cd;
+}
+button:active,
+button:focus{
+  outline:none;
+  box-shadow:0 0 0 4px #000;
 }
 article{
   line-height:1.6;
