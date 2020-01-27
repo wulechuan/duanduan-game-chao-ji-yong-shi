@@ -22,8 +22,12 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏局】。')
         }
 
+        // TODO 未来将宣告战局的功能移走，则这里不再需要存放 gameRoundsRunner 了
+        const { gameRunningScreen } = game.subComponents.uiScreens
+        const { gameRoundsRunner } = gameRunningScreen.subComponents
+
         this.game = game
-        this.gameRoundsRunner = game.subComponents.parts.gameRoundsRunner
+        this.gameRoundsRunner = gameRoundsRunner
 
         this.subComponents = {}
         this.services = { modals: {} }
@@ -570,7 +574,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         _ending.call(this)
     }
 
-    async function _annouceResult() {
+    async function _annouceResult() { // TODO 将宣告战局的功能移到 GameRoundsRunner 中去。
         const noMoreGameRoundsNeeded = this.gameRoundsRunner.evaluateGameStatusJustBeforeOneGameRoundEnds()
 
         const { winner, isDrawGameRound } = this.data.fighters

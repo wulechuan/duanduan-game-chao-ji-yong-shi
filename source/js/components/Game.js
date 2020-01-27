@@ -6,6 +6,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         formattedDateStringOf,
         formattedTimeDurationStringOf,
         createDOMWithClassNames,
+        createPromisesAndStoreIn,
     } = utils
 
     return function Game(gameRootContainer, initOptions) {
@@ -51,7 +52,6 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 finalWinnerPlayerId: NaN,
             },
             gameRounds: {
-                minWinningRoundsPerPlayer: NaN,
                 maxRoundsToRun: this.settings.maxRoundsToRun,
                 history: [],
                 current: null,
@@ -62,32 +62,18 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             gameRootContainer,
         }
 
-
-
-        const promiseOf = {}
-        const resolvePromiseOf = {}
-
-        ;[
-            'game intro modal closed',
-            'game settings decided',
-        ].forEach(promiseName => {
-            promiseOf[promiseName] = new Promise((resolve) => {
-                resolvePromiseOf[promiseName] = resolve
-            })
-        })
-
-
-
         this.status = {
             gameCreationTimeString,
             gameCreationTimeValue,
             gameCreationTime,
 
             isOver: false,
-
-            promiseOf,
-            resolvePromiseOf,
         }
+
+        createPromisesAndStoreIn(this.status, [
+            'game intro modal closed',
+            'game settings decided',
+        ])
 
         this.listenersOfMyEvents = {
             onGameEnd,
@@ -96,10 +82,9 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         }
 
 
-        this.start           = start          .bind(this)
-        this.startGameRounds = startGameRounds.bind(this)
-        this.end             = end            .bind(this)
-        this.destroy         = destroy        .bind(this)
+        this.start   = start  .bind(this)
+        this.end     = end    .bind(this)
+        this.destroy = destroy.bind(this)
 
         _init.call(this, initOptions)
 
@@ -117,7 +102,13 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         _createRunningScreen          .call(this)
         _createMoreDOMs               .call(this)
 
-        this.subComponents.uiScreens.gameRunningScreen.hide()
+        const {
+            fightersPickingScreen,
+            gameRunningScreen,
+        } = this.subComponents.uiScreens
+
+        fightersPickingScreen.hide()
+        gameRunningScreen.hide()
     }
 
 
@@ -163,20 +154,12 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     function _createFightersPickingScreen() {
         const { GameFightersPickingScreen } = classes
-        const fightersPickingScreen = new GameFightersPickingScreen(this, {
-
-        })
-
-        // this.data.pickedFighterRoleConfigurations.both = fightersPickingScreen.data.pickedFighterRoleConfigurations
-        this.subComponents.uiScreens.fightersPickingScreen = fightersPickingScreen
+        this.subComponents.uiScreens.fightersPickingScreen = new GameFightersPickingScreen(this)
     }
 
     function _createRunningScreen(initOptions) {
         const { GameRunningScreen } = classes
-        const gameRunningScreen = new GameRunningScreen(this, initOptions)
-
-        this.subComponents.uiScreens.gameRunningScreen = gameRunningScreen
-        this.subComponents.parts.gameRoundsRunner = gameRunningScreen.provideGameRoundsRunner()
+        this.subComponents.uiScreens.gameRunningScreen = new GameRunningScreen(this, initOptions)
     }
 
     function _createMoreDOMs() {
@@ -216,104 +199,21 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
 
 
-    function _prepareGameAfterSettingsDecided() {
-        console.log('正在准备游戏通用数据（候选角色、候选游戏对战舞台数据等）。')
-        _prepareAllGameRoleCandidatesForBothPlayers.call(this)
-        _prepareAllGameFightingStageCandidates     .call(this)
-        this.subComponents.uiScreens.fightersPickingScreen.createFighterPickersForBothPlayers()
+    function _closeModalOfGameIntro() {
+        this.services.keyboardEngine.stop()
+        this.services.modals.overlayModalOfGameIntro.leaveAndHide()
+        this.status.resolvePromiseOf['game intro modal closed']()
     }
-
-    function _prepareAllGameRoleCandidatesForBothPlayers() {
-        const { settings, data } = this
-        const { enableFairMode } = settings
-
-        const {
-            allGameRoleRawConfigurations,
-        } = data
-
-        const {
-            allGameRoleConfigurationTransformFunction,
-        } = utils
-
-        const {
-            common: roleCommonConfiguration,
-        } = allGameRoleRawConfigurations
-
-        const allGameRoleConfigurations = allGameRoleRawConfigurations.items.map(rawConfig => {
-            return allGameRoleConfigurationTransformFunction(rawConfig, roleCommonConfiguration)
-        })
-
-        if (enableFairMode) {
-            const fairHealthPointBase  = 24
-            const fairAttackPointBase  = 15
-            const fairDefencePointBase = 10
-
-            const randomNumberAround = function (base, span) {
-                const halfSapn = span / 2
-                const min = 1 - halfSapn
-                const int = Math.ceil((Math.random() * span + min) * base)
-                const fra = Math.random() > 0.5 ? 0.5 : 0
-                return int + fra
-            }
-
-            allGameRoleConfigurations.forEach(roleConfig => {
-                roleConfig.fullHealthPoint = randomNumberAround(fairHealthPointBase,  0.3) * 1000
-                roleConfig.attackingPower  = randomNumberAround(fairAttackPointBase,  0.4) * 1000
-                roleConfig.defencingPower  = randomNumberAround(fairDefencePointBase, 0.4) * 1000
-            })
-        }
-
-        let maxHP = 0 // health
-        let maxAP = 0 // attack
-        let maxDP = 0 // defence
-
-        allGameRoleConfigurations.forEach(roleConfig => {
-            const {
-                fullHealthPoint,
-                attackingPower,
-                defencingPower,
-            } = roleConfig
-
-            maxHP = Math.max(maxHP, fullHealthPoint)
-            maxAP = Math.max(maxAP, attackingPower)
-            maxDP = Math.max(maxDP, defencingPower)
-        })
-
-        allGameRoleConfigurations.forEach(roleConfig => {
-            const {
-                fullHealthPoint,
-                attackingPower,
-                defencingPower,
-            } = roleConfig
-
-            roleConfig.healthPointRatio    = + Math.max(0.01, (fullHealthPoint / maxHP).toFixed(4))
-            roleConfig.attackingPowerRatio = + Math.max(0.01, (attackingPower  / maxAP).toFixed(4))
-            roleConfig.defencingPowerRatio = + Math.max(0.01, (defencingPower  / maxDP).toFixed(4))
-        })
-
-        data.allGameRoleConfigurations = allGameRoleConfigurations
-
-        data.allGameFighterCandidatesForBothPlayers = [
-            _prepareAllGameRoleCandidatesForPlayer.call(this, 1, allGameRoleConfigurations),
-            _prepareAllGameRoleCandidatesForPlayer.call(this, 2, allGameRoleConfigurations),
-        ]
-    }
-
-    function _prepareAllGameRoleCandidatesForPlayer(playerId, allGameRoleConfigurations) {
-        const { GameRoleCandidate } = classes
-
-        // console.log('\n准备为玩家', playerId, '创建所有【角色候选人】……')
-
-        const gameRoleCandidates = allGameRoleConfigurations.map(roleConfig => {
-            return new GameRoleCandidate(playerId, roleConfig)
-        })
-
-        console.log('为玩家', playerId, '创建【角色候选人】完毕。')
-
-        return gameRoleCandidates
+    
+    function _closeModalOfGamePreferencesPanel() {
+        this.services.keyboardEngine.stop()
+        this.services.modals.overlayModalOfGamePreferencesPanel.leaveAndHide()
+        this.status.resolvePromiseOf['game settings decided']()
     }
 
     function _prepareAllGameFightingStageCandidates() {
+        console.log('正在准备游戏对战候选舞台。')
+
         const { data } = this
 
         const {
@@ -349,66 +249,53 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         } = this.services
 
 
+
         overlayModalOfGameIntro.showUp()
         keyboardEngine.start({
             keyUp: {
-                '*': () => {
-                    overlayModalOfGameIntro.leaveAndHide()
-                    resolvePromiseOf['game intro modal closed']()
-                },
+                '*': () => _closeModalOfGameIntro.call(this),
             },
         }, '游戏说明对话框')
 
 
 
         await promiseOf['game intro modal closed']
-        keyboardEngine.stop()
 
 
 
-        const {
-            gamePreferencesPanel,
-        } = this.subComponents.parts
         overlayModalOfGamePreferencesPanel.showUp(null, () => {
-            gamePreferencesPanel.allControlInstances[0].el.input.focus()
+            this.subComponents.parts.gamePreferencesPanel.allControlInstances[0].el.input.focus()
         })
         keyboardEngine.start({
             keyUp: {
-                'ESCAPE': () => {
-                    overlayModalOfGamePreferencesPanel.leaveAndHide()
-                    resolvePromiseOf['game settings decided']()
-                },
+                'ESCAPE': () => _closeModalOfGamePreferencesPanel.call(this),
             },
         }, '游戏配置项对话框')
 
 
 
         await promiseOf['game settings decided']
-        keyboardEngine.stop()
 
 
 
-        _prepareGameAfterSettingsDecided.call(this)
+        _prepareAllGameFightingStageCandidates.call(this)
 
 
 
-        this.subComponents.uiScreens.fightersPickingScreen.showUp()
-    }
-
-    async function startGameRounds() {
         const {
-            uiScreens: {
-                fightersPickingScreen,
-                gameRunningScreen,
-            },
-            parts: {
-                gameRoundsRunner,
-            },
-        } = this.subComponents
+            fightersPickingScreen,
+            gameRunningScreen,
+        } = this.subComponents.uiScreens
 
-        fightersPickingScreen.leaveAndHide()
-        gameRunningScreen.showUp()
-        gameRoundsRunner.createAndStartNewRound()
+
+
+        const { allGameRoleRawConfigurations } = this.data
+        fightersPickingScreen.createFighterPickers(allGameRoleRawConfigurations)
+        await fightersPickingScreen.showUpAndStartPickingFighters()
+
+
+
+        gameRunningScreen.showUpAndStartGameRounds()
     }
 
     async function end() {
@@ -487,12 +374,17 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         this.services.keyboardEngine.destroy()
 
-        _logGameLastReport.call(this)
-
         this.destroy()
 
+        const gameDestroyTime = Date.now()
+
+        const spentMilliseconds = gameDestroyTime - this.status.gameCreationTimeValue
+        const spentTimeInfoObject = formattedTimeDurationStringOf(spentMilliseconds)
+        
+        _logGameLastReport.call(this, spentTimeInfoObject)
+
         if (typeof afterGameDestroyed === 'function') {
-            afterGameDestroyed()
+            afterGameDestroyed(spentTimeInfoObject)
         }
     }
 
@@ -515,14 +407,11 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         ].join('\n'))
     }
 
-    function _logGameLastReport() {
-        const gameDestroyTime = Date.now()
-
-        const spentMilliseconds = gameDestroyTime - this.status.gameCreationTimeValue
+    function _logGameLastReport(spentTimeInfoObject) {
         const {
-            string: spentTimeString,
-            visualLength: spentTimeStringViusalWidth,
-        } = formattedTimeDurationStringOf(spentMilliseconds)
+            string1:             spentTimeString,
+            string1VisualLength: spentTimeStringViusalWidth,
+        } = spentTimeInfoObject
 
         const splashWidth = 32
 

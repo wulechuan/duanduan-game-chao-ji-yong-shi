@@ -1,5 +1,6 @@
 window.duanduanGameChaoJiYongShi = {
     games: [],
+    currentGame: null,
 
     classes: {}, // 各种构造函数统一存放于此。
 
@@ -8,6 +9,13 @@ window.duanduanGameChaoJiYongShi = {
     data: {
         chineseNumbers: [ '〇', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十' ],
     },
+
+    el: {
+        appRoot: null,
+        authorWishes: null,
+    },
+
+
 
     async fetchGameGlobalSettings() {
         return Promise.resolve(this.networkData.gameGlobalSettings)
@@ -21,12 +29,37 @@ window.duanduanGameChaoJiYongShi = {
         return Promise.resolve(this.networkData.allGameFightingStageRawConfigurations)
     },
 
+    fetachAllData() {
+        console.log('正在等待从网络接受游戏数据（实际上这种说法是虚假的，该游戏目前没有任何网络请求）。')
 
-    ShowAuthorInfo() {
-        const authorInfoElement = document.querySelector('#info-when-no-more-games')
-        if (authorInfoElement) {
-            appElement       .style.display = 'none'
-            authorInfoElement.style.display = ''
+        return Promise.all([
+            this.fetchGameGlobalSettings(),
+            this.fetchGameRoleRawConfigurations(),
+            this.fetchGameFightingStageRawConfigurations(),
+        ])
+    },
+
+
+
+    hideAppAndShowAuthorWishes(lastRunGameDurationInfoObject) {
+        const { appRoot, authorWishes } = this.el
+
+        appRoot.style.display = 'none'
+
+        if (authorWishes instanceof Node) {
+            if (lastRunGameDurationInfoObject) {
+                const {
+                    // rawValueInMilliseconds,
+                    string2: lastRunGameDurationString,
+                } = lastRunGameDurationInfoObject
+
+                const durationDOM = authorWishes.querySelector('.js-last-run-game-duration')
+                if (durationDOM instanceof Node) {
+                    durationDOM.innerText = `${lastRunGameDurationString}`
+                }
+            }
+
+            authorWishes.style.display = ''
         }
     },
 
@@ -46,28 +79,37 @@ window.duanduanGameChaoJiYongShi = {
         ].join('\n'))
     },
 
-    start(rootElementSelector) {
+    async start(options) {
         this.reportAppLaunch()
 
-        console.log('正在等待从网络接受游戏数据（实际上目前这种说法是虚假的，没有网络请求）。')
-        Promise.all([
-            rootElementSelector,
-            this.fetchGameGlobalSettings(),
-            this.fetchGameRoleRawConfigurations(),
-            this.fetchGameFightingStageRawConfigurations(),
-        ]).then(this.createNewGameAndRunIt.bind(this))
-    },
 
-    createNewGameAndRunIt(allPromisedData) {
+
+        const {
+            appRootElementSelector,
+            authorWishesElementSelector,
+        } = options
+
+        const appElement = document.querySelector(appRootElementSelector)
+
+        if (!(appElement instanceof Node)) {
+            throw new ReferenceError(`凭借选择器“${appRootElementSelector}”找不到 DOM 元素。`)
+        }
+
+        const authorWishesElement = document.querySelector(authorWishesElementSelector)
+
+        this.el.appRoot      = appElement
+        this.el.authorWishes = authorWishesElement
+
+
+
         const [
-            rootElementSelector,
             gameGlobalSettings,
             allGameRoleRawConfigurations,
             allGameFightingStageRawConfigurations,
-        ] = allPromisedData
+        ] = await this.fetachAllData()
 
-        const appElement = document.querySelector(rootElementSelector)
-        
+
+
         let afterGameDestroyed
         if (gameGlobalSettings.SHOULD_START_NEW_GAME_WHEN_A_GAME_ENDS) {
             console.log('')
@@ -82,35 +124,45 @@ window.duanduanGameChaoJiYongShi = {
                 '',
             ].join('\n'))
 
-            afterGameDestroyed = _createNewGameAndRunIt.bind(this)
+            afterGameDestroyed = () => {
+                this.currentGame = null
+                this.createNewGameAndStartIt()
+            }
         } else {
-            afterGameDestroyed = this.ShowAuthorInfo
+            afterGameDestroyed = (lastRunGameDurationInfoObject) => {
+                this.currentGame = null
+                this.hideAppAndShowAuthorWishes(lastRunGameDurationInfoObject)
+            }
         }
 
+
+
+        this.createNewGameAndStartIt({
+            gameGlobalSettings,
+            allGameRoleRawConfigurations,
+            allGameFightingStageRawConfigurations,
+
+            // onGameEnd,
+            // justBeforeGameDestroying,
+            afterGameDestroyed,
+        })
+    },
+
+    createNewGameAndStartIt(gameOptions) {
+        const {
+            appRoot:      appElement,
+            authorWishes: authorWishesElement,
+        } = this.el
+
+        if (authorWishesElement instanceof Node) {
+            authorWishesElement.style.display = 'none'
+        }
+
+        console.log('\n准备创建新游戏\n\n')
         const { Game } = this.classes
-
-        function _createNewGameAndRunIt() {
-            console.log('\n准备创建新游戏\n\n')
-
-            const game = new Game(
-                appElement,
-    
-                {
-                    gameGlobalSettings,
-                    allGameRoleRawConfigurations,
-                    allGameFightingStageRawConfigurations,
-    
-                    // onGameEnd,
-                    // justBeforeGameDestroying,
-                    afterGameDestroyed,
-                }
-            )
-    
-            this.games.push(game)
-    
-            game.start()
-        }
-
-        _createNewGameAndRunIt.call(this)
+        const game = new Game(appElement, gameOptions)
+        this.currentGame = game
+        this.games.push(game)
+        game.start()
     },
 }

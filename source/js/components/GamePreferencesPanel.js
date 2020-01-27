@@ -25,9 +25,9 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
             allowToCheat,
             shouldManuallyPickFighters,
             shouldAutoPickFightersByWeights,
-            shouldForceRollingEvenIfAutoPickingByWeights,
+            // shouldForceRollingEvenIfAutoPickingByWeights,
 
-            keyboardShortcuts,
+            // keyboardShortcuts,
         } = gameSetingsToModify
 
         const {
@@ -48,7 +48,7 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                         onChange: (e) => {
                             const newValue = + e.target.value
                             let newValueIsValid = true
-                            if (newValue < 1)       { newValueIsValid = false }
+                            if (!(newValue >= 1))   { newValueIsValid = false }
                             if (newValue % 2 === 0) { newValueIsValid = false }
 
                             if (newValueIsValid) {
@@ -183,11 +183,18 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
         const formElement = this.el.form
 
         formElement.onkeydown = function(e) {
-            e.stopPropagation()
+            const { key } = e
+            if (!key.match(/Escape|Enter/i)) {
+                e.stopPropagation()
+            }
         }
 
         formElement.onkeyup = function(e) {
+            const { key } = e
             e.stopPropagation()
+            if (!key.match(/Escape|Enter/i)) {
+                e.stopPropagation()
+            }
         }
     }
 })();

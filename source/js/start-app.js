@@ -1,4 +1,7 @@
 ;(function () {
     const app = window.duanduanGameChaoJiYongShi
-    app.start('#app')
+    app.start({
+        appRootElementSelector:      '#js-app',
+        authorWishesElementSelector: '#js-author-wishes',
+    })
 })();

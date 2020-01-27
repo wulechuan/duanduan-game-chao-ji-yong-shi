@@ -1,10 +1,13 @@
 window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function () {
     const app = window.duanduanGameChaoJiYongShi
     const { utils, classes } = app
-    
-    const { createDOMWithClassNames } = utils
 
-    return function GameFightersPickingScreen(game, initOptions) {
+    const {
+        createDOMWithClassNames,
+        createPromisesAndStoreIn,
+    } = utils
+
+    return function GameFightersPickingScreen(game) {
         const { Game } = classes
 
         if (!new.target) {
@@ -19,30 +22,16 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
             throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏斗士选择界面】。')
         }
 
-        const {
-            shouldAutoPickFightersByWeights,
-            shouldForceRollingEvenIfAutoPickingByWeights,
-            shouldManuallyPickFighters,
-        } = initOptions
-
         this.game = game
         this.subComponents = {}
         this.data = {}
-        this.status = {
-            shouldAutoPickFightersByWeights: !!shouldAutoPickFightersByWeights,
-            shouldForceRollingEvenIfAutoPickingByWeights: !!shouldForceRollingEvenIfAutoPickingByWeights,
-            shouldManuallyPickFighters: !!shouldManuallyPickFighters,
-            fighter1HasDecided: false,
-            fighter2HasDecided: false,
-        }
+        this.status = {}
 
-
-        this.createFighterPickersForBothPlayers = createFighterPickersForBothPlayers.bind(this)
-        this.startPickingFightersForBothPlayers = startPickingFightersForBothPlayers.bind(this)
-        this.onEitherFighterDecided             = onEitherFighterDecided            .bind(this)
-        this.showUp                             = showUp                            .bind(this)
-        this.hide                               = hide                              .bind(this)
-        this.leaveAndHide                       = leaveAndHide                      .bind(this)
+        this.createFighterPickers          = createFighterPickers         .bind(this)
+        this.showUpAndStartPickingFighters = showUpAndStartPickingFighters.bind(this)
+        this.showUp                        = showUp                       .bind(this)
+        this.hide                          = hide                         .bind(this)
+        this.leaveAndHide                  = leaveAndHide                 .bind(this)
 
 
         _init.call(this)
@@ -53,62 +42,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
 
 
     function _init() {
-        _createMoreDOMs                    .call(this)
-
-        this.el.root.style = 'none'
-    }
-
-    function createFighterPickersForBothPlayers() {
-        const { GameFighterPicker } = classes
-        const { game } = this
-        const {
-            player1: player1KeyboardShortcuts,
-            player2: player2KeyboardShortcuts,
-        } = game.settings.keyboardShortcuts.gameFightersPicking
-
-        const [
-            candidatesForPlayer1,
-            candidatesForPlayer2,
-        ] = this.game.data.allGameFighterCandidatesForBothPlayers
-
-        const {
-            shouldAutoPickFightersByWeights,
-            shouldForceRollingEvenIfAutoPickingByWeights,
-            shouldManuallyPickFighters,
-        } = this.status
-        
-        const fighterPickers = [
-            new GameFighterPicker(1, {
-                gameRoleCandidates: candidatesForPlayer1,
-                keyForAcceptingFighter:     player1KeyboardShortcuts.acceptCandidate,
-                keyForPickingPrevCandidate: player1KeyboardShortcuts.prevCandidate,
-                keyForPickingNextCandidate: player1KeyboardShortcuts.nextCandidate,
-                // shouldNotAutoRoll: false,
-                shouldAutoPickFighterByWeights: shouldAutoPickFightersByWeights,
-                shouldForceRollingEvenIfAutoPickingByWeights,
-                shouldManuallyPickFighters,
-                onFighterDecided: this.onEitherFighterDecided,
-            }),
-
-            new GameFighterPicker(2, {
-                gameRoleCandidates: candidatesForPlayer2,
-                keyForAcceptingFighter:     player2KeyboardShortcuts.acceptCandidate,
-                keyForPickingPrevCandidate: player2KeyboardShortcuts.prevCandidate,
-                keyForPickingNextCandidate: player2KeyboardShortcuts.nextCandidate,
-                // shouldNotAutoRoll: false,
-                shouldAutoPickFighterByWeights: shouldAutoPickFightersByWeights,
-                shouldForceRollingEvenIfAutoPickingByWeights,
-                shouldManuallyPickFighters,
-                onFighterDecided: this.onEitherFighterDecided,
-            }),
-        ]
-
-        const rootElement = this.el.root
-        fighterPickers.forEach(fp => {
-            rootElement.appendChild(fp.el.root)
-        })
-
-        this.subComponents.fighterPickers = fighterPickers
+        _createMoreDOMs.call(this)
     }
 
     function _createMoreDOMs() {
@@ -122,68 +56,250 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         }
     }
 
-    function startPickingFightersForBothPlayers() {
+
+
+
+
+    function createFighterPickers(allGameRoleRawConfigurations) {
+        console.log('正在准备游戏候选角色。')
+        _prepareRoleCandidateConfigurations       .call(this, allGameRoleRawConfigurations)
+        _createAllGameRoleCandidatesForBothPlayers.call(this)
+        _createFighterPickersForBothPlayers       .call(this)
+    }
+
+    function _prepareRoleCandidateConfigurations(allGameRoleRawConfigurations) {
+        console.log('正在准备游戏候选角色的基础数据。')
+
+        const { game, data } = this
+
+        const { enableFairMode } = game.settings
+
+        const {
+            allGameRoleConfigurationTransformFunction,
+        } = utils
+
+        const {
+            common: roleCommonConfiguration,
+        } = allGameRoleRawConfigurations
+
+        const allGameRoleConfigurations = allGameRoleRawConfigurations.items.map(rawConfig => {
+            return allGameRoleConfigurationTransformFunction(rawConfig, roleCommonConfiguration)
+        })
+
+        data.allGameRoleConfigurations = allGameRoleConfigurations
+
+        if (enableFairMode) {
+            _overwriteRoleConfigurationsDataWithFairData.call(this)
+        }
+
+        _calculateValueRatiosForRoleCandidateConfigurations.call(this)
+    }
+
+    function _overwriteRoleConfigurationsDataWithFairData() {
+        console.log('由于“公平模式”已开启，现在调整游戏候选角色的基础数据。')
+
+        const fairHealthPointBase  = 24
+        const fairAttackPointBase  = 15
+        const fairDefencePointBase = 10
+
+        const randomNumberAround = function (base, span) {
+            const halfSapn = span / 2
+            const min = 1 - halfSapn
+            const int = Math.ceil((Math.random() * span + min) * base)
+            const fra = Math.random() > 0.5 ? 0.5 : 0
+            return int + fra
+        }
+
+        this.data.allGameRoleConfigurations.forEach(roleConfig => {
+            roleConfig.fullHealthPoint = randomNumberAround(fairHealthPointBase,  0.3) * 1000
+            roleConfig.attackingPower  = randomNumberAround(fairAttackPointBase,  0.4) * 1000
+            roleConfig.defencingPower  = randomNumberAround(fairDefencePointBase, 0.4) * 1000
+        })
+    }
+
+    function _calculateValueRatiosForRoleCandidateConfigurations() {
+        console.log('正在为游戏候选角色的基础数据添加统计信息（目前仅添加各值相对于最大值的比例值）。')
+
+        const { allGameRoleConfigurations } = this.data
+
+        let maxHP = 0 // health
+        let maxAP = 0 // attack
+        let maxDP = 0 // defence
+
+        allGameRoleConfigurations.forEach(roleConfig => {
+            const {
+                fullHealthPoint,
+                attackingPower,
+                defencingPower,
+            } = roleConfig
+
+            maxHP = Math.max(maxHP, fullHealthPoint)
+            maxAP = Math.max(maxAP, attackingPower)
+            maxDP = Math.max(maxDP, defencingPower)
+        })
+
+        allGameRoleConfigurations.forEach(roleConfig => {
+            const {
+                fullHealthPoint,
+                attackingPower,
+                defencingPower,
+            } = roleConfig
+
+            roleConfig.healthPointRatio    = Math.max(0.001, + (fullHealthPoint / maxHP).toFixed(4))
+            roleConfig.attackingPowerRatio = Math.max(0.001, + (attackingPower  / maxAP).toFixed(4))
+            roleConfig.defencingPowerRatio = Math.max(0.001, + (defencingPower  / maxDP).toFixed(4))
+        })
+    }
+
+    function _createAllGameRoleCandidatesForBothPlayers() {
+        const { data } = this
+        const { allGameRoleConfigurations } = data
+
+        data.allGameFighterCandidatesForBothPlayers = [
+            _prepareAllGameRoleCandidatesForSinglePlayer.call(this, 1, allGameRoleConfigurations),
+            _prepareAllGameRoleCandidatesForSinglePlayer.call(this, 2, allGameRoleConfigurations),
+        ]
+    }
+
+    function _prepareAllGameRoleCandidatesForSinglePlayer(playerId, allGameRoleConfigurations) {
+        const { GameRoleCandidate } = classes
+
+        // console.log('\n准备为玩家', playerId, '创建所有【角色候选人】……')
+
+        const gameRoleCandidates = allGameRoleConfigurations.map(roleConfig => {
+            return new GameRoleCandidate(playerId, roleConfig)
+        })
+
+        console.log('为玩家', playerId, '创建【角色候选人】完毕。')
+
+        return gameRoleCandidates
+    }
+
+    function _createFighterPickersForBothPlayers() {
+        const { game, data } = this
+
+        const {
+            shouldManuallyPickFighters,
+            shouldAutoPickFightersByWeights,
+            shouldForceRollingEvenIfAutoPickingByWeights,
+            keyboardShortcuts,
+        } = game.settings
+
+        const {
+            player1: player1KeyboardShortcuts,
+            player2: player2KeyboardShortcuts,
+        } = keyboardShortcuts.gameFightersPicking
+
+        const [
+            candidatesForPlayer1,
+            candidatesForPlayer2,
+        ] = data.allGameFighterCandidatesForBothPlayers
+
+        const { GameFighterPicker } = classes
+
+        const fighterPickers = [
+            new GameFighterPicker(1, {
+                gameRoleCandidates: candidatesForPlayer1,
+                keyForAcceptingFighter:     player1KeyboardShortcuts.acceptCandidate,
+                keyForPickingPrevCandidate: player1KeyboardShortcuts.prevCandidate,
+                keyForPickingNextCandidate: player1KeyboardShortcuts.nextCandidate,
+                // shouldNotAutoRoll: false,
+                shouldAutoPickFighterByWeights: shouldAutoPickFightersByWeights,
+                shouldForceRollingEvenIfAutoPickingByWeights,
+                shouldManuallyPickFighters,
+            }),
+
+            new GameFighterPicker(2, {
+                gameRoleCandidates: candidatesForPlayer2,
+                keyForAcceptingFighter:     player2KeyboardShortcuts.acceptCandidate,
+                keyForPickingPrevCandidate: player2KeyboardShortcuts.prevCandidate,
+                keyForPickingNextCandidate: player2KeyboardShortcuts.nextCandidate,
+                // shouldNotAutoRoll: false,
+                shouldAutoPickFighterByWeights: shouldAutoPickFightersByWeights,
+                shouldForceRollingEvenIfAutoPickingByWeights,
+                shouldManuallyPickFighters,
+            }),
+        ]
+
+        const rootElement = this.el.root
+        fighterPickers.forEach(fp => rootElement.appendChild(fp.el.root))
+
+        this.subComponents.fighterPickers = fighterPickers
+    }
+
+
+
+
+
+    async function _startPickingFighters() {
         const {
             fighterPickers,
         } = this.subComponents
 
-        const keyboardEngineConfigForBothPlayers = fighterPickers.reduce((kec, fp) => {
-            const {
-                keyDown,
-                keyUp,
-            } = kec
+        const promiseOfBothFighterPickersAreDone = Promise.all(
+            fighterPickers.map(fighterPicker => fighterPicker.startPickingFighter())
+        )
 
-            kec = {
-                keyDown: {
-                    ...keyDown,
-                    ...fp.data.keyboardEngineKeyDownConfig,
-                },
-                keyUp: {
-                    ...keyUp,
-                    ...fp.data.keyboardEngineKeyUpConfig,
+
+
+        const shouldStartKeyboardEngine = fighterPickers.some(
+            fighterPicker => fighterPicker.status.requireKeyboardInteraction
+        )
+
+        if (shouldStartKeyboardEngine) {
+            const keyboardEngineConfigForBothPlayers = fighterPickers.reduce((kec, fp) => {
+                const {
+                    keyDown,
+                    keyUp,
+                } = kec
+
+                kec = {
+                    keyDown: {
+                        ...keyDown,
+                        ...fp.data.keyboardEngineKeyDownConfig,
+                    },
+                    keyUp: {
+                        ...keyUp,
+                        ...fp.data.keyboardEngineKeyUpConfig,
+                    }
                 }
-            }
 
-            return kec
-        }, {
-            keyDown: {},
-            keyUp: {},
-        })
-        
-        // console.log(keyboardEngineConfigForBothPlayers)
-        
-        fighterPickers.forEach(fighterPicker => fighterPicker.startPickingFighter())
-        this.game.services.keyboardEngine.start(keyboardEngineConfigForBothPlayers, '角色选择界面')
+                return kec
+            }, {
+                keyDown: {},
+                keyUp: {},
+            })
+
+            this.game.services.keyboardEngine.start(keyboardEngineConfigForBothPlayers, '角色选择界面')
+        }
+
+
+
+        this.game.data.pickedFighterRoleConfigurations.both = await promiseOfBothFighterPickersAreDone
+        // console.log(this.game.data.pickedFighterRoleConfigurations.both)
+
+    
+
+        if (shouldStartKeyboardEngine) {
+            this.game.services.keyboardEngine.stop()
+        }
     }
 
-    function onEitherFighterDecided(playerId, decidedFighterRoleConfig) {
-        const pickedFighterRoleConfigs = this.game.data.pickedFighterRoleConfigurations.both
-        const arrayIndex = playerId - 1
-        pickedFighterRoleConfigs[arrayIndex] = decidedFighterRoleConfig
-
-        const { status } = this
-        status[`fighter${playerId}HasDecided`] = true
-
-        if (status.fighter1HasDecided && status.fighter2HasDecided) {
-            this.game.services.keyboardEngine.stop()
-            this.game.startGameRounds()
-        }
+    async function showUpAndStartPickingFighters() {
+        this.showUp()
+        await _startPickingFighters.call(this)
+        this.leaveAndHide()
     }
 
     function showUp() {
         this.el.root.style.display = ''
-        setTimeout(() => {
-            this.startPickingFightersForBothPlayers()
-        }, 800)
     }
 
     function hide() {
-        window.onkeydown = null
         this.el.root.style.display = 'none'
     }
 
     function leaveAndHide() {
-        window.onkeydown = null
         const rootElement = this.el.root
 
         rootElement.classList.add('leaving')

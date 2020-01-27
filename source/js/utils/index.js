@@ -26,8 +26,8 @@ window.duanduanGameChaoJiYongShi.utils = (function () {
             return `${y}.${M}.${d} ${h}:${m}:${s}`
         },
     
-        formattedTimeDurationStringOf(timeDurationNumberValue /* in milliseconds */) {
-            let rest = timeDurationNumberValue
+        formattedTimeDurationStringOf(rawValueInMilliseconds /* in milliseconds */) {
+            let rest = rawValueInMilliseconds
     
             const h = Math.floor(rest / (3600 * 1000))
             rest -= h * 3600 * 1000
@@ -37,34 +37,44 @@ window.duanduanGameChaoJiYongShi.utils = (function () {
     
             const s = +(rest / 1000).toFixed(1)
     
-            let visualLength = 0
-            let hS = ''
-            let mS = ''
-            let sS = ''
+            let string1VisualLength = 0
+            let hS1 = ''
+            let mS1 = ''
+            let sS1 = ''
+
+            let mS2 = ''
+            let hS2 = ''
+            let sS2 = ''
     
             if (h > 0) {
-                hS = `${h} 小时 `
-                visualLength += hS.length + 2
+                hS1 = `${h} 小时 `
+                hS2 = `${h}小时`
+                string1VisualLength += hS1.length + 2
             }
     
             if (s > 0) {
-                sS = `${s} 秒`
-                visualLength += sS.length + 1
+                sS1 = `${s} 秒`
+                sS2 = `${s}秒`
+                string1VisualLength += sS1.length + 1
             }
     
             if (m > 0) {
                 if (s > 0) {
-                    mS = `${m} 分 `
-                    visualLength += mS.length + 1
+                    mS1 = `${m} 分 `
+                    mS2 = `${m}分`
+                    string1VisualLength += mS1.length + 1
                 } else {
-                    mS = `${m} 分钟`
-                    visualLength += mS.length + 2
+                    mS1 = `${m} 分钟`
+                    mS2 = `${m}分钟`
+                    string1VisualLength += mS1.length + 2
                 }
             }
     
             return {
-                string: `${hS}${mS}${sS}`,
-                visualLength,
+                rawValueInMilliseconds,
+                string1: `${hS1}${mS1}${sS1}`,
+                string2: `${hS2}${mS2}${sS2}`,
+                string1VisualLength,
             }
         },
     
@@ -97,6 +107,20 @@ window.duanduanGameChaoJiYongShi.utils = (function () {
             }
 
             return newDOM
+        },
+
+        createPromisesAndStoreIn(host, promiseNames) {
+            const promiseOf = {}
+            const resolvePromiseOf = {}
+    
+            promiseNames.forEach(promiseName => {
+                promiseOf[promiseName] = new Promise((resolve) => {
+                    resolvePromiseOf[promiseName] = resolve
+                })
+            })
+
+            host.promiseOf        = promiseOf
+            host.resolvePromiseOf = resolvePromiseOf
         }
     }
 })();
