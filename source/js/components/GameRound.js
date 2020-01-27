@@ -22,6 +22,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             throw new Error('【游戏】已经结束。不能为已经结束的【游戏】创建【游戏局】。')
         }
 
+
         // TODO 未来将宣告战局的功能移走，则这里不再需要存放 gameRoundsRunner 了
         const { gameRunningScreen } = game.subComponents.uiScreens
         const { gameRoundsRunner } = gameRunningScreen.subComponents
@@ -52,10 +53,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 togglePauseAndResume: keyForTogglingPauseAndResume,
             },
         } = initOptions
+        
+        const { settings: gameSettings } = game
+
+        const allowToCheat = gameSettings.allowToCheat && !gameSettings.enableFairMode
 
         this.data = {
             gameRoundNumber,
-            roundsTotalCount,
+            // roundsTotalCount,
+            allowToCheat,
 
             fighters: {
                 both: null,
@@ -264,8 +270,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
     function cheatedBy(attacker, cheatingAttacksCount) {
-        const { game } = this
-        if (!game.settings.allowToCheat) {
+        if (!this.data.allowToCheat) {
             console.log(`听着，${attacker.logString}，你不准作弊！`)
             return
         }

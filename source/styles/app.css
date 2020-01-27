@@ -799,6 +799,10 @@ article blockquote em{
   left:0;
   right:0;
 }
+.role-candidates-slot.should-auto-roll-candidates .keyboard-tip-container.pick-prev-candidate,
+.role-candidates-slot.should-auto-roll-candidates .keyboard-tip-container.pick-next-candidate{
+  display:none;
+}
 .role-candidates-slot .keyboard-tip-container{
   font-size:1.1rem;
   position:absolute;

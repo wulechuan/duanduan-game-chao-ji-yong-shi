@@ -52,7 +52,6 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 finalWinnerPlayerId: NaN,
             },
             gameRounds: {
-                maxRoundsToRun: this.settings.maxRoundsToRun,
                 history: [],
                 current: null,
             },

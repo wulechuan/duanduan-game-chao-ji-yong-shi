@@ -88,10 +88,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         const newGameRound = new GameRound(
             this.game,
             displayingIndexOfNewGameRound,
-            this.game.data.gameRounds.maxRoundsToRun,
+            this.game.settings.maxRoundsToRun,
             {
                 globalKeyboardShortcuts: this.data.globalKeyboardShortcutsPerGameRound,
-            }
+            },
         )
 
         gameRounds.current = newGameRound

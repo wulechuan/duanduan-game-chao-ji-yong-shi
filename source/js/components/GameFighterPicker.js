@@ -92,11 +92,11 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         const { KeyboardHint } = classes
         const {
             shouldNotAutoRoll,
-            shouldManuallyPickFighters,
+            requireKeyboardInteraction,
         } = this.status
 
         const keyboardHintForPickingPrevCandidate = new KeyboardHint({
-            isOptional: shouldNotAutoRoll,
+            isOptional: !shouldNotAutoRoll,
             keyName: keyForPickingPrevCandidate,
             keyDescription: '上一位',
             labelSouldLayBelowHint: true,
@@ -106,7 +106,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         })
 
         const keyboardHintForPickingNextCandidate = new KeyboardHint({
-            isOptional: shouldNotAutoRoll,
+            isOptional: !shouldNotAutoRoll,
             keyName: keyForPickingNextCandidate,
             keyDescription: '下一位',
             labelSouldLayBelowHint: true,
@@ -116,7 +116,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         })
 
         const keyboardHintForAcceptingFighter = new KeyboardHint({
-            isOptional: !shouldManuallyPickFighters,
+            isOptional: !requireKeyboardInteraction,
             keyName: keyForAcceptingFighter,
             keyDescription: '接受',
             labelSouldLayBelowHint: true,
@@ -155,7 +155,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         const totalWeightingPoint = accumWeightPointSoFar
         randomizedCandidates.forEach(candidate => {
             candidate.data.normalizedSelectionWeight      = + (candidate.data.selectionWeightWhileAutoPicking / totalWeightingPoint).toFixed(4)
-            candidate.data.normalizedAccumSelectionWeight = + (candidate.data.accumSelectionWeightPoint        / totalWeightingPoint).toFixed(4)
+            candidate.data.normalizedAccumSelectionWeight = + (candidate.data.accumSelectionWeightPoint       / totalWeightingPoint).toFixed(4)
         })
 
         const lastCandidate = randomizedCandidates[randomizedCandidates.length - 1]
@@ -174,6 +174,10 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         } = this.data
 
         const {
+            shouldNotAutoRoll,
+        } = this.status
+
+        const {
             keyboardHintForPickingPrevCandidate,
             keyboardHintForPickingNextCandidate,
             keyboardHintForAcceptingFighter,
@@ -186,6 +190,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         const rootElement = createDOMWithClassNames('div', [
             'role-candidates-slot',
             `player-${playerId}`,
+            shouldNotAutoRoll ? '' : 'should-auto-roll-candidates',
         ])
 
         const keyboardTipsContainerElement = createDOMWithClassNames('div', [
@@ -297,7 +302,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
         status.isRollingRoles = true
         status.rollingIntervalId = setInterval(() => {
-            pickingFunction()
+            _pickOneCandidateRandomly.call(this)
         }, intervalInMilliseconds)
     }
 
