@@ -37,6 +37,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
         }
 
 
+        this.createFighterPickersForBothPlayers = createFighterPickersForBothPlayers.bind(this)
         this.startPickingFightersForBothPlayers = startPickingFightersForBothPlayers.bind(this)
         this.onEitherFighterDecided             = onEitherFighterDecided            .bind(this)
         this.showUp                             = showUp                            .bind(this)
@@ -52,13 +53,12 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
 
 
     function _init() {
-        _createFighterPickersForBothPlayers.call(this)
         _createMoreDOMs                    .call(this)
 
         this.el.root.style = 'none'
     }
 
-    function _createFighterPickersForBothPlayers() {
+    function createFighterPickersForBothPlayers() {
         const { GameFighterPicker } = classes
         const { game } = this
         const {
@@ -77,7 +77,7 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
             shouldManuallyPickFighters,
         } = this.status
         
-        this.subComponents.fighterPickers = [
+        const fighterPickers = [
             new GameFighterPicker(1, {
                 gameRoleCandidates: candidatesForPlayer1,
                 keyForAcceptingFighter:     player1KeyboardShortcuts.acceptCandidate,
@@ -102,6 +102,13 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
                 onFighterDecided: this.onEitherFighterDecided,
             }),
         ]
+
+        const rootElement = this.el.root
+        fighterPickers.forEach(fp => {
+            rootElement.appendChild(fp.el.root)
+        })
+
+        this.subComponents.fighterPickers = fighterPickers
     }
 
     function _createMoreDOMs() {
@@ -109,10 +116,6 @@ window.duanduanGameChaoJiYongShi.classes.GameFightersPickingScreen = (function (
             'ui-screen',
             'role-picking-screen',
         ])
-
-        this.subComponents.fighterPickers.forEach(fp => {
-            rolePickingScreenElement.appendChild(fp.el.root)
-        })
 
         this.el = {
             root: rolePickingScreenElement,

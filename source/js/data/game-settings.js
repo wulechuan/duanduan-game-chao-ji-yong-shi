@@ -1,4 +1,4 @@
-window.duanduanGameChaoJiYongShi.data.gameGlobalSettings = {
+window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
     /* 谨慎！我们真的有必要令游戏无止境的进行吗？ */
     /* 谨慎！我们真的有必要令游戏无止境的进行吗？ */
     /* 谨慎！我们真的有必要令游戏无止境的进行吗？ */

@@ -1,4 +1,4 @@
-window.duanduanGameChaoJiYongShi.data.allGameFightingStageConfigurationTransformFunction = (thisStageRawConfig, allStagesCommonConfig) => {
+window.duanduanGameChaoJiYongShi.utils.allGameFightingStageConfigurationTransformFunction = (thisStageRawConfig, allStagesCommonConfig) => {
     const {
         filePathsPrefix,
         fileExt: defaultFileExt,

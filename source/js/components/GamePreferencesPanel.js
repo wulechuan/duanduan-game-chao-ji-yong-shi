@@ -53,6 +53,7 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
 
                             if (newValueIsValid) {
                                 gameSetingsToModify.maxRoundsToRun = + newValue
+                                e.target.value = + newValue
                             } else {
                                 e.target.value = gameSetingsToModify.maxRoundsToRun
                             }

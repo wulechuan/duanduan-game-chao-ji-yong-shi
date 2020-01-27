@@ -3,29 +3,22 @@ window.duanduanGameChaoJiYongShi = {
 
     classes: {}, // 各种构造函数统一存放于此。
 
+    networkData: {}, // 故意模拟来自网络的数据集。
+
     data: {
         chineseNumbers: [ '〇', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十' ],
-
-        // allGameRoleRawConfigurations: [],
-        // allGameFightingStageRawConfigurations: [],
-
-        // allGameRoleConfigurations: [],
-        // allGameFightingStageConfigurations: [],
-
-        // allGameFighterCandidatesForBothPlayers: [],
-        // allGameFightingStageCandidates: [],
     },
 
     async fetchGameGlobalSettings() {
-        return Promise.resolve(this.data.gameGlobalSettings)
+        return Promise.resolve(this.networkData.gameGlobalSettings)
     },
 
     async fetchGameRoleRawConfigurations() {
-        return Promise.resolve(this.data.allGameRoleRawConfigurations)
+        return Promise.resolve(this.networkData.allGameRoleRawConfigurations)
     },
 
     async fetchGameFightingStageRawConfigurations() {
-        return Promise.resolve(this.data.allGameFightingStageRawConfigurations)
+        return Promise.resolve(this.networkData.allGameFightingStageRawConfigurations)
     },
 
 
@@ -73,12 +66,6 @@ window.duanduanGameChaoJiYongShi = {
             allGameFightingStageRawConfigurations,
         ] = allPromisedData
 
-        // console.log('rootElementSelector\n   ', rootElementSelector)
-        // console.log('gameGlobalSettings\n   ', gameGlobalSettings)
-        // console.log('allGameRoleRawConfigurations\n', allGameRoleRawConfigurations)
-        // console.log('allGameFightingStageRawConfigurations\n', allGameFightingStageRawConfigurations)
-
-
         const appElement = document.querySelector(rootElementSelector)
         
         let afterGameDestroyed
@@ -95,7 +82,7 @@ window.duanduanGameChaoJiYongShi = {
                 '',
             ].join('\n'))
 
-            afterGameDestroyed = _createNewGameAndRunIt
+            afterGameDestroyed = _createNewGameAndRunIt.bind(this)
         } else {
             afterGameDestroyed = this.ShowAuthorInfo
         }
@@ -124,6 +111,6 @@ window.duanduanGameChaoJiYongShi = {
             game.start()
         }
 
-        _createNewGameAndRunIt()
+        _createNewGameAndRunIt.call(this)
     },
 }
