@@ -1,11 +1,12 @@
 window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     const app = window.duanduanGameChaoJiYongShi
-    const { utils, classes, data: appData } = app
+    const { utils, classes } = app
     const {
         buildOneSplashLineForConsoleLog,
         formattedDateStringOf,
         formattedTimeDurationStringOf,
         createDOMWithClassNames,
+        createPromisesAndStoreIn,
     } = utils
 
     return function Game(gameRootContainer, initOptions) {
@@ -19,10 +20,10 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         _logGameFirstReport(gameCreationTimeString)
 
         const {
-            allGameFighterCandidatesForBothPlayers,
-            allGameFightingStageConfigurations,
-            // maxRoundsToRun,
-            // shouldAutoPickFightersByWeights,
+            gameGlobalSettings,
+            allGameRoleRawConfigurations,
+            allGameFightingStageRawConfigurations,
+
             onGameEnd,
             justBeforeGameDestroying,
             afterGameDestroyed,
@@ -35,9 +36,15 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         this.services = { modals: {} }
 
+        this.globalSettings = gameGlobalSettings
+        this.settings = gameGlobalSettings.perGameSettings
+
         this.data = {
-            allGameFighterCandidatesForBothPlayers,
-            allGameFightingStageConfigurations,
+            allGameRoleRawConfigurations,
+            allGameFightingStageRawConfigurations,
+
+            allGameFighterCandidatesForBothPlayers: [],
+            allGameFightingStageConfigurations: [],
             pickedFighterRoleConfigurations: {
                 both: [],
                 finalWinnerRoleConfig: null,
@@ -45,8 +52,6 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
                 finalWinnerPlayerId: NaN,
             },
             gameRounds: {
-                minWinningRoundsPerPlayer: NaN,
-                maxRoundsToRun: NaN,
                 history: [],
                 current: null,
             },
@@ -64,6 +69,11 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             isOver: false,
         }
 
+        createPromisesAndStoreIn(this.status, [
+            'game intro modal closed',
+            'game settings decided',
+        ])
+
         this.listenersOfMyEvents = {
             onGameEnd,
             justBeforeGameDestroying,
@@ -71,10 +81,9 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         }
 
 
-        this.start           = start          .bind(this)
-        this.startGameRounds = startGameRounds.bind(this)
-        this.end             = end            .bind(this)
-        this.destroy         = destroy        .bind(this)
+        this.start   = start  .bind(this)
+        this.end     = end    .bind(this)
+        this.destroy = destroy.bind(this)
 
         _init.call(this, initOptions)
 
@@ -82,15 +91,26 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         // console.log('\n', this, '\n\n')
     }
 
-    function _init(initOptions) {
+    async function _init(initOptions) {
         _createKeyboardEngine         .call(this)
         _createGameIntro              .call(this)
+        _createGamePreferencesPanel   .call(this)
         _createOverlayModalForGameOver.call(this)
         _createCountDownOverlay       .call(this)
-        _createFightersPickingScreen  .call(this, initOptions)
-        _createRunningScreen          .call(this, initOptions)
+        _createFightersPickingScreen  .call(this)
+        _createRunningScreen          .call(this)
         _createMoreDOMs               .call(this)
+
+        const {
+            fightersPickingScreen,
+            gameRunningScreen,
+        } = this.subComponents.uiScreens
+
+        fightersPickingScreen.hide()
+        gameRunningScreen.hide()
     }
+
+
 
     function _createKeyboardEngine() {
         const { KeyboardEngine } = classes
@@ -100,9 +120,21 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     function _createGameIntro() {
         const { OverlayModal } = classes
         this.services.modals.overlayModalOfGameIntro = new OverlayModal({
-            ...appData.gameGlobalSettings.gameIntro,
+            ...this.globalSettings.gameIntro,
             modalSize: 'huge',
             cssClassNames: [ 'game-intro' ],
+        })
+    }
+
+    function _createGamePreferencesPanel() {
+        const { GamePreferencesPanel, OverlayModal } = classes
+        const gamePreferencesPanel = new GamePreferencesPanel(this.settings)
+        this.subComponents.parts.gamePreferencesPanel = gamePreferencesPanel
+        this.services.modals.overlayModalOfGamePreferencesPanel = new OverlayModal({
+            modalSize: 'huge',
+            titleHTML: '游戏配置项',
+            contentComponent: gamePreferencesPanel,
+            cssClassNames: [ 'game-preferences-panel' ],
         })
     }
 
@@ -119,20 +151,14 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         this.services.countDownOverlay = new CountDownOverlay()
     }
 
-    function _createFightersPickingScreen(initOptions) {
+    function _createFightersPickingScreen() {
         const { GameFightersPickingScreen } = classes
-        const fightersPickingScreen = new GameFightersPickingScreen(this, initOptions)
-
-        // this.data.pickedFighterRoleConfigurations.both = fightersPickingScreen.data.pickedFighterRoleConfigurations
-        this.subComponents.uiScreens.fightersPickingScreen = fightersPickingScreen
+        this.subComponents.uiScreens.fightersPickingScreen = new GameFightersPickingScreen(this)
     }
 
     function _createRunningScreen(initOptions) {
         const { GameRunningScreen } = classes
-        const gameRunningScreen = new GameRunningScreen(this, initOptions)
-
-        this.subComponents.uiScreens.gameRunningScreen = gameRunningScreen
-        this.subComponents.parts.gameRoundsRunner = gameRunningScreen.provideGameRoundsRunner()
+        this.subComponents.uiScreens.gameRunningScreen = new GameRunningScreen(this, initOptions)
     }
 
     function _createMoreDOMs() {
@@ -145,6 +171,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             countDownOverlay,
             modals: {
                 overlayModalOfGameIntro,
+                overlayModalOfGamePreferencesPanel,
                 overlayModalOfGameOverAnnouncement,
             },
         } = this.services
@@ -159,6 +186,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         rootElement.appendChild(gameRunningScreen                 .el.root)
         rootElement.appendChild(countDownOverlay                  .el.root)
         rootElement.appendChild(overlayModalOfGameIntro           .el.root)
+        rootElement.appendChild(overlayModalOfGamePreferencesPanel.el.root)
         rootElement.appendChild(overlayModalOfGameOverAnnouncement.el.root)
 
         this.el.gameRootContainer.appendChild(rootElement)
@@ -167,49 +195,106 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
 
-    function start() {
-        const {
-            uiScreens: {
-                fightersPickingScreen,
-                gameRunningScreen,
-            },
-        } = this.subComponents
 
-        gameRunningScreen.hide()
+
+
+    function _closeModalOfGameIntro() {
+        this.services.keyboardEngine.stop()
+        this.services.modals.overlayModalOfGameIntro.leaveAndHide()
+        this.status.resolvePromiseOf['game intro modal closed']()
+    }
+    
+    function _closeModalOfGamePreferencesPanel() {
+        this.services.keyboardEngine.stop()
+        this.services.modals.overlayModalOfGamePreferencesPanel.leaveAndHide()
+        this.status.resolvePromiseOf['game settings decided']()
+    }
+
+    function _prepareAllGameFightingStageCandidates() {
+        console.log('正在准备游戏对战候选舞台。')
+
+        const { data } = this
+
+        const {
+            allGameFightingStageRawConfigurations,
+        } = data
+
+        const {
+            allGameFightingStageConfigurationTransformFunction,
+        } = utils
+
+        const {
+            common: stageCommonConfigurations,
+        } = allGameFightingStageRawConfigurations
+
+        const allGameFightingStageConfigurations = allGameFightingStageRawConfigurations.items.map(rawConfig => {
+            return allGameFightingStageConfigurationTransformFunction(rawConfig, stageCommonConfigurations)
+        })
+
+        data.allGameFightingStageConfigurations = allGameFightingStageConfigurations
+
+        console.log('所有候选【对战舞台数据】就绪。')
+    }
+
+    async function start() {
+        const { promiseOf, resolvePromiseOf } = this.status
 
         const {
             keyboardEngine,
-            modals: { overlayModalOfGameIntro },
+            modals: {
+                overlayModalOfGameIntro,
+                overlayModalOfGamePreferencesPanel,
+            },
         } = this.services
 
-        const closeGameIntroAndStartGame = () => {
-            overlayModalOfGameIntro.leaveAndHide()
-            keyboardEngine.stop()
-            fightersPickingScreen.showUp()
-        }
+
 
         overlayModalOfGameIntro.showUp()
         keyboardEngine.start({
             keyUp: {
-                '*': closeGameIntroAndStartGame,
+                '*': () => _closeModalOfGameIntro.call(this),
             },
         }, '游戏说明对话框')
-    }
 
-    async function startGameRounds() {
+
+
+        await promiseOf['game intro modal closed']
+
+
+
+        overlayModalOfGamePreferencesPanel.showUp(null, () => {
+            this.subComponents.parts.gamePreferencesPanel.allControlInstances[0].el.input.focus()
+        })
+        keyboardEngine.start({
+            keyUp: {
+                'ESCAPE': () => _closeModalOfGamePreferencesPanel.call(this),
+            },
+        }, '游戏配置项对话框')
+
+
+
+        await promiseOf['game settings decided']
+
+
+
+        _prepareAllGameFightingStageCandidates.call(this)
+
+
+
         const {
-            uiScreens: {
-                fightersPickingScreen,
-                gameRunningScreen,
-            },
-            parts: {
-                gameRoundsRunner,
-            },
-        } = this.subComponents
+            fightersPickingScreen,
+            gameRunningScreen,
+        } = this.subComponents.uiScreens
 
-        fightersPickingScreen.leaveAndHide()
-        gameRunningScreen.showUp()
-        gameRoundsRunner.createAndStartNewRound()
+
+
+        const { allGameRoleRawConfigurations } = this.data
+        fightersPickingScreen.createFighterPickers(allGameRoleRawConfigurations)
+        await fightersPickingScreen.showUpAndStartPickingFighters()
+
+
+
+        gameRunningScreen.showUpAndStartGameRounds()
     }
 
     async function end() {
@@ -288,12 +373,17 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         this.services.keyboardEngine.destroy()
 
-        _logGameLastReport.call(this)
-
         this.destroy()
 
+        const gameDestroyTime = Date.now()
+
+        const spentMilliseconds = gameDestroyTime - this.status.gameCreationTimeValue
+        const spentTimeInfoObject = formattedTimeDurationStringOf(spentMilliseconds)
+        
+        _logGameLastReport.call(this, spentTimeInfoObject)
+
         if (typeof afterGameDestroyed === 'function') {
-            afterGameDestroyed()
+            afterGameDestroyed(spentTimeInfoObject)
         }
     }
 
@@ -316,14 +406,11 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         ].join('\n'))
     }
 
-    function _logGameLastReport() {
-        const gameDestroyTime = Date.now()
-
-        const spentMilliseconds = gameDestroyTime - this.status.gameCreationTimeValue
+    function _logGameLastReport(spentTimeInfoObject) {
         const {
-            string: spentTimeString,
-            visualLength: spentTimeStringViusalWidth,
-        } = formattedTimeDurationStringOf(spentMilliseconds)
+            string1:             spentTimeString,
+            string1VisualLength: spentTimeStringViusalWidth,
+        } = spentTimeInfoObject
 
         const splashWidth = 32
 

@@ -1,0 +1,64 @@
+.check-box {
+    checkBoxSize = 1em
+
+    input[type="checkbox"] {
+        width     checkBoxSize
+        min-width @width
+        height    @width
+
+        margin-top 2px
+        color #7951ff
+
+        position relative
+
+        &::after,
+        &::before {
+            content ''
+            display block
+            position absolute
+            top 0
+            left 0
+            right 0
+            bottom 0
+        }
+
+        &::before {
+            z-index 1
+            border 2px solid currentColor
+            background-color white
+            margin auto
+        }
+
+        &::after {
+            visibility hidden
+            opacity 0
+            z-index 2
+            background-color currentColor
+            margin 4px
+
+            transition-property visibility, opacity, width, height, margin
+            transition-duration 0.3s
+            transition-timing-function ease-out
+        }
+
+        
+        &:checked {
+
+            &::after {
+                visibility visible
+                opacity 1
+            }
+        }
+    }
+
+    &.is-disabled {
+
+        input[type="checkbox"] {
+            color #ccc
+        }
+    }
+
+    .description {
+        margin-left (checkBoxSize + 0.7em)
+    }
+}

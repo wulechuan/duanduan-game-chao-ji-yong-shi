@@ -19,8 +19,9 @@
     <script src="./js/data-processors/game-role-data-transform-function.js"></script>
     <script src="./js/data-processors/game-fighting-stage-data-transform-function.js"></script>
 
-    <script src="./js/components/FormControls/index.js"></script>
-    <script src="./js/components/FormControls/CheckBox.js"></script>
+    <script src="./js/components/FormControls/FormControls.js"></script>
+    <script src="./js/components/FormControls/_CheckBox.js"></script>
+    <script src="./js/components/FormControls/_NumberBox.js"></script>
     <script src="./js/components/GamePreferencesPanel.js"></script>
     <script src="./js/components/KeyboardHint.js"></script>
     <script src="./js/components/KeyboardEngine.js"></script>
@@ -40,9 +41,10 @@
     <script src="./js/components/Game.js"></script>
 </head>
 <body>
-    <div id="app"></div>
-    <div id="info-when-no-more-games" style="display: none;">
+    <div id="js-app" class="app"></div>
+    <div id="js-author-wishes" class="author-wishes">
         <article>
+            <p class="last-run-game-summary">刚才的游戏历时<span class="game-duration js-last-run-game-duration">?</span>。</p>
             <p>游戏虽有乐趣，但不应无止境。</p>
             <p>再见！</p>
         </article>

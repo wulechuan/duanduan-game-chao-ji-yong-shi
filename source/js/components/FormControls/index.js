@@ -1,1 +1,0 @@
-window.duanduanGameChaoJiYongShi.classes.FormControls = {}

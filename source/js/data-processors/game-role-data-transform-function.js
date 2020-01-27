@@ -1,4 +1,4 @@
-window.duanduanGameChaoJiYongShi.data.allGameRoleConfigurationTransformFunction = (rawConfig, commonConfig) => {
+window.duanduanGameChaoJiYongShi.utils.allGameRoleConfigurationTransformFunction = (rawConfig, commonConfig) => {
     const {
         filePathsPrefix,
     } = commonConfig

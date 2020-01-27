@@ -3,7 +3,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRunningScreen = (function () {
     const { utils, classes } = app
     const { createDOMWithClassNames } = utils
 
-    return function GameRunningScreen(game, initOptions) {
+    return function GameRunningScreen(game) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRunningScreen 构造函数。')
         }
@@ -12,38 +12,25 @@ window.duanduanGameChaoJiYongShi.classes.GameRunningScreen = (function () {
 
         this.subComponents = {}
 
-        this.provideGameRoundsRunner = provideGameRoundsRunner.bind(this)
-        this.showUp                  = showUp                 .bind(this)
-        this.hide                    = hide                   .bind(this)
-        this.leaveAndHide            = leaveAndHide           .bind(this)
+        this.showUpAndStartGameRounds = showUpAndStartGameRounds.bind(this)
+        this.showUp                   = showUp                  .bind(this)
+        this.hide                     = hide                    .bind(this)
+        this.leaveAndHide             = leaveAndHide            .bind(this)
 
-        _init.call(this, initOptions)
+        _init.call(this)
 
         console.log('【游戏运行界面】创建完毕。')
     }
 
-    function _init(initOptions) {
-        _createGameRoundsRunner.call(this, initOptions)
-        _createMoreDOMs        .call(this)
+    function _init() {
+        _createDOMs.call(this)
     }
 
-    function _createGameRoundsRunner(initOptions) {
-        const { GameRoundsRunner } = classes
-        this.subComponents.gameRoundsRunner = new GameRoundsRunner(this.game, initOptions)
-    }
-
-    function _createMoreDOMs() {
-        const {
-            gameRoundsRunner,
-        } = this.subComponents
-
-        
+    function _createDOMs() {
         const rootElement = createDOMWithClassNames('div', [
             'ui-screen',
             'game-running-screen',
         ])
-
-        rootElement.appendChild(gameRoundsRunner.el.root)
 
         this.el = {
             root: rootElement,
@@ -51,8 +38,20 @@ window.duanduanGameChaoJiYongShi.classes.GameRunningScreen = (function () {
     }
 
 
-    function provideGameRoundsRunner() {
-        return this.subComponents.gameRoundsRunner
+
+
+
+    function _createGameRoundsRunner() {
+        const { GameRoundsRunner } = classes
+        const gameRoundsRunner = new GameRoundsRunner(this.game)
+        this.subComponents.gameRoundsRunner = gameRoundsRunner
+        this.el.root.appendChild(gameRoundsRunner.el.root)
+    }
+
+    function showUpAndStartGameRounds() {
+        _createGameRoundsRunner.call(this)
+        this.showUp()
+        this.subComponents.gameRoundsRunner.createAndStartNewRound()
     }
 
     function showUp() {

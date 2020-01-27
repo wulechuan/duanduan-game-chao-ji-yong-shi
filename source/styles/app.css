@@ -1,12 +1,129 @@
-.check-box{
-  padding:0.5em;
+.form{
+  font-size:1rem;
 }
-.check-box > label{
-  color:#f00;
+.form-controls-row{
+  display:block;
+  margin:1em auto;
+}
+.form-control{
+  display:inline-flex;
+  flex-wrap:wrap;
+  align-items:center;
+  padding:0 0.5em;
+}
+.form-control:focus-within{
+  outline:3px solid #000;
+}
+.form-control:not(.is-disabled ):hover{
+  background-color:rgba(0,0,0,0.1);
+}
+.form-control input{
+  border:1px solid transparent;
+}
+.form-control input:not([type="checkbox"]):not([type="radio"]){
+  border-bottom-color:#000;
+}
+.form-control > label{
+  cursor:pointer;
+}
+.form-control > .label,
+.form-control > .description,
+.form-control > .the-control{
+  display:block;
+}
+.form-control > .the-control{
+  flex:0 0;
+  margin:0 0.25em 0 0;
+  min-width:10em;
+  font-size:inherit;
+  outline:none;
+}
+.form-control > .label,
+.form-control > .description{
+  padding:0.1em 0.25em;
+  line-height:1.5;
+}
+.form-control.has-dual-labels > .label-1{
+  margin-left:-0.25em;
+}
+.form-control > .label{
+  min-width:1em;
+  color:#000;
+}
+.form-control .description{
+  font-size:80%;
+  flex:1 0;
+  min-width:calc(100% - 2em);
+  margin:0 0 0 1em;
+}
+.form-control .description p{
+  margin:0.1em 0;
+}
+.form-control.has-description > .label{
+  flex:1 0;
+  min-width:60%;
+}
+.form-control.is-disabled .description,
+.form-control.is-disabled > .label,
+.form-control.is-disabled > .the-control{
+  cursor:not-allowed;
+}
+.form-control.is-disabled .description,
+.form-control.is-disabled > .label{
+  color:#ccc;
+  font-style:italic;
 }
 .check-box input[type="checkbox"]{
-  width:2rem;
-  height:2rem;
+  width:1em;
+  min-width:1em;
+  height:1em;
+  margin-top:2px;
+  color:#7951ff;
+  position:relative;
+}
+.check-box input[type="checkbox"]::after,
+.check-box input[type="checkbox"]::before{
+  content:'';
+  display:block;
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+.check-box input[type="checkbox"]::before{
+  z-index:1;
+  border:2px solid currentColor;
+  background-color:#fff;
+  margin:auto;
+}
+.check-box input[type="checkbox"]::after{
+  visibility:hidden;
+  opacity:0;
+  z-index:2;
+  background-color:currentColor;
+  margin:4px;
+  transition-property:visibility, opacity, width, height, margin;
+  transition-duration:0.3s;
+  transition-timing-function:ease-out;
+}
+.check-box input[type="checkbox"]:checked::after{
+  visibility:visible;
+  opacity:1;
+}
+.check-box.is-disabled input[type="checkbox"]{
+  color:#ccc;
+}
+.check-box .description{
+  margin-left:1.7em;
+}
+.number-box input.the-control{
+  width:4em;
+  min-width:4em;
+  text-align:center;
+}
+.number-box .description{
+  margin-left:checkBoxSize;
 }
 article{
   line-height:1.6;
@@ -340,6 +457,13 @@ article blockquote em{
   box-shadow:0 0 1rem rgba(0,0,0,0.219);
   animation:overlay-modal-modal-enter 0.28s ease-out forwards;
 }
+.overlay-modal .modal > .content{
+  font-size:1.2rem;
+  font-weight:600;
+  margin:1rem 0;
+  text-stroke:0.5px rgba(255,255,255,0.87);
+  -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
+}
 .overlay-modal.is-leaving .backdrop{
   animation:overlay-modal-backdrop-fading-out 0.3s ease-out forwards;
 }
@@ -353,13 +477,6 @@ article blockquote em{
   margin:1.5rem 0 0 0;
   text-stroke:1px #fff;
   -webkit-text-stroke:1px #fff;
-}
-.overlay-modal .content{
-  font-size:1.2rem;
-  font-weight:600;
-  margin:1rem 0;
-  text-stroke:0.5px rgba(255,255,255,0.87);
-  -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
 }
 .overlay-modal .count-down{
   font-size:1rem;
@@ -405,7 +522,7 @@ article blockquote em{
   -webkit-text-stroke:0;
   margin:0.5rem auto;
 }
-.overlay-modal .modal.huge .content{
+.overlay-modal .modal.huge > .content{
   overflow:auto;
   padding:0.25rem 1rem 2.75rem 1rem;
   margin:0.5rem auto;
@@ -681,6 +798,10 @@ article blockquote em{
   bottom:-1.5rem;
   left:0;
   right:0;
+}
+.role-candidates-slot.should-auto-roll-candidates .keyboard-tip-container.pick-prev-candidate,
+.role-candidates-slot.should-auto-roll-candidates .keyboard-tip-container.pick-next-candidate{
+  display:none;
 }
 .role-candidates-slot .keyboard-tip-container{
   font-size:1.1rem;
@@ -1777,46 +1898,9 @@ article blockquote em{
   width:25rem;
 }
 .game-preferences-panel{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background-color:#fff;
+  display:block;
 }
-html{
-  font-size:20px;
-}
-body{
-  margin:0;
-}
-html,
-body{
-  height:100%;
-}
-#app{
-  z-index:2;
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  margin:0;
-  padding:0;
-  width:auto;
-  height:auto;
-  background-color:#000;
-  overflow:hidden;
-}
-#app .game{
-  z-index:10;
-}
-#app .game-preferences-panel{
-  z-index:20;
-}
-#info-when-no-more-games{
-  z-index:1;
+.author-wishes{
   position:fixed;
   top:0;
   left:0;
@@ -1832,9 +1916,57 @@ body{
   justify-content:center;
   align-items:center;
 }
-#info-when-no-more-games article{
+.author-wishes article{
   text-align:center;
   font-size:1.2rem;
   font-weight:500;
   letter-spacing:0.2em;
+  padding:1em 1em 4em 1em;
+}
+.author-wishes .last-run-game-summary{
+  margin-bottom:2em;
+  font-size:80%;
+  font-weight:bolder;
+  color:#515151;
+}
+.author-wishes .last-run-game-summary .game-duration{
+  color:#face79;
+}
+html{
+  font-size:20px;
+}
+body{
+  margin:0;
+}
+html,
+body{
+  height:100%;
+}
+.author-wishes,
+.app{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  margin:0;
+  padding:0;
+  width:auto;
+  height:auto;
+  overflow:hidden;
+}
+.app{
+  z-index:2;
+}
+.author-wishes{
+  z-index:1;
+}
+.app{
+  background-color:#000;
+}
+.app .game{
+  z-index:10;
+}
+.app .game-preferences-panel{
+  z-index:20;
 }

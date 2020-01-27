@@ -3,39 +3,26 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
     const { utils, classes } = app
     const { createDOMWithClassNames } = utils
 
-    return function GameRoundsRunner(game, initOptions) {
+    return function GameRoundsRunner(game) {
         if (!new.target) {
             throw new Error('必须使用 new 运算符来调用 GameRoundsRunner 构造函数。')
         }
+
+        this.game = game
 
         const {
             maxRoundsToRun,
             keyboardShortcuts: {
                 gameRunning: keboardShortcutsForGameRunning,
             },
-        } = initOptions
-
-        let _maxRoundsToRun
-
-        if (maxRoundsToRun === undefined || maxRoundsToRun === null) {
-            _maxRoundsToRun = 3
-        } else {
-            _maxRoundsToRun = Math.floor(maxRoundsToRun)
-            if (_maxRoundsToRun !== maxRoundsToRun || _maxRoundsToRun % 2 === 0) {
-                throw new Error('maxRoundsToRun 必须为正奇数。')
-            }
-        }
-
-        const minWinningRoundsPerPlayer = Math.ceil(_maxRoundsToRun / 2)
-
-        this.game = game
-
-        game.data.gameRounds.maxRoundsToRun = _maxRoundsToRun
-        game.data.gameRounds.minWinningRoundsPerPlayer = minWinningRoundsPerPlayer
+        } = game.settings
 
         this.subComponents = {}
+        
+        const minWinningRoundsPerPlayer = Math.ceil(maxRoundsToRun / 2)
 
         this.data = {
+            minWinningRoundsPerPlayer,
             globalKeyboardShortcutsPerGameRound: keboardShortcutsForGameRunning.global,
         }
 
@@ -77,6 +64,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
 
         _createNewRoundAndShowItUp.call(this)
         const currentGameRoundCaption = this.game.data.gameRounds.current.gameRoundCaption
+
         await countDownOverlay.countDown(3, currentGameRoundCaption)
         _startCurrentRound.call(this)
     }
@@ -100,10 +88,10 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         const newGameRound = new GameRound(
             this.game,
             displayingIndexOfNewGameRound,
-            this.game.data.gameRounds.maxRoundsToRun,
+            this.game.settings.maxRoundsToRun,
             {
                 globalKeyboardShortcuts: this.data.globalKeyboardShortcutsPerGameRound,
-            }
+            },
         )
 
         gameRounds.current = newGameRound
@@ -121,15 +109,18 @@ window.duanduanGameChaoJiYongShi.classes.GameRoundsRunner = (function () {
         this.status.isRunningOneRound = true
         this.game.data.gameRounds.current.start()
     }
-    
+
     function _evaluateGameStatusJustBeforeOneGameRoundEnds() {
         const { gameRounds, pickedFighterRoleConfigurations } = this.game.data
 
         const {
-            minWinningRoundsPerPlayer,
             history: historicalGameRounds,
             current: currentGameRound,
         } = gameRounds
+        
+        const {
+            minWinningRoundsPerPlayer,
+        } = this.data
 
         const allGameRoundsSoFar = [
             ...historicalGameRounds,
