@@ -1,12 +1,15 @@
 {
   "name": "@wulechuan/game-duanduan-chao-ji-yong-shi",
-  "version": "1.0.0-beta7",
+  "version": "1.0.0-beta8",
   "author": "wulechuan@live.com",
   "license": "WTFPL",
   "description": "我给端儿编写的简易游戏。他自己给取的名字叫《超级勇士》。",
-  "main": "gulpfile.esm.js",
+  "main": "source/index.html",
   "scripts": {
-    "start": "gulp    --silent"
+    "remove-all-html-docs": "rimraf  ./readme.html  ./documents/**/*.html",
+    "generate-html-docs": "npm  run  remove-all-html-docs    &&    wlc-md-to-html  -i ./*.md,./documents/**/*.md  -e  -E3  -C ./documents/wlc-md-to-html.config.js  --to '*'",
+    "compile-stylus": "gulp  --silent",
+    "start": "npm  run  generate-html-docs    &&    npm  run  compile-stylus"
   },
   "private": true,
   "keywords": [
@@ -19,12 +22,13 @@
     "格斗游戏"
   ],
   "devDependencies": {
-    "gulp": "^4.0.2",
     "@wulechuan/gulp-classical-task-cycle": "^0.2.2",
     "cssnano": "^4.1.10",
     "esm": "^3.2.25",
+    "gulp": "^4.0.2",
     "gulp-postcss": "^8.0.0",
-    "gulp-stylus": "^2.7.0"
+    "gulp-stylus": "^2.7.0",
+    "rimraf": "^3.0.1"
   },
   "dependencies": {},
   "homepage": "https://github.com/wulechuan/wulechuan-webapp-duanduan-chao-ji-yong-shi#readme",
