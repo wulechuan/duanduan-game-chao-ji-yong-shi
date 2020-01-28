@@ -205,6 +205,7 @@ article blockquote em{
   line-height:1.5;
   border-radius:0.25em;
   color:#fff;
+  border:1px solid rgba(255,255,255,0.79);
   background-color:rgba(0,0,0,0.87);
 }
 .keyboard-tip{
@@ -1946,6 +1947,9 @@ article blockquote em{
   width:4rem;
   bottom:0;
   margin-left:-2rem;
+}
+.game-round .keyboard-hints .keyboard-tip-container.keyboard-hint-for-pausing-game-round{
+  width:6rem;
 }
 .game-round .overlay-modal.game-round-result-announcement .modal{
   width:25rem;

@@ -211,6 +211,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         const keyboardHintForPausingGameRound = new KeyboardHint({
             keyName: globalKeyboardShortcuts.togglePauseAndResume,
             keyDescription: '暂停游戏',
+            cssClassNames: [
+                'keyboard-hint-for-pausing-game-round',
+            ],
         })
 
         this.subComponents.keyboardHintForPausingGameRound = keyboardHintForPausingGameRound
