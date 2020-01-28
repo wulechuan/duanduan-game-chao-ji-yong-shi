@@ -134,6 +134,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             contentHTML: [
                 `<p>&nbsp;&nbsp;按 “${globalKeyboardShortcuts.togglePauseAndResume}” 键可继续游戏。</p>`,
             ].join(''),
+            cssClassNames: [
+                'modal-of-tip-of-game-is-paused',
+            ],
         })
 
         this.services.modals.overlayModalForResultAnnouncement = new OverlayModal({

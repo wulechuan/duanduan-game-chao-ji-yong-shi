@@ -770,6 +770,9 @@ article blockquote em{
 .overlay-modal.game-intro .modal .keyboard-hints .keyboard-tip-container .keyboard-tip{
   width:3.6em;
 }
+.overlay-modal.modal-of-tip-of-game-is-paused .modal{
+  height:9.5rem;
+}
 .overlay-modal.game-over-announcement .modal{
   padding:1rem 1rem;
   width:25rem;
