@@ -34,10 +34,6 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
         this.data = {
             playerId,
 
-            // keyForPickingPrevCandidate,
-            // keyForPickingNextCandidate,
-            // keyForAcceptingFighter,
-
             keyboardEngineKeyDownConfig: null,
 
             fighter: {
@@ -253,11 +249,16 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
 
     function startPickingFighter() {
         const {
+            requireKeyboardInteraction,
             shouldAutoPickFighterByWeights,
             shouldForceRollingEvenIfAutoPickingByWeights,
             shouldNotAutoRoll,
             // shouldManuallyPickFighters,
         } = this.status
+
+        if (requireKeyboardInteraction && !this.data.keyboardEngineKeyDownConfig) {
+            throw new Error('尚未创建【按键引擎】的配置，无法进行人机交互。因此不应启动【战士选择】进程。')
+        }
 
 
         _pickOneCandidateRandomly.call(this)
@@ -271,10 +272,6 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             _decideToUseCurrentCandidate.call(this)
         } else if (shouldAutoRollAnyway) {
             _startRollingRoles.call(this)
-        } else {
-            if (!this.data.keyboardEngineKeyDownConfig) {
-                throw new Error('尚未创建【按键引擎】的配置，无法进行人机交互。因此不应启动【战士选择】进程。')
-            }
         }
 
 
