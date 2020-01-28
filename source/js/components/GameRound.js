@@ -60,7 +60,6 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         this.data = {
             gameRoundNumber,
-            // roundsTotalCount,
             allowToCheat,
 
             fighters: {
@@ -119,6 +118,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         _createGameRoundStatusBlock .call(this)
         _createShortcutKeyHints     .call(this)
         _createMoreDOMs             .call(this)
+
         this.el.root.style.display = 'none'
     }
 

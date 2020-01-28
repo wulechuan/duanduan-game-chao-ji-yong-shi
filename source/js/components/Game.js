@@ -134,7 +134,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             modalSize: 'huge',
             titleHTML: '游戏配置项',
             contentComponent: gamePreferencesPanel,
-            cssClassNames: [ 'game-preferences-panel' ],
+            cssClassNames: [ 'game-preferences-panel-modal' ],
         })
     }
 
