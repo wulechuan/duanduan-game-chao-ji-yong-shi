@@ -205,8 +205,8 @@ article blockquote em{
   line-height:1.5;
   border-radius:0.25em;
   color:#fff;
-  border:1px solid rgba(255,255,255,0.79);
-  background-color:rgba(0,0,0,0.87);
+  border:1px solid rgba(255,255,255,0.219);
+  background-color:rgba(0,0,0,0.9);
 }
 .keyboard-tip{
   font-size:1.2em;
