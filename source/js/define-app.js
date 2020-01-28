@@ -50,7 +50,7 @@ window.duanduanGameChaoJiYongShi = {
             if (lastRunGameDurationInfoObject) {
                 const {
                     // rawValueInMilliseconds,
-                    string2: lastRunGameDurationString,
+                    formattedString: lastRunGameDurationString,
                 } = lastRunGameDurationInfoObject
 
                 const durationDOM = authorWishes.querySelector('.js-last-run-game-duration')
@@ -129,9 +129,11 @@ window.duanduanGameChaoJiYongShi = {
                 this.createNewGameAndStartIt()
             }
         } else {
-            afterGameDestroyed = (lastRunGameDurationInfoObject) => {
+            afterGameDestroyed = (spentMilliseconds) => {
                 this.currentGame = null
-                this.hideAppAndShowAuthorWishes(lastRunGameDurationInfoObject)
+                this.hideAppAndShowAuthorWishes(
+                    this.utils.normalFormattedTimeDurationStringOf(spentMilliseconds)
+                )
             }
         }
 

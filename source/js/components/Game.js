@@ -4,7 +4,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     const {
         buildOneSplashLineForConsoleLog,
         formattedDateStringOf,
-        formattedTimeDurationStringOf,
+        splashLineFormattedTimeDurationStringOf,
         createDOMWithClassNames,
         createPromisesAndStoreIn,
     } = utils
@@ -455,12 +455,12 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         const gameDestroyTime = Date.now()
 
         const spentMilliseconds = gameDestroyTime - this.status.gameCreationTimeValue
-        const spentTimeInfoObject = formattedTimeDurationStringOf(spentMilliseconds)
+        const spentTimeInfoObject = splashLineFormattedTimeDurationStringOf(spentMilliseconds)
         
         _logGameLastReport.call(this, spentTimeInfoObject)
 
         if (typeof afterGameDestroyed === 'function') {
-            afterGameDestroyed(spentTimeInfoObject)
+            afterGameDestroyed(spentMilliseconds)
         }
     }
 
@@ -485,8 +485,8 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
     function _logGameLastReport(spentTimeInfoObject) {
         const {
-            string1:             spentTimeString,
-            string1VisualLength: spentTimeStringViusalWidth,
+            formattedString:             spentTimeString,
+            formattedStringVisualLength: spentTimeStringViusalWidth,
         } = spentTimeInfoObject
 
         const splashWidth = 32
