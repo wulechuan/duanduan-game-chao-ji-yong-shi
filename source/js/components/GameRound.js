@@ -43,7 +43,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         } else if (isLastRoundOfGame) {
             gameRoundCaption = '决战之局'
         } else {
-            gameRoundCaption = `${chineseNumbers[roundsTotalCount]}局之${chineseNumbers[gameRoundNumber]}`
+            gameRoundCaption = `${chineseNumbers[roundsTotalCount] || roundsTotalCount}局之${chineseNumbers[gameRoundNumber]}`
         }
 
         this.gameRoundCaption = gameRoundCaption
