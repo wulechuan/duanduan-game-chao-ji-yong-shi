@@ -61,12 +61,29 @@
         animation overlay-modal-modal-enter 0.28s ease-out forwards
 
 
+        > .title {
+            flex 0 0
+            font-size: 2rem
+            font-weight: 600
+            letter-spacing: 0.1em
+            margin: 1.5rem 0 0 0
+            text-stroke: 1px white
+            -webkit-text-stroke: @text-stroke
+        }
+
+
         > .content {
+            flex 1 1
             font-size: 1.2rem
             font-weight: 600
             margin: 1rem 0
             text-stroke: 0.5px rgba(white, 0.87)
             -webkit-text-stroke: @text-stroke
+        }
+
+        > footer {
+            flex 0 0
+            width 100%
         }
     }
 
@@ -106,15 +123,6 @@
             opacity: 0;
             transform: translateY(-319%);
         }
-    }
-
-    .title {
-        font-size: 2rem
-        font-weight: 600
-        letter-spacing: 0.1em
-        margin: 1.5rem 0 0 0
-        text-stroke: 1px white
-        -webkit-text-stroke: @text-stroke
     }
 
 
@@ -166,7 +174,7 @@
         -webkit-backdrop-filter: none
         backdrop-filter: none
 
-        .title {
+        > .title {
             font-size: 1.6rem
             font-weight: 500
             letter-spacing: 0.1em
@@ -183,6 +191,10 @@
             font-weight: normal
             text-stroke: 0
             -webkit-text-stroke: 0
+        }
+
+        > footer {
+            margin-bottom: -0.5rem
         }
     }
 

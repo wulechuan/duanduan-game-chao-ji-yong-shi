@@ -95,30 +95,30 @@ window.duanduanGameChaoJiYongShi.classes.GameFighterPicker = (function () {
             isOptional: !shouldNotAutoRoll,
             keyName: keyForPickingPrevCandidate,
             keyDescription: '上一位',
-            labelSouldLayBelowHint: true,
+            labelShouldLayBelowHint: true,
             cssClassNames: [
                 'pick-prev-candidate',
-            ]
+            ],
         })
 
         const keyboardHintForPickingNextCandidate = new KeyboardHint({
             isOptional: !shouldNotAutoRoll,
             keyName: keyForPickingNextCandidate,
             keyDescription: '下一位',
-            labelSouldLayBelowHint: true,
+            labelShouldLayBelowHint: true,
             cssClassNames: [
                 'pick-next-candidate',
-            ]
+            ],
         })
 
         const keyboardHintForAcceptingFighter = new KeyboardHint({
             isOptional: !requireKeyboardInteraction,
             keyName: keyForAcceptingFighter,
             keyDescription: '接受',
-            labelSouldLayBelowHint: true,
+            labelShouldLayBelowHint: true,
             cssClassNames: [
                 'decision-maker',
-            ]
+            ],
         })
 
         this.subComonents.keyboardHintForPickingPrevCandidate = keyboardHintForPickingPrevCandidate

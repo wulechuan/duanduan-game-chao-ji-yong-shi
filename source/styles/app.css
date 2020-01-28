@@ -138,7 +138,6 @@ button{
   line-height:1.5;
   border-radius:0.3em;
   margin:0.5em;
-  float:right;
   border-style:solid;
   border-width:1px;
   cursor:pointer;
@@ -486,26 +485,32 @@ article blockquote em{
   box-shadow:0 0 1rem rgba(0,0,0,0.219);
   animation:overlay-modal-modal-enter 0.28s ease-out forwards;
 }
-.overlay-modal .modal > .content{
-  font-size:1.2rem;
-  font-weight:600;
-  margin:1rem 0;
-  text-stroke:0.5px rgba(255,255,255,0.87);
-  -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
-}
-.overlay-modal.is-leaving .backdrop{
-  animation:overlay-modal-backdrop-fading-out 0.3s ease-out forwards;
-}
-.overlay-modal.is-leaving .modal{
-  animation-name:overlay-modal-modal-leave;
-}
-.overlay-modal .title{
+.overlay-modal .modal > .title{
+  flex:0 0;
   font-size:2rem;
   font-weight:600;
   letter-spacing:0.1em;
   margin:1.5rem 0 0 0;
   text-stroke:1px #fff;
   -webkit-text-stroke:1px #fff;
+}
+.overlay-modal .modal > .content{
+  flex:1 1;
+  font-size:1.2rem;
+  font-weight:600;
+  margin:1rem 0;
+  text-stroke:0.5px rgba(255,255,255,0.87);
+  -webkit-text-stroke:0.5px rgba(255,255,255,0.87);
+}
+.overlay-modal .modal > footer{
+  flex:0 0;
+  width:100%;
+}
+.overlay-modal.is-leaving .backdrop{
+  animation:overlay-modal-backdrop-fading-out 0.3s ease-out forwards;
+}
+.overlay-modal.is-leaving .modal{
+  animation-name:overlay-modal-modal-leave;
 }
 .overlay-modal .count-down{
   font-size:1rem;
@@ -543,7 +548,7 @@ article blockquote em{
   -webkit-backdrop-filter:none;
   backdrop-filter:none;
 }
-.overlay-modal .modal.huge .title{
+.overlay-modal .modal.huge > .title{
   font-size:1.6rem;
   font-weight:500;
   letter-spacing:0.1em;
@@ -559,6 +564,9 @@ article blockquote em{
   font-weight:normal;
   text-stroke:0;
   -webkit-text-stroke:0;
+}
+.overlay-modal .modal.huge > footer{
+  margin-bottom:-0.5rem;
 }
 .overlay-modal.is-leaving .modal.huge{
   animation-name:overlay-modal-huge-modal-leave;
@@ -743,15 +751,31 @@ article blockquote em{
   background-size:contain;
   background-position:center;
 }
-.overlay-modal.game-intro .modal .content{
+.overlay-modal.game-intro .modal > .content{
   padding-bottom:2rem;
+}
+.overlay-modal.game-intro .modal > footer{
+  height:4.5em;
+  min-height:4.5em;
+}
+.overlay-modal.game-intro .modal .keyboard-hints{
+  width:100%;
+  min-width:100%;
+  display:flex;
+  justify-content:space-around;
+}
+.overlay-modal.game-intro .modal .keyboard-hints .keyboard-tip-container{
+  flex:1 1;
+}
+.overlay-modal.game-intro .modal .keyboard-hints .keyboard-tip-container .keyboard-tip{
+  width:3.6em;
 }
 .overlay-modal.game-over-announcement .modal{
   padding:1rem 1rem;
   width:25rem;
   height:14rem;
 }
-.overlay-modal.game-over-announcement .modal .content{
+.overlay-modal.game-over-announcement .modal > .content{
   text-align:center;
 }
 .role-picking-screen{
@@ -1928,6 +1952,13 @@ article blockquote em{
 }
 .overlay-modal.game-preferences-panel-modal .modal.huge > .content{
   padding-bottom:0;
+}
+.overlay-modal.game-preferences-panel-modal .modal.huge > footer{
+  display:flex;
+  justify-content:center;
+}
+.overlay-modal.game-preferences-panel-modal .modal.huge > footer .form-controls-row{
+  margin:0;
 }
 .game-preferences-panel{
   display:block;

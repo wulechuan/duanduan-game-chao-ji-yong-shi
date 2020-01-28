@@ -4,8 +4,28 @@
 
         .modal {
 
-            .content {
+            > .content {
                 padding-bottom: 2rem
+            }
+
+            > footer {
+                height 4.5em
+                min-height @height
+            }
+
+            .keyboard-hints {
+                width     100%
+                min-width @width
+                display flex
+                justify-content space-around
+
+                .keyboard-tip-container {
+                    flex 1 1
+
+                    .keyboard-tip {
+                        width: 3.6em
+                    }
+                }
             }
         }
     }
@@ -17,7 +37,7 @@
             width: 25rem
             height: 14rem
 
-            .content {
+            > .content {
                 text-align: center
             }
         }

@@ -11,13 +11,13 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardHint = (function () {
             isOptional,
             // keyName,
             // keyDescription,
-            labelSouldLayBelowHint,
+            labelShouldLayBelowHint,
             // cssClassNames
         } = initOptions
 
         this.data = {
             keyDisplayName: '',
-            labelSouldLayBelowHint: !!labelSouldLayBelowHint,
+            labelShouldLayBelowHint: !!labelShouldLayBelowHint,
         }
 
         this.status = {
@@ -42,10 +42,10 @@ window.duanduanGameChaoJiYongShi.classes.KeyboardHint = (function () {
         } = options
         
         const {
-            labelSouldLayBelowHint,
+            labelShouldLayBelowHint,
         } = this.data
 
-        if (labelSouldLayBelowHint) {
+        if (labelShouldLayBelowHint) {
             cssClassNames.unshift('label-lays-below-hint')
         }
 

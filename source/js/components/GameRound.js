@@ -571,7 +571,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
         fighters.winner = winner
         fighters.loser  = loser
-        fighters.winnerPlayerId   = winnerPlayerId
+        fighters.winnerPlayerId = winnerPlayerId
 
         winner.win()
         loser.lose()

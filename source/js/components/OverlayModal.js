@@ -38,8 +38,19 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
 
     function _init(initOptions) {
         _createDOMs.call(this)
+
+        const {
+            root:           rootElement,
+            countDownBlock: countDownBlockElement,
+            footer:         footerElement,
+        } = this.el
+
+        countDownBlockElement.style.display = 'none'
+        footerElement        .style.display = 'none'
+
         this.update(initOptions)
-        this.el.root.style.display = 'none'
+
+        rootElement.style.display = 'none'
     }
 
     function _createDOMs() {
@@ -75,12 +86,16 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
             'count-down-number',
         ])
 
+        const footerElement = createDOMWithClassNames('footer', [
+        ])
+
         countDownBlockElement.appendChild(countDownTipElement)
         countDownBlockElement.appendChild(countDownNumberElement)
 
         modalElement.appendChild(titleElement)
         modalElement.appendChild(contentElement)
         modalElement.appendChild(countDownBlockElement)
+        modalElement.appendChild(footerElement)
 
         rootElement.appendChild(backdropElement)
         rootElement.appendChild(modalElement)
@@ -93,6 +108,7 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
             countDownBlock: countDownBlockElement,
             countDownTip: countDownTipElement,
             countDownNumber: countDownNumberElement,
+            footer: footerElement,
         }
     }
 
@@ -105,6 +121,7 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
             contentComponent: inputContentComponent,
             modalSize:        inputModalSize,
             cssClassNames:    inputCssClassNames,
+            footerContentElement,
         } = options
 
         const { data } = this
@@ -142,6 +159,7 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
             modal:   modalElement,
             title:   titleElement,
             content: contentElement,
+            footer:  footerElement,
         } = this.el
 
         if (modalSize === 'huge') {
@@ -157,6 +175,15 @@ window.duanduanGameChaoJiYongShi.classes.OverlayModal = (function () {
             contentElement.appendChild(contentComponent.el.root)
         } else {
             contentElement.innerHTML = contentHTML
+        }
+
+        if (footerContentElement) {
+            footerElement.innerHTML = ''
+            footerElement.appendChild(footerContentElement)
+            footerElement.style.display = ''
+        } else if (footerContentElement === null) {
+            footerElement.innerHTML = ''
+            footerElement.style.display = 'none'
         }
     }
 

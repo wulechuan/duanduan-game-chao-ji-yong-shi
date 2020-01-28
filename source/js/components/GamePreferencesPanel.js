@@ -16,6 +16,7 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
             'data submitted or canceled',
         ])
 
+        this.startInterations         = startInterations        .bind(this)
         this.collectDataAndThenSubmit = collectDataAndThenSubmit.bind(this)
         this.cancel                   = cancel                  .bind(this)
         
@@ -28,8 +29,13 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
         _setupDOMS.call(this)
     }
 
-    async function collectDataAndThenSubmit() {
+    async function startInterations() {
         return await this.status.promiseOf['data submitted or canceled']
+    }
+
+    async function collectDataAndThenSubmit() {
+        // await network
+        this.status.resolvePromiseOf['data submitted or canceled']
     }
 
     function _defineControlsConfig(gameSetingsToModify) {
@@ -149,21 +155,6 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                     },
                 },
             ],
-
-            [
-                {
-                    label: '确定', type: 'button',
-                    options: {
-                        description: '',
-                        isDisabled: false,
-                        uniqueCSSClassName: 'settings-button_ok',
-                        extraCSSClassNames: '',
-                        onClick: (e) => {
-                            _afterDataSubmitted.call(this)
-                        },
-                    }
-                }
-            ],
         ]
     }
 
@@ -232,10 +223,6 @@ window.duanduanGameChaoJiYongShi.classes.GamePreferencesPanel = (function () {
                 e.stopPropagation()
             }
         }
-    }
-
-    function _afterDataSubmitted() {
-        this.status.resolvePromiseOf['data submitted or canceled']('ok')
     }
 
     function cancel(reason) {

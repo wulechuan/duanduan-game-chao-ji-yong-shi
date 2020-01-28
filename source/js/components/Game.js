@@ -71,7 +71,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         createPromisesAndStoreIn(this.status, [
             'game intro modal closed',
-            'game settings decided',
+            'game settings decided or skipped',
         ])
 
         this.listenersOfMyEvents = {
@@ -118,23 +118,77 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
     function _createGameIntro() {
-        const { OverlayModal } = classes
+        const { OverlayModal, KeyboardHint } = classes
+
+        const keyboardHintsInFooter = createDOMWithClassNames('div', [ 'keyboard-hints' ])
+        const keyboardHintForOpeningGamePreferencesPanel = new KeyboardHint({
+            keyName: 'S',
+            keyDescription: '游戏设置',
+            cssClassNames: [
+                'open-game-preferences-panel',
+            ],
+        })
+
+        const keyboardHintForStartingGameProcess = new KeyboardHint({
+            keyName: 'ENTER',
+            keyDescription: '开始游戏',
+            cssClassNames: [
+                'start-game-process-directly',
+            ],
+        })
+
+        ;[
+            keyboardHintForOpeningGamePreferencesPanel,
+            keyboardHintForStartingGameProcess,
+        ].forEach(keyboardHint => keyboardHintsInFooter.appendChild(keyboardHint.el.root))
+        
         this.services.modals.overlayModalOfGameIntro = new OverlayModal({
             ...this.globalSettings.gameIntro,
             modalSize: 'huge',
             cssClassNames: [ 'game-intro' ],
+            footerContentElement: keyboardHintsInFooter,
         })
     }
 
     function _createGamePreferencesPanel() {
         const { GamePreferencesPanel, OverlayModal } = classes
+
         const gamePreferencesPanel = new GamePreferencesPanel(this.settings)
+
+        const result = classes.FormControls.createFormControlDOMs([
+            [
+                {
+                    label: '确定', type: 'button',
+                    options: {
+                        description: '',
+                        isDisabled: false,
+                        uniqueCSSClassName: 'settings-button_ok',
+                        extraCSSClassNames: '',
+                        onClick: async () => {
+                            const result = await gamePreferencesPanel.collectDataAndThenSubmit()
+                            if (result !== 'canceled:external reason') {
+                                _stopUsingGamePreferencesPanelAndCloseItsHostingModal.call(this)
+                            }
+                        },
+                    }
+                }
+            ],
+        ])
+
+        const {
+            allFormRowsDOM,
+            // allControlInstances,
+            // namedControlInstances,
+        } = result
+
+
         this.subComponents.parts.gamePreferencesPanel = gamePreferencesPanel
         this.services.modals.overlayModalOfGamePreferencesPanel = new OverlayModal({
             modalSize: 'huge',
             titleHTML: '游戏配置项',
             contentComponent: gamePreferencesPanel,
             cssClassNames: [ 'game-preferences-panel-modal' ],
+            footerContentElement: allFormRowsDOM[0],
         })
     }
 
@@ -216,9 +270,9 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
 
         overlayModalOfGamePreferencesPanel.showUp(null, async () => {
             gamePreferencesPanel.allControlInstances[0].el.input.focus()
-            const result = await gamePreferencesPanel.collectDataAndThenSubmit()
+            const result = await gamePreferencesPanel.startInterations()
             if (result !== 'canceled:external reason') {
-                _stopUsingGamePreferencesPanelAndCloseItsHostingModal.call(this)
+                _stopUsingGamePreferencesPanelAndCloseItsHostingModal.call(this, 'decided')
             }
         })
 
@@ -226,16 +280,19 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
             keyUp: {
                 'ESCAPE': () => {
                     gamePreferencesPanel.cancel('canceled:external reason')
-                    _stopUsingGamePreferencesPanelAndCloseItsHostingModal.call(this)
+                    _stopUsingGamePreferencesPanelAndCloseItsHostingModal.call(this, 'skipped')
+                },
+                'ENTER': () => {
+                    _stopUsingGamePreferencesPanelAndCloseItsHostingModal.call(this, 'decided')
                 },
             },
         }, '游戏配置项对话框')
     }
     
-    function _stopUsingGamePreferencesPanelAndCloseItsHostingModal() {
+    function _stopUsingGamePreferencesPanelAndCloseItsHostingModal(reason) {
         this.services.keyboardEngine.stop()
         this.services.modals.overlayModalOfGamePreferencesPanel.leaveAndHide()
-        this.status.resolvePromiseOf['game settings decided']()
+        this.status.resolvePromiseOf['game settings decided or skipped'](reason)
     }
 
     function _prepareAllGameFightingStageCandidates() {
@@ -265,7 +322,7 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
     }
 
     async function start() {
-        const { promiseOf } = this.status
+        const { promiseOf, resolvePromiseOf } = this.status
 
         const {
             keyboardEngine,
@@ -279,21 +336,21 @@ window.duanduanGameChaoJiYongShi.classes.Game = (function () {
         overlayModalOfGameIntro.showUp()
         keyboardEngine.start({
             keyUp: {
-                '*': () => _closeModalOfGameIntro.call(this),
+                'S':     () => {
+                    _closeModalOfGameIntro.call(this)
+                    _startUsingGamePreferencesPanel.call(this)
+                },
+                'ENTER': () => {
+                    resolvePromiseOf['game settings decided or skipped']('skipped')
+                    _closeModalOfGameIntro.call(this)
+                },
             },
         }, '游戏说明对话框')
 
 
 
         await promiseOf['game intro modal closed']
-
-
-
-        _startUsingGamePreferencesPanel.call(this)
-
-
-
-        await promiseOf['game settings decided']
+        await promiseOf['game settings decided or skipped']
 
 
 
