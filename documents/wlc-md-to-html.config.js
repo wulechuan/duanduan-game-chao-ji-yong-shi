@@ -14,6 +14,7 @@ module.exports = {
 
     manipulationsOverHTML: {
         shouldNotReplaceLineBreaksInCodeTagsWithBrTags: false,
+        htmlTitleString: '《端端的超级勇士》说明文档',
 
         desiredReplacementsInHTML: [
             {
