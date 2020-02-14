@@ -66,10 +66,10 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
             所谓“公平模式”，角色的体力、攻击、防御等属性是自动计算的，而不采用角色定义中的原始值。
             同时， allowToCheat 恒视为 false ，即，不允许使用作弊功能。
         */
-        enableFairMode: true,
+        enableFairMode: false,
 
 
-        shouldManuallyPickFighters: true, // 手工选择战士
+        shouldManuallyPickFighters: false, // 手工选择战士
 
         /*
             在禁止手工选择战士的前提下，此项起作用。
@@ -137,6 +137,7 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
                     moveLeftwards:  'Z',
                     moveRightwards: 'X',
                     attack:         'S',
+                    remoteAttack:   'D',
                     defence:        'A',
                     cheat:          '`',
                 },
@@ -145,6 +146,7 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
                     moveLeftwards:  '.',
                     moveRightwards: '/',
                     attack:         ';',
+                    remoteAttack:   'L',
                     defence:        '\'',
                     cheat:          'BACKSPACE',
                 },

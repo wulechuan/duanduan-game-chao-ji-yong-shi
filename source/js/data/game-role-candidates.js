@@ -40,10 +40,10 @@ window.duanduanGameChaoJiYongShi.networkData.allGameRoleRawConfigurations = {
         {
             name: '雷神索尔',
             typeIdInFilePathAndCSSClassName: '003',
-            selectionWeightWhileAutoPicking: 0.0001,
-            fullHealthPoint: 9700000,
-            attackingPower: 970000,
-            defencingPower: 1600000,
+            selectionWeightWhileAutoPicking: 23,
+            fullHealthPoint: 970000,
+            attackingPower:  670000,
+            defencingPower:  260000,
             avatarFileName: 'avatar.png',
             fileNamesIndexingByCSSClassName: {
                 'default':      'pose-0.png',
@@ -57,7 +57,7 @@ window.duanduanGameChaoJiYongShi.networkData.allGameRoleRawConfigurations = {
         {
             name: '火神',
             typeIdInFilePathAndCSSClassName: '004',
-            selectionWeightWhileAutoPicking: 5.3,
+            selectionWeightWhileAutoPicking: 25,
             fullHealthPoint: 950000,
             attackingPower: 390000,
             defencingPower: 230000,

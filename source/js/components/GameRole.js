@@ -3,6 +3,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         'is-moving-leftwards',
         'is-moving-rightwards',
         'is-attacking',
+        'is-remote-attacking',
         'is-defencing',
         'is-suffering',
     ]
@@ -80,6 +81,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             movementIntervalId: NaN,
 
             isInAttackingMode: false,
+            isInRemoteAttackingMode: false,
             attackingPoseDuration: 180,
             attackingPoseTimerId: NaN,
 
@@ -118,7 +120,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.stopMovingLeftwards    = stopMovingLeftwards   .bind(this)
         this.stopMovingRightwards   = stopMovingRightwards  .bind(this)
         this.enterAttackMode        = enterAttackMode       .bind(this)
+        this.enterRemoteAttackMode  = enterRemoteAttackMode .bind(this)
         this.quitAttackMode         = quitAttackMode        .bind(this)
+        this.quitRemoteAttackMode   = quitRemoteAttackMode  .bind(this)
         this.enterDefenceMode       = enterDefenceMode      .bind(this)
         this.quitDefenceMode        = quitDefenceMode       .bind(this)
 
@@ -225,12 +229,14 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyboardHintForMovingLeftwards,
             keyboardHintForMovingRightwards,
             keyboardHintForAttack,
+            keyboardHintForRemoteAttack,
             keyboardHintForDefence,
         } = this.subComponents
 
         keyboardTipsElement.appendChild(keyboardHintForMovingLeftwards.el.root)
         keyboardTipsElement.appendChild(keyboardHintForMovingRightwards.el.root)
         keyboardTipsElement.appendChild(keyboardHintForAttack.el.root)
+        keyboardTipsElement.appendChild(keyboardHintForRemoteAttack.el.root)
         keyboardTipsElement.appendChild(keyboardHintForDefence.el.root)
     }
 
@@ -241,6 +247,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyForMovingLeftwards,
             keyForMovingRightwards,
             keyForAttack,
+            keyForRemoteAttack,
             keyForDefence,
             keyForCheating,
         } = options
@@ -262,6 +269,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyDescription: '进攻',
         })
 
+        const keyboardHintForRemoteAttack = new KeyboardHint({
+            keyName: keyForRemoteAttack,
+            keyDescription: '远程进攻',
+        })
+
         const keyboardHintForDefence = new KeyboardHint({
             keyName: keyForDefence,
             keyDescription: '防御',
@@ -270,6 +282,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.subComponents.keyboardHintForMovingLeftwards = keyboardHintForMovingLeftwards
         this.subComponents.keyboardHintForMovingRightwards = keyboardHintForMovingRightwards
         this.subComponents.keyboardHintForAttack = keyboardHintForAttack
+        this.subComponents.keyboardHintForRemoteAttack = keyboardHintForRemoteAttack
         this.subComponents.keyboardHintForDefence = keyboardHintForDefence
 
         const { data } = this
@@ -278,6 +291,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyForMovingLeftwards,
             keyForMovingRightwards,
             keyForAttack,
+            keyForRemoteAttack,
             keyForDefence,
             keyForCheating,
         }
@@ -286,6 +300,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             [keyForMovingLeftwards]:  this.startMovingLeftwards,
             [keyForMovingRightwards]: this.startMovingRightwards,
             [keyForAttack]:           this.enterAttackMode,
+            [keyForRemoteAttack]:     this.enterRemoteAttackMode,
             [keyForDefence]:          this.enterDefenceMode,
             [keyForCheating]:         this.cheat,
         }
@@ -294,6 +309,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             [keyForMovingLeftwards]:  this.stopMovingLeftwards,
             [keyForMovingRightwards]: this.stopMovingRightwards,
             [keyForAttack]:           this.quitAttackMode,
+            // [keyForRemoteAttack]:     this.quitRemoteAttackMode,
             [keyForDefence]:          this.quitDefenceMode,
         }
 
@@ -328,7 +344,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function cheat() {
-        const cheatingAttacksCount = Math.floor(Math.random() * 515)
+        const cheatingAttacksCount = Math.floor(Math.random() * 88)
         this.joinedGameRound.cheatedBy(this, cheatingAttacksCount)
     }
 
@@ -362,6 +378,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         if (poseCSSClassNameToApply && !rootElementClassList.contains(poseCSSClassNameToApply)) {
             rootElementClassList.add(poseCSSClassNameToApply)
+            if (poseCSSClassNameToApply === 'is-remote-attacking') {
+                rootElementClassList.add('is-attacking')
+            }
         }
 
         const { poses } = this.data.images
@@ -396,9 +415,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             isMovingLeftwards,
             isMovingRightwards,
             isInAttackingMode,
+            isInRemoteAttackingMode,
             isInDefencingMode,
         } = this.status
-        return !isMovingLeftwards && !isMovingRightwards && !isInAttackingMode && !isInDefencingMode
+
+        return !isMovingLeftwards && !isMovingRightwards && !isInAttackingMode && !isInRemoteAttackingMode && !isInDefencingMode
     }
 
     function _takeAnAction(actionFlagPropertyName, poseName) {
@@ -407,6 +428,9 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         if (actionIsAllowed) {
             status[actionFlagPropertyName] = true
+            if (actionFlagPropertyName === 'isInRemoteAttackingMode') {
+                status.isInAttackingMode = true
+            }
             this.setPoseTo(poseName)
             // console.log(`玩家 ${this.data.playerId}`, actionFlagPropertyName)
         }
@@ -495,6 +519,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
 
         this.joinedGameRound.acceptOneAttackFromPlayer({
             attackerPlayerId: this.data.playerId,
+            shouldIgnoreFightersDistance: false,
         })
 
         const { status } = this
@@ -515,6 +540,39 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.setPoseTo('')
 
         status.isInAttackingMode = false
+    }
+
+    function enterRemoteAttackMode() {
+        if (!_takeAnAction.call(this, 'isInRemoteAttackingMode', 'is-remote-attacking')) {
+            return
+        }
+
+        setTimeout(this.quitRemoteAttackMode, 3000)
+
+        this.joinedGameRound.acceptOneAttackFromPlayer({
+            attackerPlayerId: this.data.playerId,
+            shouldIgnoreFightersDistance: true,
+        })
+
+        const { status } = this
+        status.attackingPoseTimerId = setTimeout(() => {
+            this.setPoseTo('')
+        }, Math.floor(status.attackingPoseDuration))
+    }
+
+    function quitRemoteAttackMode() {
+        const { status } = this
+        if (!status.isInRemoteAttackingMode) { return }
+
+        if (status.attackingPoseTimerId) {
+            clearTimeout(status.attackingPoseTimerId)
+            status.attackingPoseTimerId = NaN
+        }
+
+        this.setPoseTo('')
+
+        status.isInAttackingMode = false
+        status.isInRemoteAttackingMode = false
     }
 
     function enterDefenceMode() {
