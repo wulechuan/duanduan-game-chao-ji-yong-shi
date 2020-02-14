@@ -309,7 +309,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             [keyForMovingLeftwards]:  this.stopMovingLeftwards,
             [keyForMovingRightwards]: this.stopMovingRightwards,
             [keyForAttack]:           this.quitAttackMode,
-            // [keyForRemoteAttack]:     this.quitRemoteAttackMode,
+            [keyForRemoteAttack]:     this.quitAttackMode,
             [keyForDefence]:          this.quitDefenceMode,
         }
 
