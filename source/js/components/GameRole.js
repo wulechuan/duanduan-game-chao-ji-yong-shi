@@ -415,11 +415,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             isMovingLeftwards,
             isMovingRightwards,
             isInAttackingMode,
-            isInRemoteAttackingMode,
+            // isInRemoteAttackingMode,
             isInDefencingMode,
         } = this.status
 
-        return !isMovingLeftwards && !isMovingRightwards && !isInAttackingMode && !isInRemoteAttackingMode && !isInDefencingMode
+        return !isMovingLeftwards && !isMovingRightwards && !isInAttackingMode && !isInDefencingMode
     }
 
     function _takeAnAction(actionFlagPropertyName, poseName) {
@@ -543,35 +543,26 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
     }
 
     function enterRemoteAttackMode() {
+        if (this.status.isInRemoteAttackingMode) { return }
+
         if (!_takeAnAction.call(this, 'isInRemoteAttackingMode', 'is-remote-attacking')) {
             return
         }
 
-        setTimeout(this.quitRemoteAttackMode, 3000)
+        this.enterAttackMode()
 
         this.joinedGameRound.acceptOneAttackFromPlayer({
             attackerPlayerId: this.data.playerId,
             shouldIgnoreFightersDistance: true,
         })
 
-        const { status } = this
-        status.attackingPoseTimerId = setTimeout(() => {
-            this.setPoseTo('')
-        }, Math.floor(status.attackingPoseDuration))
+        setTimeout(this.quitRemoteAttackMode, 3000)
     }
 
     function quitRemoteAttackMode() {
         const { status } = this
         if (!status.isInRemoteAttackingMode) { return }
-
-        if (status.attackingPoseTimerId) {
-            clearTimeout(status.attackingPoseTimerId)
-            status.attackingPoseTimerId = NaN
-        }
-
-        this.setPoseTo('')
-
-        status.isInAttackingMode = false
+        this.quitAttackMode()
         status.isInRemoteAttackingMode = false
     }
 
