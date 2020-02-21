@@ -18,12 +18,12 @@ module.exports = {
 
         desiredReplacementsInHTML: [
             {
-                from: /\s+href="([^#])/gi,
+                from: /\s+href="([^#\./].+)/gi,
                 to: ' target="_blank" href="$1',
             },
             {
-                from: /\s+href="(.+)\.md"/gi,
-                to: ' href="$1.html"',
+                from: /\s+href="(.+)\.md(#.*)?"/gi,
+                to: ' href="$1.html$2"',
             },
         ],
 
