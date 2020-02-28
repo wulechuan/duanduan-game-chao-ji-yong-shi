@@ -1,31 +1,49 @@
 #! /bin/bash
 
 echo
-echo 开始
+echo -e "\e[32m开始\e[0m"
 echo
 
+
+
+
+
 echo
-echo --- 阿里云 --------------------------
+echo -e "--- \e[35m阿里云\e[0m --------------------------"
 echo
 
 git ps aliyun
 
 echo
+
+
+
+
+
 echo
-echo
-echo --- 码云 ----------------------------
+echo -e "--- \e[31m码云\e[0m ----------------------------"
 echo
 
 git ps gitee
 
 echo
+
+
+
+
+
 echo
-echo
-echo --- GitHub -------------------------
+echo -e "--- \e[33mGitHub\e[0m -------------------------"
 echo
 
 git ps github
 
 echo
-echo 结束
+
+
+
+
+
+echo
+echo -e "\e[42;30m Git 推送至所有源：结束 \e[0;0m"
 echo
