@@ -579,9 +579,11 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
 
 
         let winnerPlayerId = NaN
+        let loserAdmittedDefeatWillingly = false
 
         if (!isNaN(idOfPlayerWhoFirstAdmittsDefeat)) {
             winnerPlayerId = 3 - idOfPlayerWhoFirstAdmittsDefeat
+            loserAdmittedDefeatWillingly = true
         } else {
             const f1HP = fighter1.data.healthPoint
             const f2HP = fighter2.data.healthPoint
@@ -611,7 +613,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         fighters.winnerPlayerId = winnerPlayerId
 
         winner.win()
-        loser.lose()
+        loser.lose(loserAdmittedDefeatWillingly)
 
         _ending.call(this)
     }
