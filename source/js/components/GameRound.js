@@ -53,7 +53,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 togglePauseAndResume: keyForTogglingPauseAndResume,
             },
         } = initOptions
-        
+
         const { settings: gameSettings } = game
 
         const allowToCheat = gameSettings.allowToCheat && !gameSettings.enableFairMode
@@ -67,6 +67,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 winner: null,
                 loser: null,
                 winnerPlayerId: NaN,
+                idOfPlayerWhoFirstAdmittsDefeat: NaN,
                 isDrawGameRound: false,
             },
 
@@ -96,12 +97,13 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
             ],
         }
 
-        this.start                     = start                    .bind(this)
-        this.togglePauseAndResume      = togglePauseAndResume     .bind(this)
-        this.cheatedBy                 = cheatedBy                .bind(this)
-        this.showUp                    = showUp                   .bind(this)
-        this.leaveAndHide              = leaveAndHide             .bind(this)
-        this.acceptOneAttackFromPlayer = acceptOneAttackFromPlayer.bind(this)
+        this.start                                   = start                                  .bind(this)
+        this.togglePauseAndResume                    = togglePauseAndResume                   .bind(this)
+        this.cheatedBy                               = cheatedBy                              .bind(this)
+        this.showUp                                  = showUp                                 .bind(this)
+        this.leaveAndHide                            = leaveAndHide                           .bind(this)
+        this.acceptOneAttackFromPlayer               = acceptOneAttackFromPlayer              .bind(this)
+        this.acceptWillinglyAdimttedDefeatFromPlayer = acceptWillinglyAdimttedDefeatFromPlayer.bind(this)
 
 
         _init.call(this)
@@ -168,6 +170,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 keyForAttack:           player1KeyboardShortcuts.attack,
                 keyForRemoteAttack:     player1KeyboardShortcuts.remoteAttack,
                 keyForDefence:          player1KeyboardShortcuts.defence,
+                keyForAdmittingDefeat:  player1KeyboardShortcuts.admitDefeat,
                 keyForCheating:         player1KeyboardShortcuts.cheat,
             }),
 
@@ -178,6 +181,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
                 keyForAttack:           player2KeyboardShortcuts.attack,
                 keyForRemoteAttack:     player2KeyboardShortcuts.remoteAttack,
                 keyForDefence:          player2KeyboardShortcuts.defence,
+                keyForAdmittingDefeat:  player2KeyboardShortcuts.admitDefeat,
                 keyForCheating:         player2KeyboardShortcuts.cheat,
             }),
         ]
@@ -398,6 +402,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
         this.status.fighterNewAttacksQueue.push(attackingDetails)
     }
 
+    function acceptWillinglyAdimttedDefeatFromPlayer(playerId) {
+        playerId = + playerId
+        console.log('\n认输的玩家 ID：', playerId, '\n\n')
+        if (!(playerId >= 1 && playerId <= 2)) { return }
+
+        const { fighters } = this.data
+        const { idOfPlayerWhoFirstAdmittsDefeat } = fighters
+        if (isNaN(idOfPlayerWhoFirstAdmittsDefeat)) {
+            fighters.idOfPlayerWhoFirstAdmittsDefeat = playerId
+            _roundHasAResult.call(this)
+        }
+    }
+
     function _startJudgementInterval() {
         const { status } = this
         if (!status.isRunning) { return }
@@ -556,29 +573,41 @@ window.duanduanGameChaoJiYongShi.classes.GameRound = (function () {
     function _roundHasAResult() {
         _stopJudgementInterval.call(this)
 
-        const fighters = this.data.fighters
+        const { fighters } = this.data
+        const { idOfPlayerWhoFirstAdmittsDefeat } = fighters
         const [ fighter1, fighter2 ] = fighters.both
 
-        const f1HP = fighter1.data.healthPoint
-        const f2HP = fighter2.data.healthPoint
 
-        console.warn('暂未考虑双方同时阵亡的细则', f1HP, f2HP)
-        let winner
-        let loser
         let winnerPlayerId = NaN
 
-        if (f1HP < f2HP) {
-            winnerPlayerId = 2
-            winner = fighter2
-            loser  = fighter1
+        if (!isNaN(idOfPlayerWhoFirstAdmittsDefeat)) {
+            winnerPlayerId = 3 - idOfPlayerWhoFirstAdmittsDefeat
         } else {
-            winnerPlayerId = 1
-            winner = fighter1
-            loser  = fighter2
+            const f1HP = fighter1.data.healthPoint
+            const f2HP = fighter2.data.healthPoint
+
+            console.warn('暂未考虑双方同时阵亡的细则', f1HP, f2HP)
+
+            if (f1HP < f2HP) {
+                winnerPlayerId = 2
+            } else {
+                winnerPlayerId = 1
+            }
         }
 
-        fighters.winner = winner
-        fighters.loser  = loser
+        let winner
+        let loser
+
+        if (winnerPlayerId === 1) {
+            winner = fighter1
+            loser  = fighter2
+        } else {
+            winner = fighter2
+            loser  = fighter1
+        }
+
+        fighters.winner         = winner
+        fighters.loser          = loser
         fighters.winnerPlayerId = winnerPlayerId
 
         winner.win()

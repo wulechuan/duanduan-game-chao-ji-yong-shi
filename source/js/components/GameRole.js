@@ -89,12 +89,15 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             isActualDefencing: false,
             continuousSuffersCountBeforeDisablingDefence: 5,
 
+            startTimeOfLastTryOfAdmittingDefeat: NaN,
+            intervalIdOfDetectionOfAdmittingDefeat: NaN,
+
             continuousSuffersCount: 0,
 
             countOfContinuousWeakAttacksIvReceived: 0,
             allowToDeSe: true,
             minTimeSpanBetweenTwoDeSe: 5015, // milliseconds
-            
+
             sayingWords: null, // TODO: 同一时刻仅允许一句话出现在画面中
 
             showingTipsCount: 0,
@@ -105,32 +108,36 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         }
 
 
-        this.joinGameRound          = joinGameRound         .bind(this)
-        this.onGameRoundStart       = onGameRoundStart      .bind(this)
-        this.say                    = say                   .bind(this)
-        this.faceLeftwards          = faceLeftwards         .bind(this)
-        this.faceRightwards         = faceRightwards        .bind(this)
-        this.setPoseTo              = setPoseTo             .bind(this)
-        this.showEffects            = showEffects           .bind(this)
+        this.joinGameRound              = joinGameRound             .bind(this)
+        this.onGameRoundStart           = onGameRoundStart          .bind(this)
+        this.say                        = say                       .bind(this)
+        this.faceLeftwards              = faceLeftwards             .bind(this)
+        this.faceRightwards             = faceRightwards            .bind(this)
+        this.setPoseTo                  = setPoseTo                 .bind(this)
+        this.showEffects                = showEffects               .bind(this)
 
-        this.stopAllPossibleActions = stopAllPossibleActions.bind(this)
+        this.stopAllPossibleActions     = stopAllPossibleActions    .bind(this)
 
-        this.startMovingLeftwards   = startMovingLeftwards  .bind(this)
-        this.startMovingRightwards  = startMovingRightwards .bind(this)
-        this.stopMovingLeftwards    = stopMovingLeftwards   .bind(this)
-        this.stopMovingRightwards   = stopMovingRightwards  .bind(this)
-        this.enterAttackMode        = enterAttackMode       .bind(this)
-        this.enterRemoteAttackMode  = enterRemoteAttackMode .bind(this)
-        this.quitAttackMode         = quitAttackMode        .bind(this)
-        this.quitRemoteAttackMode   = quitRemoteAttackMode  .bind(this)
-        this.enterDefenceMode       = enterDefenceMode      .bind(this)
-        this.quitDefenceMode        = quitDefenceMode       .bind(this)
+        this.startMovingLeftwards       = startMovingLeftwards      .bind(this)
+        this.startMovingRightwards      = startMovingRightwards     .bind(this)
+        this.stopMovingLeftwards        = stopMovingLeftwards       .bind(this)
+        this.stopMovingRightwards       = stopMovingRightwards      .bind(this)
+        this.enterAttackMode            = enterAttackMode           .bind(this)
+        this.enterRemoteAttackMode      = enterRemoteAttackMode     .bind(this)
+        this.quitAttackMode             = quitAttackMode            .bind(this)
+        this.quitRemoteAttackMode       = quitRemoteAttackMode      .bind(this)
+        this.enterDefenceMode           = enterDefenceMode          .bind(this)
+        this.quitDefenceMode            = quitDefenceMode           .bind(this)
+        this.startTryingAdmittingDefeat = startTryingAdmittingDefeat.bind(this)
+        this.stopTryingAdmittingDefeat  = stopTryingAdmittingDefeat .bind(this)
+        this.detectAdmittingOfDefeat    = detectAdmittingOfDefeat   .bind(this)
 
-        this.win                    = win                   .bind(this)
-        this.lose                   = lose                  .bind(this)
-        this.cheat                  = cheat                 .bind(this)
+        this.win                        = win                       .bind(this)
+        this.lose                       = lose                      .bind(this)
+        this.admitDefeat                = admitDefeat               .bind(this)
+        this.cheat                      = cheat                     .bind(this)
 
-        this.$suffer                = $suffer               .bind(this)
+        this.$suffer                    = $suffer                   .bind(this)
 
 
         _init.call(this, initOptions)
@@ -230,6 +237,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyboardHintForMovingRightwards,
             keyboardHintForAttack,
             keyboardHintForRemoteAttack,
+            keyboardHintForAdmittingDefeat,
             keyboardHintForDefence,
         } = this.subComponents
 
@@ -238,6 +246,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         keyboardTipsElement.appendChild(keyboardHintForAttack.el.root)
         keyboardTipsElement.appendChild(keyboardHintForRemoteAttack.el.root)
         keyboardTipsElement.appendChild(keyboardHintForDefence.el.root)
+        keyboardTipsElement.appendChild(keyboardHintForAdmittingDefeat.el.root)
     }
 
     function _createKeyboardEngineConfig(options) {
@@ -249,6 +258,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyForAttack,
             keyForRemoteAttack,
             keyForDefence,
+            keyForAdmittingDefeat,
             keyForCheating,
         } = options
 
@@ -279,11 +289,17 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyDescription: '防御',
         })
 
-        this.subComponents.keyboardHintForMovingLeftwards = keyboardHintForMovingLeftwards
+        const keyboardHintForAdmittingDefeat = new KeyboardHint({
+            keyName: keyForAdmittingDefeat,
+            keyDescription: '认输',
+        })
+
+        this.subComponents.keyboardHintForMovingLeftwards  = keyboardHintForMovingLeftwards
         this.subComponents.keyboardHintForMovingRightwards = keyboardHintForMovingRightwards
-        this.subComponents.keyboardHintForAttack = keyboardHintForAttack
-        this.subComponents.keyboardHintForRemoteAttack = keyboardHintForRemoteAttack
-        this.subComponents.keyboardHintForDefence = keyboardHintForDefence
+        this.subComponents.keyboardHintForAttack           = keyboardHintForAttack
+        this.subComponents.keyboardHintForRemoteAttack     = keyboardHintForRemoteAttack
+        this.subComponents.keyboardHintForDefence          = keyboardHintForDefence
+        this.subComponents.keyboardHintForAdmittingDefeat  = keyboardHintForAdmittingDefeat
 
         const { data } = this
 
@@ -293,6 +309,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             keyForAttack,
             keyForRemoteAttack,
             keyForDefence,
+            keyForAdmittingDefeat,
             keyForCheating,
         }
 
@@ -302,6 +319,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             [keyForAttack]:           this.enterAttackMode,
             [keyForRemoteAttack]:     this.enterRemoteAttackMode,
             [keyForDefence]:          this.enterDefenceMode,
+            [keyForAdmittingDefeat]:  this.startTryingAdmittingDefeat,
             [keyForCheating]:         this.cheat,
         }
 
@@ -311,6 +329,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
             [keyForAttack]:           this.quitAttackMode,
             [keyForRemoteAttack]:     this.quitAttackMode,
             [keyForDefence]:          this.quitDefenceMode,
+            [keyForAdmittingDefeat]:  this.stopTryingAdmittingDefeat,
         }
 
         data.keyboardEngineKeyDownConfig = keyboardEngineKeyDownConfig
@@ -427,6 +446,8 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         const actionIsAllowed = _isNotTakingAnyAction.call(this) && !status.hasLost
 
         if (actionIsAllowed) {
+            _cancelTryingAdmittingDefeat.call(this)
+
             status[actionFlagPropertyName] = true
             if (actionFlagPropertyName === 'isInRemoteAttackingMode') {
                 status.isInAttackingMode = true
@@ -588,6 +609,62 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         this.setPoseTo('')
     }
 
+    function startTryingAdmittingDefeat() {
+        const { status } = this
+        const startTime  = status.startTimeOfLastTryOfAdmittingDefeat
+        const intervalId = status.intervalIdOfDetectionOfAdmittingDefeat
+        if (startTime > 0 || !isNaN(intervalId)) {
+            return
+        }
+
+        status.startTimeOfLastTryOfAdmittingDefeat = Date.now()
+        status.intervalIdOfDetectionOfAdmittingDefeat = setInterval(
+            this.detectAdmittingOfDefeat,
+            100
+        )
+    }
+
+    function _cancelTryingAdmittingDefeat() {
+        const { status } = this
+        const startTime  = status.startTimeOfLastTryOfAdmittingDefeat
+        const intervalId = status.intervalIdOfDetectionOfAdmittingDefeat
+        if (startTime > 0 && !isNaN(intervalId)) {
+            clearInterval(intervalId)
+            status.intervalIdOfDetectionOfAdmittingDefeat = NaN
+            status.startTimeOfLastTryOfAdmittingDefeat = NaN
+        }
+    }
+
+    function detectAdmittingOfDefeat() {
+        const { status } = this
+        const startTime = status.startTimeOfLastTryOfAdmittingDefeat
+
+        if (startTime > 0) {
+            const durationOfTry = Date.now() - startTime
+            if (durationOfTry >= 3000) {
+                _cancelTryingAdmittingDefeat.call(this)
+                this.admitDefeat()
+                return true
+            }
+        }
+
+        return false
+    }
+
+    function stopTryingAdmittingDefeat() {
+        const hasAdmittedDefeat = this.detectAdmittingOfDefeat()
+
+        if (!hasAdmittedDefeat) {
+            _cancelTryingAdmittingDefeat.call(this)
+        }
+    }
+
+    function admitDefeat() {
+        this.joinedGameRound.acceptWillinglyAdimttedDefeatFromPlayer(
+            this.data.playerId
+        )
+    }
+
     function $suffer(desiredHPDecrease) {
         const { status, data } = this
 
@@ -627,7 +704,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
                         totalDecrease += dec
                         return totalDecrease
                     }, 0)
-    
+
                     createOneAutoDisappearPopup.call(this, {
                         timingForDisappearing: 5100,
                         rootElementExtraCSSClassNames: 'health-point-decrease    is-for-accum-attacks',
@@ -637,7 +714,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
                             `<span class="details">（由 ${oldHeldSufferedAttacks.length} 次攻击累计造成）</span>`,
                         ].join(''),
                     })
-    
+
                     status.heldSufferedAttacksWithoutTipsPoppingUp = []
                     status.showingTipsCount = 0
                 }, 200)
@@ -674,7 +751,7 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         if (!shouldNotApplyRandomPosition) {
             const rootElementLeftRatio   = (Math.random() * 0.5 + 0.25).toFixed(2)
             const rootElementBottomRatio = (Math.random() * 0.5 + 0.25).toFixed(2)
-            
+
             // 不能使用【百分比】数值，因为父元素的尺寸故意设置成 0像素。
             inlineCSSPositioning.left   = `calc( var(--fighter-visual-box-width ) * ${rootElementLeftRatio  })`
             inlineCSSPositioning.bottom = `calc( var(--fighter-visual-box-height) * ${rootElementBottomRatio})`
@@ -807,13 +884,19 @@ window.duanduanGameChaoJiYongShi.classes.GameRole = (function () {
         })
     }
 
-    function lose() {
+    function lose(admittedDefeatWillingly) {
         this.stopAllPossibleActions()
         this.setPoseTo('has-lost')
         this.el.root.classList.add('has-lost')
         this.status.hasLost = true
 
-        const wordsCandidates = [
+        const wordsCandidates = admittedDefeatWillingly ? [
+            '我甘拜下风！',
+            '饶命啊！',
+            '别打了！别打了！我认输！',
+            '大侠高抬贵手！',
+            '我真是打不过你啊！',
+        ] : [
             '我一定会报仇的！',
             '今日一战是我的耻辱！',
             '君子报仇，十年不晚！',

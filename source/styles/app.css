@@ -196,6 +196,7 @@ article blockquote em{
   text-align:center;
 }
 .keyboard-tip-label{
+  overflow:hidden;
   top:0;
   bottom:auto;
   font-size:0.8em;
@@ -1246,7 +1247,7 @@ article blockquote em{
   font-size:1rem;
   position:absolute;
   bottom:0;
-  width:13em;
+  width:19em;
   margin:0 2rem;
   display:flex;
   flex-wrap:nowrap;

@@ -58,7 +58,7 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
 
 
     perGameSettings: {
-        maxRoundsToRun: 3,  // 每场游戏的对战局数
+        maxRoundsToRun: 9,  // 每场游戏的对战局数
         allowToCheat: true, // 是否允许使用作弊功能
 
 
@@ -66,7 +66,7 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
             所谓“公平模式”，角色的体力、攻击、防御等属性是自动计算的，而不采用角色定义中的原始值。
             同时， allowToCheat 恒视为 false ，即，不允许使用作弊功能。
         */
-        enableFairMode: false,
+        enableFairMode: true,
 
 
         shouldManuallyPickFighters: false, // 手工选择战士
@@ -139,6 +139,7 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
                     attack:         'S',
                     remoteAttack:   'D',
                     defence:        'A',
+                    admitDefeat:    'W',
                     cheat:          '`',
                 },
 
@@ -148,6 +149,7 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
                     attack:         ';',
                     remoteAttack:   'L',
                     defence:        '\'',
+                    admitDefeat:    'P',
                     cheat:          'BACKSPACE',
                 },
             },
