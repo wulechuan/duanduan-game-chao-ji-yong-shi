@@ -16,7 +16,7 @@ wulechuan-git-push-to-single-origin  --should-skip=false \
     --git-origin-display-name='阿里云：吴乐川' \
     --git-origin-display-name-color='green'
 
-wulechuan-git-push-to-single-origin  --should-skip='true' \
+wulechuan-git-push-to-single-origin  --should-skip=false \
     --git-origin-name='GitHub：吴乐川' \
     --git-origin-display-name='GitHub：吴乐川' \
     --git-origin-display-name-color='yellow'
