@@ -1,7 +1,7 @@
-# 文件名冠以英语句点“.”是为了在 Shell 或 Git Bash 环境下，令本文件不可见。
-# 文件名在英语句点之后冠以“ps-”，是为了避免该文件与 Git 系统的“.git”文件夹的起始部分相同。
-# 一旦令文件名与“.git”文件夹的其实部分有区别，
-# 则日常在 Windows 环境借助 tab 键自动补齐该文件全称就更便捷了。
+# 本文件之文件名冠以英语句点“.”，是为了在 Shell 或 Git Bash 环境下，令本文件不可见。
+# 而在文件名起始的英语句点之后继续冠以“ps-”（代表“Power Shell”）短语，则是为了避免
+# 本文件与 Git 系统的“.git”文件夹的起始部分相同。一旦令文件名与“.git”文件夹的起始部
+# 分有区别，则日常在 Windows 环境借助 tab 键可自动补齐本文件全称，这就更为便捷了。
 
 . .\PowerShell-Tools\common\Push-GitRepositoryToSingleOrigin.ps1
 
