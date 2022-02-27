@@ -784,8 +784,8 @@ article blockquote em{
   text-align:center;
 }
 .role-picking-screen{
-  /* background-image:linear-gradient(to right, rgba(0,0,0,0.9) 30%, transparent 44%, transparent 56%, rgba(0,0,0,0.9) 70%), url("../images/game-ui/2021-11-01-端端画的游戏开场背景图.png"); */
-  background-image: url("../images/game-ui/2021-11-01-端端画的游戏开场背景图.png");
+  /* background-image:linear-gradient(to right, rgba(0,0,0,0.9) 30%, transparent 44%, transparent 56%, rgba(0,0,0,0.9) 70%), url("../图片资源/游戏界面元素/2021-11-01-端端画的游戏开场背景图.png"); */
+  background-image: url("../图片资源/游戏界面元素/2021-11-01-端端画的游戏开场背景图.png");
   background-size:cover;
   background-position:center;
 }
@@ -1662,7 +1662,7 @@ article blockquote em{
   background-position:center;
   background-repeat:no-repeat;
   background-size:cover;
-  background-image:url("../images/game-ui/vs.png");
+  background-image:url("../图片资源/游戏界面元素/vs.png");
 }
 .role-status-bar{
   position:relative;
@@ -1700,10 +1700,10 @@ article blockquote em{
   box-shadow:0 0 0.4rem rgba(0,0,0,0.51);
 }
 .role-status-bar .fighter-avatar.role-candidate-001{
-  background-image:url("../images/game-roles/role-001/fighter-.png");
+  background-image:url("../图片资源/游戏角色/role-001/fighter-.png");
 }
 .role-status-bar .fighter-avatar.role-candidate-002{
-  background-image:url("../images/game-roles/role-002/fighter-.png");
+  background-image:url("../图片资源/游戏角色/role-002/fighter-.png");
 }
 .role-status-bar .player-id,
 .role-status-bar .hp-bar-container{

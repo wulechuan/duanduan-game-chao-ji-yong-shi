@@ -1,6 +1,6 @@
 window.duanduanGameChaoJiYongShi.networkData.allGameFightingStageRawConfigurations = {
     common: {
-        filePathsPrefix: './images/game-stages',
+        filePathsPrefix: './图片资源/游戏对战地点',
         fileExt: 'jpg', // 背景图的默认文件类型
     },
     items: [

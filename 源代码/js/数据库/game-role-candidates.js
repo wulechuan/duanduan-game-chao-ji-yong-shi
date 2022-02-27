@@ -1,6 +1,6 @@
 window.duanduanGameChaoJiYongShi.networkData.allGameRoleRawConfigurations = {
     common: {
-        filePathsPrefix: './images/game-roles',
+        filePathsPrefix: './图片资源/游戏角色',
     },
     items: [
         {

@@ -4,10 +4,10 @@
   "author": "wulechuan@live.com",
   "license": "WTFPL",
   "description": "我给端儿编写的简易游戏。他自己给取的名字叫《超级勇士》。",
-  "main": "source/index.html",
+  "main": "源代码/index.html",
   "scripts": {
-    "remove-all-html-docs": "rimraf  ./readme.html  ./documents/**/*.html",
-    "generate-html-docs": "npm  run  remove-all-html-docs    &&    wlc-md-to-html  -i ./*.md,./documents/**/*.md  -e  -E3  -C ./documents/wlc-md-to-html.config.js  --to '*'",
+    "remove-all-html-docs": "rimraf  ./readme.html  ./文档/**/*.html",
+    "generate-html-docs": "npm  run  remove-all-html-docs    &&    wlc-md-to-html  -i ./*.md,./文档/**/*.md  -e  -E3  -C ./文档/wlc-md-to-html.config.js  --to '*'",
     "compile-stylus": "gulp  --silent",
     "start": "npm  run  generate-html-docs    &&    npm  run  compile-stylus"
   },

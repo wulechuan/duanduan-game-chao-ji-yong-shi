@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>端端的《超级勇士》</title>
+
+    <link rel="stylesheet" href="./层叠样式表/app.css">
+
+    <script src="./js/define-app.js"></script>
+
+    <script src="./js/辅助工具集/index.js"></script>
+
+    <script src="./js/数据库/game-settings.js"></script>
+    <script src="./js/数据库/game-role-candidates.js"></script>
+    <script src="./js/数据库/game-fighting-stage-candidates.js"></script>
+
+    <script src="./js/数据处理与映射程序/game-role-data-transform-function.js"></script>
+    <script src="./js/数据处理与映射程序/game-fighting-stage-data-transform-function.js"></script>
+
+    <script src="./js/部件库/FormControls/FormControls.js"></script>
+    <script src="./js/部件库/FormControls/_CheckBox.js"></script>
+    <script src="./js/部件库/FormControls/_NumberBox.js"></script>
+    <script src="./js/部件库/Button.js"></script>
+    <script src="./js/部件库/GamePreferencesPanel.js"></script>
+    <script src="./js/部件库/KeyboardHint.js"></script>
+    <script src="./js/部件库/KeyboardEngine.js"></script>
+    <script src="./js/部件库/AutoDisappearPopup.js"></script>
+    <script src="./js/部件库/OverlayModal.js"></script>
+    <script src="./js/部件库/CountDownOverlay.js"></script>
+    <script src="./js/部件库/GameRoleCandidate.js"></script>
+    <script src="./js/部件库/GameRole.js"></script>
+    <script src="./js/部件库/GameFighterPicker.js"></script>
+    <script src="./js/部件库/GameFightersPickingScreen.js"></script>
+    <script src="./js/部件库/GameRoundFighterStatusBar.js"></script>
+    <script src="./js/部件库/GameFightingStage.js"></script>
+    <script src="./js/部件库/GameRoundStatusBlock.js"></script>
+    <script src="./js/部件库/GameRound.js"></script>
+    <script src="./js/部件库/GameRoundsRunner.js"></script>
+    <script src="./js/部件库/GameRunningScreen.js"></script>
+    <script src="./js/部件库/Game.js"></script>
+</head>
+<body>
+    <div id="js-app" class="app"></div>
+    <div id="js-author-wishes" class="author-wishes">
+        <article>
+            <p class="last-run-game-summary">刚才的游戏历时<span class="game-duration js-last-run-game-duration">?</span>。</p>
+            <p>游戏虽有乐趣，但不应无止境。</p>
+            <p>再见！</p>
+        </article>
+    </div>
+    <script src="./js/start-app.js"></script>
+</body>
+</html>
