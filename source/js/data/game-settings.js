@@ -69,7 +69,7 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
         enableFairMode: true,
 
 
-        shouldManuallyPickFighters: false, // 手工选择战士
+        shouldManuallyPickFighters: true, // 手工选择战士
 
         /*
             在禁止手工选择战士的前提下，此项起作用。
@@ -80,7 +80,7 @@ window.duanduanGameChaoJiYongShi.networkData.gameGlobalSettings = {
                 游戏会自动高速随机滚动展示各候选角色，直至玩家按下代表 “接受” 的按键，
                 滚动到的候选角色即被选定。这类似于击鼓传花。
         */
-        shouldAutoPickFightersByWeights: true,
+        shouldAutoPickFightersByWeights: false,
 
 
         /*
